@@ -21,4 +21,7 @@ export const useBreadcrumbs = defineStore("bread", {
 			this.crumbs = crumbs;
 		},
 	},
+	// TODO: I bet this will be pain in the ass later on...
+	// TODO: This version of breadcrumbs will fail if you go directly to the desired chapter
+	persist: true,
 });

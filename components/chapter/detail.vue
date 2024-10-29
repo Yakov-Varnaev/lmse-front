@@ -23,6 +23,7 @@ export default {
   methods: {
     async loadChapter() {
       const { data } = await retrieveChapter(this.courseId, this.chapterId);
+      useBreadcrumbs().addToMap(data);
       this.chapter = data;
     },
   },
