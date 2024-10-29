@@ -1,3 +1,17 @@
+<script>
+export default {
+  setup() {
+    definePageMeta({
+      layout: "centered",
+    });
+    return {};
+  },
+};
+</script>
+
 <template>
-	<h1>ok...</h1>
+  <div>
+    <h1>LMSE</h1>
+    the only LMS engine you need.
+  </div>
 </template>

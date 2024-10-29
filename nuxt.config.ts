@@ -5,6 +5,7 @@ export default defineNuxtConfig({
 	build: {
 		transpile: ['vuetify'],
 	},
+	ssr: false,
 	compatibilityDate: '2024-04-03',
 	devtools: { enabled: true },
 	devServer: {
@@ -17,11 +18,11 @@ export default defineNuxtConfig({
 				config.plugins.push(vuetify({ autoImport: true }))
 			})
 		},
-		'@sidebase/nuxt-auth',
+		'@pinia/nuxt',
+		'@pinia-plugin-persistedstate/nuxt',
 	],
-	auth: {
-		isEnabled: false,
-		baseURL: `http://localhost:${process.env.PORT || 3000}`
+	pinia: {
+		storesDirs: ['./stores/**']
 	},
 	vite: {
 		vue: {

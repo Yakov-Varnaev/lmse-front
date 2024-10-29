@@ -2,9 +2,8 @@
 export default {
   setup() {
     definePageMeta({
-      name: "courses",
       middleware: "authenticated",
-      crumb: "Courses",
+      crumb: "Chapters",
     });
 
     return {};
@@ -13,5 +12,5 @@ export default {
 </script>
 
 <template>
-  <v-container>Courses!</v-container>
+  <div>chapters</div>
 </template>

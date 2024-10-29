@@ -7,6 +7,6 @@ definePageMeta({
 
 <template>
   <v-col md="4">
-    <signup-card />
+    <signin-card />
   </v-col>
 </template>

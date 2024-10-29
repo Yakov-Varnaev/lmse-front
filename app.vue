@@ -1,7 +1,15 @@
+<script>
+export default {
+  mounted() {
+    useAuth().startRefreshTask();
+  },
+};
+</script>
 <template>
-	<v-app>
-		<NuxtLayout>
-			<NuxtPage />
-		</NuxtLayout>
-	</v-app>
+  <v-app>
+    <NuxtLayout>
+      <NuxtPage />
+    </NuxtLayout>
+    <AlertContainer />
+  </v-app>
 </template>

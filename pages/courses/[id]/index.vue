@@ -2,9 +2,9 @@
 export default {
   setup() {
     definePageMeta({
-      name: "courses",
+      name: "courses-detail",
       middleware: "authenticated",
-      crumb: "Courses",
+      extra: { obj: "course", field: "courseId" },
     });
 
     return {};
@@ -13,5 +13,5 @@ export default {
 </script>
 
 <template>
-  <v-container>Courses!</v-container>
+  <CourseDetail :course-id="$route.params.id" />
 </template>
