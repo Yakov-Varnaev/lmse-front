@@ -16,15 +16,29 @@ export default {
     return {
       course: {},
       chapters: [],
+      drawerItems: [],
     };
   },
+  methods: {
+    processDrawerItems() {
+      this.drawerItems = this.chapters.map((chapter) => ({
+        title: chapter.title,
+        to: {
+          name: "chapters",
+          params: { id: chapter.course.id, chapterId: chapter.id },
+        },
+      }));
+    },
+  },
   async mounted() {
-    let response = await this.loader.withLoader(retrieveCourse, this.courseId);
+    this.loader.startLoading();
+    let response = await retrieveCourse(this.courseId);
     this.course = response.data;
     useBreadcrumbs().addToMap(this.course);
-    this.loader.startLoading();
     response = await getChapters(this.course.id);
     this.chapters = response.data;
+    this.processDrawerItems();
+    console.log(this.drawerItems);
     this.loader.stopLoading();
   },
 };
@@ -32,26 +46,12 @@ export default {
 
 <template>
   <div>
-    <v-navigation-drawer v-if="!loader.loading && course">
-      <v-list-item class="pa-2">
-        <h1>Chapters</h1>
-      </v-list-item>
-      <v-divider></v-divider>
-      <v-list-item
-        v-for="chapter in chapters"
-        link
-        :to="{
-          name: 'chapters',
-          params: { id: course.id, chapterId: chapter.id },
-        }"
-      >
-        #{{ chapter.order + 1 }} {{ chapter.title }}
-      </v-list-item>
-    </v-navigation-drawer>
-
+    <SideDrawer v-if="!loader.loading" title="Chapters" :items="drawerItems" />
     <div v-if="loader.loading">loading</div>
-    <v-container v-else>
-      <CourseCard :course="course" />
-    </v-container>
+    <v-fade-transition>
+      <v-container v-if="!loader.loading">
+        <CourseCard :course="course" />
+      </v-container>
+    </v-fade-transition>
   </div>
 </template>
