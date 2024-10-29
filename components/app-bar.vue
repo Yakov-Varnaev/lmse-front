@@ -56,7 +56,7 @@ export default {
 </script>
 
 <template>
-  <v-app-bar :elevation="0" class="pr-2">
+  <v-app-bar :elevation="0" class="pr-2 bg-background">
     <div class="mr-auto ml-5 pa-2 d-flex">
       <div class="brand-title my-auto link" @click="pushToHome">LMSE</div>
 

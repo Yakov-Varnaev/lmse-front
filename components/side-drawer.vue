@@ -8,11 +8,10 @@ export default {
 };
 </script>
 <template>
-  <v-navigation-drawer :border="0">
-    <v-list-item class="pa-3">
+  <v-navigation-drawer :border="0" class="bg-background">
+    <v-list-item class="pa-3 bg-primary border rounded-e-lg">
       <h1>{{ $props.title }}</h1>
     </v-list-item>
-    <v-divider></v-divider>
 
     <v-list-item
       v-for="item in $props.items"

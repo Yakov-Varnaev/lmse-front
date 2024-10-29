@@ -10,7 +10,7 @@ export default {
 </script>
 
 <template>
-  <v-card>
+  <v-card elevation="0">
     <v-card-title>
       {{ course.name }}
     </v-card-title>
