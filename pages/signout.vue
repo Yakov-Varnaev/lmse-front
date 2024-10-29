@@ -5,6 +5,7 @@ export default {
       name: "signout",
       layout: "centered",
       middleware: "authenticated",
+      crumb: "signout",
     });
     return {};
   },
@@ -30,7 +31,7 @@ export default {
             <v-btn @click="logout" color="red" block>Yes</v-btn>
           </v-col>
           <v-col>
-            <v-btn @click="goBack" color="success" block>No</v-btn>
+            <v-btn @click.prevent="goBack" color="success" block>No</v-btn>
           </v-col>
         </v-row>
       </v-card-actions>
