@@ -62,8 +62,9 @@ export default {
 
       <v-divider vertical class="mx-2" v-if="isAuth" />
 
-      <div v-if="isAuth" class="link" @click="pushToProfile">
-        {{ authStore.user?.email }}
+      <div v-if="isAuth" class="link" @click="pushToProfile" elevation="0">
+        <span class="ma-0 pa-0">{{ authStore.getFullName }}</span>
+        <div class="ma-0 pa-0 text-caption">{{ authStore.user?.email }}</div>
       </div>
     </div>
 

@@ -37,7 +37,14 @@ export default {
 
 <template>
   <div>
-    <SideDrawer title="Themes" :items="[]" />
+    <SideDrawer
+      title="Themes"
+      :items="[
+        { title: 'Chapter 1' },
+        { title: 'Chapter 2' },
+        { title: 'Chapter 3' },
+      ]"
+    />
     <v-container>
       <ChapterCard v-if="!loader.loading && chapter" :chapter="chapter" />
       <div v-else>loading</div>

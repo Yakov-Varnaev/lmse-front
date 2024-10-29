@@ -46,12 +46,7 @@ export default {
 
 <template>
   <div>
-    <SideDrawer
-      v-if="!loader.loading"
-      title="Chapters"
-      :items="drawerItems"
-      class="mt-4"
-    />
+    <SideDrawer v-if="!loader.loading" title="Chapters" :items="drawerItems" />
     <v-container v-if="!loader.loading">
       <div v-if="loader.loading">loading</div>
       <CourseCard :course="course" />

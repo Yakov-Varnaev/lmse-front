@@ -8,7 +8,7 @@ export default {
 };
 </script>
 <template>
-  <v-navigation-drawer :border="0" class="bg-background">
+  <v-navigation-drawer :border="0" class="bg-background mt-4">
     <v-list-item class="pa-3 bg-primary border rounded-e-lg">
       <h1>{{ $props.title }}</h1>
     </v-list-item>
