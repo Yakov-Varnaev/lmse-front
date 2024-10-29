@@ -2,7 +2,7 @@
 definePageMeta({
   layout: "centered",
   middleware: "anon-only",
-  crumb: "signup",
+  crumb: "Signup",
 });
 </script>
 

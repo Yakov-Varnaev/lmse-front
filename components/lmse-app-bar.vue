@@ -19,6 +19,11 @@ export default {
           logged: false,
         },
         {
+          title: "Courses",
+          link: { name: "courses" },
+          logged: true,
+        },
+        {
           title: "SignOut",
           link: { name: "signout" },
           logged: true,
@@ -57,14 +62,26 @@ export default {
 
 <template>
   <v-app-bar :elevation="0" class="pr-2 bg-background">
-    <div class="mr-auto ml-5 pa-2 d-flex">
-      <div class="brand-title my-auto link" @click="pushToHome">LMSE</div>
+    <div class="mr-auto pa-2 d-flex ml-4">
+      <div class="link-pointer my-auto" @click="pushToHome">LMSE</div>
 
-      <v-divider vertical class="mx-2" v-if="isAuth" />
+      <v-divider vertical class="mx-4" v-if="isAuth" />
 
-      <div v-if="isAuth" class="link" @click="pushToProfile" elevation="0">
-        <span class="ma-0 pa-0">{{ authStore.getFullName }}</span>
-        <div class="ma-0 pa-0 text-caption">{{ authStore.user?.email }}</div>
+      <div
+        v-if="isAuth"
+        class="link-pointer d-flex align-center"
+        @click="pushToProfile"
+        elevation="0"
+      >
+        <v-avatar color="primary" class="mr-2">
+          {{ authStore.user.firstName[0] }}{{ authStore.user.lastName[0] }}
+        </v-avatar>
+        <div>
+          <span class="ma-0 pa-0">{{ authStore.getFullName }}</span>
+          <div class="ma-0 mt-n2 pa-0 text-caption text-primary">
+            {{ authStore.user?.email }}
+          </div>
+        </div>
       </div>
     </div>
 
@@ -97,7 +114,7 @@ export default {
 </template>
 
 <style scoped>
-.link {
+.link-pointer {
   cursor: pointer;
 }
 </style>

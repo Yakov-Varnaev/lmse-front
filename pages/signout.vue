@@ -5,7 +5,7 @@ export default {
       name: "signout",
       layout: "centered",
       middleware: "authenticated",
-      crumb: "signout",
+      crumb: "Signout",
     });
     return {};
   },
