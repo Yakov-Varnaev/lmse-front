@@ -9,3 +9,7 @@ export const getUsers = async (page, pageSize) => {
     params: { page: page, page_size: pageSize },
   });
 };
+
+export const updateMe = async (data) => {
+  return await apiv1.patch("auth/users/me/", data);
+};

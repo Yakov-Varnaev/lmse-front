@@ -38,11 +38,11 @@ export default {
 <template>
   <div>
     <SideDrawer
-      title="Themes"
+      title="Lessons"
       :items="[
-        { title: 'Chapter 1' },
-        { title: 'Chapter 2' },
-        { title: 'Chapter 3' },
+        { title: 'Lesson 1' },
+        { title: 'Lesson 2' },
+        { title: 'Lesson 3' },
       ]"
     />
     <v-container>
