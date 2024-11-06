@@ -79,7 +79,7 @@ export default {
       </v-col>
       <v-col md="5">
         <!-- edit card start -->
-        <v-card variant="tonal" v-if="isProfileEdit">
+        <v-card variant="text" v-if="isProfileEdit">
           <v-card-text>
             <v-form>
               <v-row>
@@ -127,7 +127,7 @@ export default {
         </v-card>
         <!-- edict card end-->
         <v-card
-          variant="tonal"
+          variant="text"
           v-else
           :title="fullName()"
           :subtitle="user.email"

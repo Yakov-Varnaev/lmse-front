@@ -23,9 +23,13 @@ function redirectToCourse(courseId) {
       <v-list-item
         v-for="course in data.results"
         class="mt-2"
+        rounded
         @click="redirectToCourse(course.id)()"
         :key="course.id"
       >
+        <template #prepend>
+          <v-icon>mdi-circle-small</v-icon>
+        </template>
         <v-list-item-title>
           {{ course.name }}
         </v-list-item-title>

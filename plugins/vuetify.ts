@@ -10,6 +10,9 @@ export default defineNuxtPlugin((app) => {
 		defaults: {
 			VNavigationDrawer: {
 				class: "bg-background"
+			},
+			VList: {
+				class: "bg-background"
 			}
 		}
 	})
