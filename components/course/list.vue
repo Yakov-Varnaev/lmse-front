@@ -30,8 +30,8 @@ function redirectToCourse(courseId) {
         <template #prepend>
           <v-icon>mdi-circle-small</v-icon>
         </template>
-        <v-list-item-title>
-          {{ course.name }}
+        <v-list-item-title class="text-capitalize text-h6">
+          {{ course.title }}
         </v-list-item-title>
         <v-spacer></v-spacer>
         <template v-slot:append>

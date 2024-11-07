@@ -35,11 +35,7 @@ export default {
         let obj = useBreadcrumbs().objectMap[route[route.meta.extra.field]];
         let objTitle = null;
         if (obj) {
-          if (route.meta.extra.obj === "chapter") {
-            objTitle = obj.title;
-          } else if (route.meta.extra.obj === "course") {
-            objTitle = obj.name;
-          }
+          objTitle = obj.title;
         }
         return {
           title: objTitle ? objTitle : route[route.meta.extra.field],

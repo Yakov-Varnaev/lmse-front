@@ -19,7 +19,6 @@ export default {
   methods: {
     async loadCourses() {
       const { data } = await getCourses();
-      console.log(data.results[0]);
       this.courses = data.results;
     },
   },
@@ -68,7 +67,7 @@ export default {
             </v-img>
           </v-card-text>
           <v-card-title>
-            {{ course.name }}
+            {{ course.title }}
           </v-card-title>
           <v-card-text>
             {{ course.description }}

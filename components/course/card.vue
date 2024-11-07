@@ -12,7 +12,7 @@ export default {
 <template>
   <v-card elevation="0">
     <v-card-title>
-      {{ course.name }}
+      {{ course.title }}
     </v-card-title>
   </v-card>
 </template>

@@ -1,5 +1,10 @@
 import { apiv1 } from "~/api/v1";
 
+export const createCourse = async (data) => {
+  console.log(data);
+  return await apiv1.post("courses/", data);
+};
+
 export const getCourses = async (my = null) => {
   let params = {};
   if (my === true) {

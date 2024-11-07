@@ -9,7 +9,13 @@ export default (error) => {
   }
 
   if (error) {
-    alert.reportError(error);
+    if (error.response?.data) {
+      for (const [key, value] of Object.entries(error.response.data)) {
+        alert.reportError(`${key}: ${value[0]}`);
+      }
+    } else {
+      alert.reportError(error);
+    }
   }
 
   return Promise.reject(error);
