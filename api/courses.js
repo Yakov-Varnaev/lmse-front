@@ -5,12 +5,15 @@ export const createCourse = async (data) => {
   return await apiv1.post("courses/", data);
 };
 
-export const getCourses = async (my = null) => {
-  let params = {};
-  if (my === true) {
-    params.my = true;
+export const getCourses = async (params = { my: null, author: null }) => {
+  let parsedParams = {};
+  if (params.my === true) {
+    parsedParams.my = true;
   }
-  return await apiv1.get("courses/", { params: params });
+  if (params.author) {
+    parsedParams.author = params.author;
+  }
+  return await apiv1.get("courses/", { params: parsedParams });
 };
 
 export const retrieveCourse = async (id) => {

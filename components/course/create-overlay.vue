@@ -13,7 +13,7 @@ export default {
       this.courseOverlay = true;
     },
     created(data) {
-      this.$emit("created", data);
+      this.$emit("append", data);
       this.closeOverlay();
     },
   },

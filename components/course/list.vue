@@ -1,27 +1,25 @@
-<script setup>
-import { getCourses } from "~/api/courses";
-
-const props = defineProps({
-  review: {
-    type: Object,
-    required: true,
+<script>
+export default {
+  props: {
+    courses: {
+      type: Array[Object],
+      required: true,
+    },
   },
-});
-const { my } = props;
-
-let { data } = await getCourses(my);
-
-function redirectToCourse(courseId) {
-  return () =>
-    useRouter().push({ name: "courses-detail", params: { id: courseId } });
-}
+  methods: {
+    redirectToCourse(courseId) {
+      return () =>
+        useRouter().push({ name: "courses-detail", params: { id: courseId } });
+    },
+  },
+};
 </script>
 
 <template>
   <div>
     <v-list>
       <v-list-item
-        v-for="course in data.results"
+        v-for="course in courses"
         class="mt-2"
         rounded
         @click="redirectToCourse(course.id)()"

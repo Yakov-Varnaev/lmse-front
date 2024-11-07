@@ -14,7 +14,6 @@ export default {
       const routes = route.fullPath.substring(1).split("/");
       let processedRoutes = routes
         .map((route) => {
-          console.log(route);
           if (route) {
             fullPath = `${fullPath}/${route}`;
             let resolvedRouter = router.resolve(fullPath);
@@ -27,7 +26,6 @@ export default {
         .filter(Boolean)
         .filter((router) => router.matched.length > 0);
 
-      console.log(processedRoutes);
       return processedRoutes.map((route) => {
         if (route.meta.crumb) {
           return { title: route.meta.crumb, to: route.fullPath };
