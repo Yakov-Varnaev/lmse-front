@@ -26,6 +26,11 @@ export const updateCourse = async (id, data) => {
   return await apiv1.put(`courses/${id}/`, data);
 };
 
+export const createChapter = async (courseId, data) => {
+  data.description = "blablabla";
+  return await apiv1.post(`courses/${courseId}/chapters/`, data);
+};
+
 export const getChapters = async (courseId) => {
   return await apiv1.get(`courses/${courseId}/chapters/`);
 };

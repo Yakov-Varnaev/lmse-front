@@ -34,6 +34,10 @@ export default {
       this.course = data;
       this.toggleEditMode();
     },
+    appendChapter(newChapter) {
+      this.chapters = [...this.chapters, newChapter];
+      this.processDrawerItems();
+    },
     toggleEditMode() {
       this.editMode = !this.editMode;
     },
@@ -52,7 +56,23 @@ export default {
 
 <template>
   <div>
-    <SideDrawer v-if="!loader.loading" title="Chapters" :items="drawerItems" />
+    <SideDrawer title="Chapters" :items="drawerItems">
+      <template v-slot:actionButton>
+        <ChapterCreateDialog @created="appendChapter" :course-id="courseId">
+          <template v-slot:activator="{ props: activatorProps }">
+            <v-btn
+              v-bind="activatorProps"
+              icon
+              color="primary"
+              class="ml-auto"
+              elevation="0"
+            >
+              <v-icon>mdi-plus</v-icon>
+            </v-btn>
+          </template>
+        </ChapterCreateDialog>
+      </template>
+    </SideDrawer>
     <v-container v-if="!loader.loading">
       <div v-if="loader.loading">loading</div>
       <CourseCardEditor
