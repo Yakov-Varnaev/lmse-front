@@ -20,6 +20,12 @@ export const retrieveCourse = async (id) => {
   return await apiv1.get(`courses/${id}/`);
 };
 
+export const updateCourse = async (id, data) => {
+  console.log(id);
+  console.log(data);
+  return await apiv1.put(`courses/${id}/`, data);
+};
+
 export const getChapters = async (courseId) => {
   return await apiv1.get(`courses/${courseId}/chapters/`);
 };

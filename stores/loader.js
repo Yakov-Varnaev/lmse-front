@@ -5,9 +5,9 @@ export const useLoader = defineStore("loader", {
     loading: false,
   }),
   actions: {
-    async withLoader(func, args) {
+    async withLoader(func, ...args) {
       this.startLoading();
-      let res = await func(args);
+      let res = await func(...args);
       this.stopLoading();
       return res;
     },
