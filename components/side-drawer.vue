@@ -2,6 +2,7 @@
 export default {
   props: {
     title: { type: String, required: true },
+    editMode: { type: Boolean, default: false },
     items: { type: Array, required: true },
   },
   methods: {
@@ -12,6 +13,7 @@ export default {
   data() {
     return {
       drag: true,
+      showTooltipFor: {},
     };
   },
 };
@@ -32,7 +34,7 @@ export default {
       handle=".handle"
     >
       <template v-slot:item="{ element }">
-        <v-list-item :to="element.to">
+        <v-list-item :to="editMode ? null : element.to">
           <template #prepend>
             <v-btn
               size="xs"
@@ -53,7 +55,29 @@ export default {
             {{ element.title }}
           </v-list-item-title>
           <template #append>
-            <v-icon icon="mdi-circle-outline" size="xs" color="grey" />
+            <v-hover v-if="editMode">
+              <template #default="{ isHovering, props }">
+                <v-btn
+                  elevation="0"
+                  v-bind="props"
+                  icon
+                  color="background"
+                  size="xs"
+                  class="pa-1"
+                  @click="$emit('deleted', element)"
+                >
+                  <v-icon
+                    size="xs"
+                    icon="mdi-delete-outline"
+                    :class="{
+                      'text-red': isHovering,
+                      'text-grey': !isHovering,
+                    }"
+                  />
+                </v-btn>
+              </template>
+            </v-hover>
+            <v-icon v-else icon="mdi-circle-outline" size="xs" color="grey" />
           </template>
         </v-list-item>
       </template>

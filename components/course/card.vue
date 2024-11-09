@@ -11,7 +11,6 @@ export default {
   },
   data() {
     return {
-      editMode: false,
       courseData: { ...this.$props.course },
     };
   },
@@ -26,7 +25,7 @@ export default {
 <template>
   <v-hover>
     <template v-slot:default="{ isHovering, props }">
-      <v-card elevation="0" v-bind="props" class="course-card">
+      <v-card elevation="0" v-bind="props">
         <v-card-title>
           <div class="d-flex align-center">
             <div class="text-h2">
@@ -43,13 +42,12 @@ export default {
           </div>
         </v-card-title>
         <v-card-text>
-          <v-sheet max-width="900">
-            <VuetifyViewer :value="courseData.description" />
-          </v-sheet>
+          <VuetifyViewer
+            :value="courseData.description"
+            class="bg-background"
+          />
         </v-card-text>
       </v-card>
     </template>
   </v-hover>
 </template>
-
-<style scoped></style>

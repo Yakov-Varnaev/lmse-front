@@ -1,5 +1,10 @@
 <script>
-import { retrieveCourse, getChapters, updateChapter } from "~/api/courses";
+import {
+  retrieveCourse,
+  getChapters,
+  updateChapter,
+  deleteChapter,
+} from "~/api/courses";
 export default {
   setup() {
     return {
@@ -23,7 +28,7 @@ export default {
   methods: {
     processDrawerItems() {
       this.drawerItems = this.chapters.map((chapter) => ({
-        title: chapter.title,
+        ...chapter,
         to: {
           name: "chapters",
           params: { id: chapter.course.id, chapterId: chapter.id },
@@ -41,6 +46,11 @@ export default {
         ...oldChapter,
         order: newIndex,
       });
+    },
+    async deleteChapter(chapter) {
+      await deleteChapter(this.courseId, chapter.id);
+      this.chapters = this.chapters.filter((v) => v.id !== chapter.id);
+      this.processDrawerItems();
     },
     appendChapter(newChapter) {
       this.chapters = [...this.chapters, newChapter];
@@ -67,7 +77,9 @@ export default {
     <SideDrawer
       title="Chapters"
       :items="drawerItems"
+      :edit-mode="editMode"
       @updated="updateChapterOrder"
+      @deleted="deleteChapter"
     >
       <template v-slot:actionButton>
         <ChapterCreateDialog @created="appendChapter" :course-id="courseId">
@@ -87,29 +99,20 @@ export default {
     </SideDrawer>
     <!-- content -->
     <v-container v-if="!loader.loading" class="fill-height align-start">
-      <v-row dense no-gutters class="fill-height">
-        <v-col>
-          <CourseCardEditor
-            :course="course"
-            @updated="courseUpdated"
-            @cancel="toggleEditMode"
-            v-if="editMode"
-            class="fill-height"
-          />
-          <CourseCard
-            v-else
-            :course="course"
-            @openEdit="toggleEditMode"
-            class="course-editor"
-          />
+      <v-row dense no-gutters class="fill-height" justify="center">
+        <v-col cols="9">
+          <v-sheet max-width="1000">
+            <CourseCardEditor
+              :course="course"
+              @updated="courseUpdated"
+              @cancel="toggleEditMode"
+              v-if="editMode"
+              class="fill-height"
+            />
+            <CourseCard v-else :course="course" @openEdit="toggleEditMode" />
+          </v-sheet>
         </v-col>
       </v-row>
     </v-container>
   </div>
 </template>
-
-<style scoped>
-.course-editor {
-  width: 500px;
-}
-</style>

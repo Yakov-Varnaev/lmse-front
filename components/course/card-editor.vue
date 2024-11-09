@@ -27,12 +27,13 @@ export default {
 </script>
 
 <template>
-  <v-tile>
+  <div class="bg-background">
     <v-text-field v-model.trim="course.title" />
     <VuetifyTiptap
       v-model.trim="course.description"
-      class="editor"
+      class="editor bg-background"
       markdown-theme="github"
+      max-height="650"
     />
     <v-row class="mt-2">
       <v-col>
@@ -42,7 +43,7 @@ export default {
         <v-btn block color="red" @click="cancel">Cancel</v-btn>
       </v-col>
     </v-row>
-  </v-tile>
+  </div>
 </template>
 
 <style scoped>

@@ -39,3 +39,7 @@ export const retrieveChapter = async (courseId, chapterId) => {
 export const updateChapter = async (courseId, chapterId, data) => {
   return await apiv1.put(`courses/${courseId}/chapters/${chapterId}/`, data);
 };
+
+export const deleteChapter = async (courseId, chapterId) => {
+  return await apiv1.delete(`courses/${courseId}/chapters/${chapterId}/`);
+};

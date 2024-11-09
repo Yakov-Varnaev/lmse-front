@@ -13,7 +13,10 @@ export default defineNuxtPlugin((app) => {
 			},
 			VList: {
 				class: "bg-background"
-			}
+			},
+			VCard: {
+				class: "bg-background"
+			},
 		}
 	})
 	app.vueApp.use(vuetify)
