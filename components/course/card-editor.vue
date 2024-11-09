@@ -34,8 +34,7 @@ export default {
       class="editor"
       markdown-theme="github"
     />
-    <v-spacer></v-spacer>
-    <v-row>
+    <v-row class="mt-2">
       <v-col>
         <v-btn block color="primary" @click="update">Save</v-btn>
       </v-col>

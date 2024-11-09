@@ -26,7 +26,11 @@ export default {
 <template>
   <v-hover>
     <template v-slot:default="{ isHovering, props }">
-      <v-card elevation="0" v-bind="{ ...$attrs, ...props }" class="fill-width">
+      <v-card
+        elevation="0"
+        v-bind="{ ...$attrs, ...props }"
+        class="course-card"
+      >
         <v-card-title>
           <div class="d-flex align-center">
             <div class="text-h2">
@@ -38,9 +42,13 @@ export default {
           </div>
         </v-card-title>
         <v-card-text>
-          <VuetifyViewer :value="courseData.description" />
+          <v-sheet max-width="900">
+            <VuetifyViewer :value="courseData.description" />
+          </v-sheet>
         </v-card-text>
       </v-card>
     </template>
   </v-hover>
 </template>
+
+<style scoped></style>

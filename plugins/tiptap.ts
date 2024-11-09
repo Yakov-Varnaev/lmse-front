@@ -1,7 +1,8 @@
 // import { markRaw } from 'vue'
 import { VuetifyTiptap, VuetifyViewer, createVuetifyProTipTap } from 'vuetify-pro-tiptap'
 import { BaseKit, Bold, Italic, Underline, Strike, Color, Highlight, Heading, TextAlign, FontFamily, FontSize, SubAndSuperScript, BulletList, OrderedList, TaskList, Indent, Link, Image, Video, Table, Blockquote, HorizontalRule, Code, CodeBlock, Clear, Fullscreen, History } from 'vuetify-pro-tiptap'
-import 'vuetify-pro-tiptap/style.css'
+import 'vuetify-pro-tiptap/styles/editor.css' // only use editor style, not using markdown style
+import './styles/markdown/github.scss'
 
 export default defineNuxtPlugin((app) => {
 	const vuetifyProTipTap = createVuetifyProTipTap({
