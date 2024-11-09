@@ -26,19 +26,20 @@ export default {
 <template>
   <v-hover>
     <template v-slot:default="{ isHovering, props }">
-      <v-card
-        elevation="0"
-        v-bind="{ ...$attrs, ...props }"
-        class="course-card"
-      >
+      <v-card elevation="0" v-bind="props" class="course-card">
         <v-card-title>
           <div class="d-flex align-center">
             <div class="text-h2">
               {{ courseData.title }}
             </div>
-            <v-chip class="ml-auto" label v-if="isHovering">
+            <v-btn
+              class="ml-auto"
+              label
+              v-if="isHovering"
+              @click="$emit('openEdit')"
+            >
               Click to edit
-            </v-chip>
+            </v-btn>
           </div>
         </v-card-title>
         <v-card-text>

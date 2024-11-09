@@ -99,7 +99,7 @@ export default {
           <CourseCard
             v-else
             :course="course"
-            @click="toggleEditMode"
+            @openEdit="toggleEditMode"
             class="course-editor"
           />
         </v-col>
