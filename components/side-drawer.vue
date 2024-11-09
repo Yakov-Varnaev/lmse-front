@@ -4,7 +4,16 @@ export default {
     title: { type: String, required: true },
     items: { type: Array, required: true },
   },
-  methods: {},
+  methods: {
+    itemUpdate(data) {
+      this.$emit("updated", data);
+    },
+  },
+  data() {
+    return {
+      drag: true,
+    };
+  },
 };
 </script>
 <template>
@@ -16,10 +25,38 @@ export default {
       </div>
     </v-list-item>
 
-    <v-list-item
-      v-for="item in $props.items"
-      :title="item.title"
-      :to="item.to"
-    />
+    <draggable
+      :list="items"
+      item-key="id"
+      @update="itemUpdate"
+      handle=".handle"
+    >
+      <template v-slot:item="{ element }">
+        <v-list-item :to="element.to">
+          <template #prepend>
+            <v-btn
+              size="xs"
+              icon
+              elevation="0"
+              class="mr-2 pa-1"
+              color="background"
+            >
+              <v-icon
+                size="xs"
+                icon="mdi-menu"
+                color="primary"
+                class="handle"
+              />
+            </v-btn>
+          </template>
+          <v-list-item-title>
+            {{ element.title }}
+          </v-list-item-title>
+          <template #append>
+            <v-icon icon="mdi-circle-outline" size="xs" color="grey" />
+          </template>
+        </v-list-item>
+      </template>
+    </draggable>
   </v-navigation-drawer>
 </template>

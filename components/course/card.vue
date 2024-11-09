@@ -26,7 +26,7 @@ export default {
 <template>
   <v-hover>
     <template v-slot:default="{ isHovering, props }">
-      <v-card elevation="0" v-bind="{ ...$attrs, ...props }">
+      <v-card elevation="0" v-bind="{ ...$attrs, ...props }" class="fill-width">
         <v-card-title>
           <div class="d-flex align-center">
             <div class="text-h2">

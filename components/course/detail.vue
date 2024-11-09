@@ -1,5 +1,5 @@
 <script>
-import { retrieveCourse, getChapters } from "~/api/courses";
+import { retrieveCourse, getChapters, updateChapter } from "~/api/courses";
 export default {
   setup() {
     return {
@@ -34,6 +34,14 @@ export default {
       this.course = data;
       this.toggleEditMode();
     },
+    async updateChapterOrder(data) {
+      const { oldIndex, newIndex } = data;
+      const oldChapter = this.chapters[oldIndex];
+      await updateChapter(this.courseId, oldChapter.id, {
+        ...oldChapter,
+        order: newIndex,
+      });
+    },
     appendChapter(newChapter) {
       this.chapters = [...this.chapters, newChapter];
       this.processDrawerItems();
@@ -55,8 +63,12 @@ export default {
 </script>
 
 <template>
-  <div>
-    <SideDrawer title="Chapters" :items="drawerItems">
+  <div class="fill-height">
+    <SideDrawer
+      title="Chapters"
+      :items="drawerItems"
+      @updated="updateChapterOrder"
+    >
       <template v-slot:actionButton>
         <ChapterCreateDialog @created="appendChapter" :course-id="courseId">
           <template v-slot:activator="{ props: activatorProps }">
@@ -73,15 +85,31 @@ export default {
         </ChapterCreateDialog>
       </template>
     </SideDrawer>
-    <v-container v-if="!loader.loading">
-      <div v-if="loader.loading">loading</div>
-      <CourseCardEditor
-        :course="course"
-        @updated="courseUpdated"
-        @cancel="toggleEditMode"
-        v-if="editMode"
-      />
-      <CourseCard v-else :course="course" @click="toggleEditMode" />
+    <!-- content -->
+    <v-container v-if="!loader.loading" class="fill-height align-start">
+      <v-row dense no-gutters class="fill-height">
+        <v-col>
+          <CourseCardEditor
+            :course="course"
+            @updated="courseUpdated"
+            @cancel="toggleEditMode"
+            v-if="editMode"
+            class="fill-height"
+          />
+          <CourseCard
+            v-else
+            :course="course"
+            @click="toggleEditMode"
+            class="course-editor"
+          />
+        </v-col>
+      </v-row>
     </v-container>
   </div>
 </template>
+
+<style scoped>
+.course-editor {
+  width: 500px;
+}
+</style>

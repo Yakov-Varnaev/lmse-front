@@ -1,7 +1,6 @@
 import { apiv1 } from "~/api/v1";
 
 export const createCourse = async (data) => {
-  console.log(data);
   return await apiv1.post("courses/", data);
 };
 
@@ -21,8 +20,6 @@ export const retrieveCourse = async (id) => {
 };
 
 export const updateCourse = async (id, data) => {
-  console.log(id);
-  console.log(data);
   return await apiv1.put(`courses/${id}/`, data);
 };
 
@@ -37,4 +34,8 @@ export const getChapters = async (courseId) => {
 
 export const retrieveChapter = async (courseId, chapterId) => {
   return await apiv1.get(`courses/${courseId}/chapters/${chapterId}/`);
+};
+
+export const updateChapter = async (courseId, chapterId, data) => {
+  return await apiv1.put(`courses/${courseId}/chapters/${chapterId}/`, data);
 };

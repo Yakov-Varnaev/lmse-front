@@ -23,18 +23,16 @@ export default {
 };
 </script>
 <template>
-  <v-dialog v-model="isOpen">
+  <v-dialog v-model="isOpen" max-width="500">
     <template v-slot:activator="{ props: activatorProps }">
       <slot name="activator" :props="activatorProps" />
     </template>
-    <v-container>
-      <v-col md="6" offset-md="3">
-        <ChapterCreateForm
-          @cancel="toggle"
-          @created="created"
-          :course-id="courseId"
-        />
-      </v-col>
-    </v-container>
+    <template v-slot:default="{ isActive }">
+      <ChapterCreateForm
+        @cancel="toggle"
+        @created="created"
+        :course-id="courseId"
+      />
+    </template>
   </v-dialog>
 </template>

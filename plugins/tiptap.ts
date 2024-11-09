@@ -6,7 +6,7 @@ import 'vuetify-pro-tiptap/style.css'
 export default defineNuxtPlugin((app) => {
 	const vuetifyProTipTap = createVuetifyProTipTap({
 		lang: 'en',
-		markdownTheme: "github",
+		markdownTheme: 'github',
 		components: {
 			VuetifyTiptap,
 			VuetifyViewer
@@ -48,7 +48,7 @@ export default defineNuxtPlugin((app) => {
 			Table.configure({ divider: true }),
 			Blockquote,
 			HorizontalRule,
-			CodeBlock.configure({ divider: true }),
+			CodeBlock.configure({ divider: false }),
 			History.configure({ divider: true }),
 			Fullscreen
 		]
