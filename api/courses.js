@@ -79,3 +79,31 @@ export const deleteLesson = async (courseId, chapterId, lessonId) => {
     `courses/${courseId}/chapters/${chapterId}/lessons/${lessonId}/`,
   );
 };
+
+// Blocks
+
+export const createBlock = async (courseId, chapterId, lessonId, data) => {
+  return await apiv1.post(
+    `courses/${courseId}/chapters/${chapterId}/lessons/${lessonId}/blocks/`,
+    data,
+  );
+};
+
+export const getBlocks = async (courseId, chapterId, lessonId) => {
+  return await apiv1.get(
+    `courses/${courseId}/chapters/${chapterId}/lessons/${lessonId}/blocks/`,
+  );
+};
+
+export const updateBlock = async (
+  courseId,
+  chapterId,
+  lessonId,
+  blockId,
+  data,
+) => {
+  return await apiv1.put(
+    `courses/${courseId}/chapters/${chapterId}/lessons/${lessonId}/blocks/${blockId}/`,
+    data,
+  );
+};

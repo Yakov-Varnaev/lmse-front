@@ -1,5 +1,5 @@
 <script>
-import { retrieveLesssons } from "~/api/courses";
+import { getBlocks, retrieveLesssons } from "~/api/courses";
 
 export default {
   props: {
@@ -15,10 +15,15 @@ export default {
   },
   data() {
     return {
+      editMode: false,
       lesson: { title: "" },
+      blocks: [],
     };
   },
   methods: {
+    toggleEditMode() {
+      this.editMode = !this.editMode;
+    },
     async loadLesson() {
       const { data } = await retrieveLesssons(
         this.courseId,
@@ -28,10 +33,22 @@ export default {
       this.lesson = data;
       this.bread.addToMap(this.lesson);
     },
+    async loadBlocks() {
+      const { data } = await getBlocks(
+        this.courseId,
+        this.chapterId,
+        this.lessonId,
+      );
+      this.blocks = data;
+    },
+    blockUpdated(block) {
+      this.blocks = this.blocks.map((b) => (b.id === block.id ? block : b));
+    },
   },
   async mounted() {
     this.loader.startLoading();
     await this.loadLesson();
+    await this.loadBlocks();
     this.loader.stopLoading();
   },
 };
@@ -39,6 +56,17 @@ export default {
 
 <template>
   <v-container>
-    <h1 v-if="!loader.loading">Lesson: {{ lesson.title }}</h1>
+    <div class="d-flex">
+      <h1 v-if="!loader.loading">Lesson: {{ lesson.title }}</h1>
+      <v-btn @click="toggleEditMode"></v-btn>
+    </div>
+    <BlockList
+      :editMode="editMode"
+      :blocks="blocks"
+      :course-id="courseId"
+      :chapter-id="chapterId"
+      :lesson-id="lessonId"
+      @update="blockUpdated"
+    />
   </v-container>
 </template>
