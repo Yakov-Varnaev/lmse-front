@@ -3,6 +3,7 @@ import {
   deleteLesson,
   getLessons,
   retrieveChapter,
+  updateChapter,
   updateLesson,
 } from "~/api/courses";
 
@@ -48,6 +49,11 @@ export default {
     },
     toggleCreateDialog() {
       this.createDialog = !this.createDialog;
+    },
+    async updateChapterData(data) {
+      await updateChapter(this.courseId, this.chapterId, data);
+      this.chapter = data;
+      this.toggleEditMode();
     },
     async updateLessonOrder(data) {
       const { oldIndex, newIndex } = data;
@@ -107,7 +113,14 @@ export default {
     <v-container v-if="!loader.loading" class="align-start content-container">
       <v-row dense class="content-container" justify="center">
         <v-col lg="9" xl="9">
+          <InstanceEditor
+            v-if="editMode"
+            :instance="chapter"
+            @cancel="toggleEditMode"
+            @updated="updateChapterData"
+          />
           <InstanceCard
+            v-else
             :title="chapter.title"
             :content="chapter.description"
             @openEdit="toggleEditMode"
