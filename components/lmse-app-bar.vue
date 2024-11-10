@@ -72,7 +72,7 @@ export default {
       <v-divider vertical class="mx-4" v-if="isAuth" />
 
       <div
-        v-if="isAuth"
+        v-if="isAuth && authStore.user"
         class="link-pointer d-flex align-center"
         @click="pushToProfile"
         elevation="0"

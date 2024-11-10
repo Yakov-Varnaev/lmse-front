@@ -1,5 +1,10 @@
 <script>
-import { retrieveChapter } from "~/api/courses";
+import {
+  deleteLesson,
+  getLessons,
+  retrieveChapter,
+  updateLesson,
+} from "~/api/courses";
 
 export default {
   props: {
@@ -17,19 +22,66 @@ export default {
   },
   data() {
     return {
-      chapter: null,
+      createDialog: false,
+      editMode: false,
+      chapter: { title: "", description: "" },
+      lessons: [],
+      drawerItems: [],
     };
   },
   methods: {
+    processDrawerItems() {
+      this.drawerItems = this.lessons.map((lesson) => ({
+        ...lesson,
+        to: {
+          name: "lessons",
+          params: {
+            id: this.courseId,
+            chapterId: this.chapterId,
+            lessonId: lesson.id,
+          },
+        },
+      }));
+    },
+    toggleEditMode() {
+      this.editMode = !this.editMode;
+    },
+    toggleCreateDialog() {
+      this.createDialog = !this.createDialog;
+    },
+    async updateLessonOrder(data) {
+      const { oldIndex, newIndex } = data;
+      const oldLesson = this.lessons[oldIndex];
+      await updateLesson(this.courseId, this.chapterId, oldLesson.id, {
+        ...oldLesson,
+        order: newIndex,
+      });
+    },
+    async deleteLessonItem(lesson) {
+      await deleteLesson(this.courseId, this.chapterId, lesson.id);
+      this.lessons = this.lessons.filter((i) => i.id !== lesson.id);
+      this.processDrawerItems();
+    },
     async loadChapter() {
       const { data } = await retrieveChapter(this.courseId, this.chapterId);
       useBreadcrumbs().addToMap(data);
       this.chapter = data;
     },
+    async loadLessons() {
+      const { data } = await getLessons(this.courseId, this.chapterId);
+      this.lessons = data;
+    },
+    lessonCreated(newLesson) {
+      this.lessons = [...this.lessons, newLesson];
+      this.processDrawerItems();
+      this.toggleCreateDialog();
+    },
   },
   async mounted() {
     this.loader.startLoading();
     await this.loadChapter();
+    await this.loadLessons();
+    this.processDrawerItems();
     this.loader.stopLoading();
   },
 };
@@ -39,15 +91,29 @@ export default {
   <div>
     <SideDrawer
       title="Lessons"
-      :items="[
-        { title: 'Lesson 1' },
-        { title: 'Lesson 2' },
-        { title: 'Lesson 3' },
-      ]"
+      :edit-mode="editMode"
+      @updated="updateLessonOrder"
+      @deleted="deleteLessonItem"
+      :items="drawerItems"
+      @openCreate="toggleCreateDialog"
     />
-    <v-container>
-      <ChapterCard v-if="!loader.loading && chapter" :chapter="chapter" />
-      <div v-else>loading</div>
+    <LessonCreateDialog
+      v-model="createDialog"
+      @close="toggleCreateDialog"
+      :course-id="courseId"
+      :chapter-id="chapterId"
+    />
+
+    <v-container v-if="!loader.loading" class="align-start content-container">
+      <v-row dense class="content-container" justify="center">
+        <v-col lg="9" xl="9">
+          <InstanceCard
+            :title="chapter.title"
+            :content="chapter.description"
+            @openEdit="toggleEditMode"
+          />
+        </v-col>
+      </v-row>
     </v-container>
   </div>
 </template>

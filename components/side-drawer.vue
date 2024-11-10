@@ -23,7 +23,17 @@ export default {
     <v-list-item class="pa-3 bg-primary border rounded-e-lg">
       <div class="d-flex align-center">
         <h1>{{ $props.title }}</h1>
-        <slot name="actionButton" />
+        <slot name="actionButton">
+          <v-btn
+            icon
+            color="primary"
+            class="ml-auto"
+            elevation="0"
+            @click="$emit('openCreate')"
+          >
+            <v-icon>mdi-plus</v-icon>
+          </v-btn>
+        </slot>
       </div>
     </v-list-item>
 
