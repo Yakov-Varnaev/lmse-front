@@ -27,13 +27,27 @@ export default {
       >
         <template #prepend>
           <v-icon>mdi-circle-small</v-icon>
+
+          <v-chip>{{ course.state }}</v-chip>
         </template>
-        <v-list-item-title class="text-capitalize text-h6">
+        <v-list-item-title class="text-capitalize text-h6 text-center">
           {{ course.title }}
         </v-list-item-title>
         <v-spacer></v-spacer>
         <template v-slot:append>
-          <v-chip>{{ course.state }}</v-chip>
+          <v-hover>
+            <template #default="{ isHovering, props }">
+              <v-btn
+                v-bind="props"
+                icon
+                flat
+                @click.stop="$emit('delete', course)"
+                :class="{ 'text-red': isHovering }"
+              >
+                <v-icon icon="mdi-delete-outline" />
+              </v-btn>
+            </template>
+          </v-hover>
         </template>
       </v-list-item>
     </v-list>

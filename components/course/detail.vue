@@ -9,6 +9,7 @@ export default {
   setup() {
     return {
       loader: useLoader(),
+      bread: useBreadcrumbs(),
     };
   },
   props: {
@@ -64,6 +65,7 @@ export default {
     this.loader.startLoading();
     var { data } = await retrieveCourse(this.courseId);
     this.course = data;
+    this.bread.addToMap(this.course);
     var { data } = await getChapters(this.courseId);
     this.chapters = data;
     this.processDrawerItems();
@@ -96,23 +98,43 @@ export default {
           </template>
         </ChapterCreateDialog>
       </template>
+      <template #append>
+        <v-hover>
+          <template #default="{ isHovering, props }">
+            <v-list-item v-if="editMode">
+              <v-btn
+                v-bind="props"
+                :class="{ 'text-red': isHovering, 'mb-1': true }"
+                block
+                variant="flat"
+                prepend-icon="mdi-delete-outline"
+              >
+                Delete
+              </v-btn>
+            </v-list-item>
+          </template>
+        </v-hover>
+      </template>
     </SideDrawer>
     <!-- content -->
-    <v-container v-if="!loader.loading" class="fill-height align-start">
-      <v-row dense no-gutters class="fill-height" justify="center">
-        <v-col cols="9">
-          <v-sheet max-width="1000">
-            <CourseCardEditor
-              :course="course"
-              @updated="courseUpdated"
-              @cancel="toggleEditMode"
-              v-if="editMode"
-              class="fill-height"
-            />
-            <CourseCard v-else :course="course" @openEdit="toggleEditMode" />
-          </v-sheet>
+    <v-container v-if="!loader.loading" class="align-start content-container">
+      <v-row dense class="content-container" justify="center">
+        <v-col lg="9" xl="9">
+          <CourseCardEditor
+            :course="course"
+            @updated="courseUpdated"
+            @cancel="toggleEditMode"
+            v-if="editMode"
+          />
+          <CourseCard v-else :course="course" @openEdit="toggleEditMode" />
         </v-col>
       </v-row>
     </v-container>
   </div>
 </template>
+
+<style scoped>
+.content-container {
+  height: 100%;
+}
+</style>

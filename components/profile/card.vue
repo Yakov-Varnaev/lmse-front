@@ -69,74 +69,72 @@ export default {
 </script>
 
 <template>
-  <v-container>
-    <v-row no-gutters align="center">
-      <v-col md="3" offset-md="2" class="d-flex">
-        <v-avatar size="auto" class="">
-          <v-icon size="200">mdi-account</v-icon>
-          <v-img :src="user?.avatar" v-if="user?.avatar" />
-        </v-avatar>
-      </v-col>
-      <v-col md="5">
-        <!-- edit card start -->
-        <v-card variant="text" v-if="isProfileEdit">
-          <v-card-text>
-            <v-form>
-              <v-row>
-                <v-col class="">
-                  <v-text-field
-                    class="ma-0"
-                    label="First Name"
-                    pattern="[a-zA-Z]"
-                    density="compact"
-                    v-model.trim="profileData.firstName"
-                  />
-                </v-col>
-                <v-col class="">
-                  <v-text-field
-                    class="ma-0"
-                    label="Last Name"
-                    density="compact"
-                    v-model.trim="profileData.lastName"
-                  />
-                </v-col>
-              </v-row>
-            </v-form>
-            <span class="text-subtitle-2 text-grey">{{ user.email }}</span>
-          </v-card-text>
-
-          <v-card-actions>
+  <v-row align="center">
+    <v-col md="4" xl="3">
+      <v-avatar size="auto" class="">
+        <v-icon size="200">mdi-account</v-icon>
+        <v-img :src="user?.avatar" v-if="user?.avatar" />
+      </v-avatar>
+    </v-col>
+    <v-col>
+      <!-- edit card start -->
+      <v-card variant="text" v-if="isProfileEdit" color="red">
+        <v-card-text>
+          <v-form>
             <v-row>
               <v-col>
-                <v-btn
-                  block
-                  color="success"
-                  :disabled="!isProfileEditSubmitActive"
-                  @click="profileEditSubmit"
-                >
-                  <v-icon>mdi-check</v-icon>
-                </v-btn>
+                <v-text-field
+                  class="ma-0"
+                  label="First Name"
+                  density="compact"
+                  v-model.trim="profileData.firstName"
+                />
               </v-col>
-              <v-col>
-                <v-btn block color="red" @click="profileEditCancel">
-                  <v-icon>mdi-close</v-icon>
-                </v-btn>
+              <v-col class="">
+                <v-text-field
+                  class="ma-0"
+                  label="Last Name"
+                  density="compact"
+                  v-model.trim="profileData.lastName"
+                />
               </v-col>
             </v-row>
-          </v-card-actions>
-        </v-card>
-        <!-- edict card end-->
-        <v-card
-          variant="text"
-          v-else
-          :title="fullName()"
-          :subtitle="user.email"
-        >
-          <v-card-actions v-if="isSelf">
-            <v-btn block @click="openProfileEdit">Edit</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-col>
-    </v-row>
-  </v-container>
+          </v-form>
+          <span class="text-subtitle-2 text-grey">{{ user.email }}</span>
+        </v-card-text>
+
+        <v-card-actions>
+          <v-row>
+            <v-col>
+              <v-btn
+                block
+                color="success"
+                :disabled="!isProfileEditSubmitActive"
+                @click="profileEditSubmit"
+              >
+                <v-icon>mdi-check</v-icon>
+              </v-btn>
+            </v-col>
+            <v-col>
+              <v-btn block color="red" @click="profileEditCancel">
+                <v-icon>mdi-close</v-icon>
+              </v-btn>
+            </v-col>
+          </v-row>
+        </v-card-actions>
+      </v-card>
+      <!-- edict card end-->
+      <v-card
+        variant="text"
+        v-else
+        :title="fullName()"
+        :subtitle="user.email"
+        color="red"
+      >
+        <v-card-actions v-if="isSelf">
+          <v-btn block @click="openProfileEdit">Edit</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-col>
+  </v-row>
 </template>

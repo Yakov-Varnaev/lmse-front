@@ -19,7 +19,7 @@ export default {
 };
 </script>
 <template>
-  <v-navigation-drawer :border="0" class="bg-background mt-4">
+  <v-navigation-drawer :border="0">
     <v-list-item class="pa-3 bg-primary border rounded-e-lg">
       <div class="d-flex align-center">
         <h1>{{ $props.title }}</h1>
@@ -82,5 +82,8 @@ export default {
         </v-list-item>
       </template>
     </draggable>
+    <template #append>
+      <slot name="append"></slot>
+    </template>
   </v-navigation-drawer>
 </template>

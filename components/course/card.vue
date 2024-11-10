@@ -1,5 +1,6 @@
 <script>
 export default {
+  emits: ["openEdit"],
   props: {
     course: {
       type: Object,
@@ -28,7 +29,7 @@ export default {
       <v-card elevation="0" v-bind="props">
         <v-card-title>
           <div class="d-flex align-center">
-            <div class="text-h2">
+            <div class="course-title">
               {{ courseData.title }}
             </div>
             <v-btn
@@ -51,3 +52,9 @@ export default {
     </template>
   </v-hover>
 </template>
+
+<style scoped>
+.course-title {
+  font-size: 4vw;
+}
+</style>

@@ -1,9 +1,11 @@
 <script>
+import { useDisplay } from "vuetify";
+
 export default {
   setup() {
     let authStore = useAuth();
     let themeStore = useThemeStore();
-    return { authStore, themeStore };
+    return { authStore, themeStore, display: useDisplay() };
   },
   data() {
     return {
@@ -63,7 +65,9 @@ export default {
 <template>
   <v-app-bar :elevation="0" class="pr-2 bg-background">
     <div class="mr-auto pa-2 d-flex ml-4">
-      <div class="link-pointer my-auto" @click="pushToHome">LMSE</div>
+      <div class="link-pointer my-auto" @click="pushToHome">
+        LMSE [{{ display.name.value }}]
+      </div>
 
       <v-divider vertical class="mx-4" v-if="isAuth" />
 

@@ -27,15 +27,14 @@ export default {
 </script>
 
 <template>
-  <div class="bg-background">
+  <v-container class="bg-background editor-container">
     <v-text-field v-model.trim="course.title" />
     <VuetifyTiptap
       v-model.trim="course.description"
       class="editor bg-background"
       markdown-theme="github"
-      max-height="650"
     />
-    <v-row class="mt-2">
+    <v-row class="mt-auto">
       <v-col>
         <v-btn block color="primary" @click="update">Save</v-btn>
       </v-col>
@@ -43,10 +42,14 @@ export default {
         <v-btn block color="red" @click="cancel">Cancel</v-btn>
       </v-col>
     </v-row>
-  </div>
+  </v-container>
 </template>
 
 <style scoped>
+.editor-container {
+  height: 100%;
+}
+
 .editor {
   position: relative;
 }

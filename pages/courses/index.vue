@@ -69,7 +69,7 @@ export default {
           <v-card-title>
             {{ course.title }}
           </v-card-title>
-          <v-card-text>
+          <v-card-text class="short-description">
             {{ course.description }}
           </v-card-text>
           <v-card-text>
@@ -92,3 +92,13 @@ export default {
     </v-row>
   </v-container>
 </template>
+
+<style scoped>
+.short-description {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  overflow: hidden;
+}
+</style>

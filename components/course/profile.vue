@@ -1,5 +1,5 @@
 <script>
-import { getCourses } from "~/api/courses";
+import { deleteCourse, getCourses } from "~/api/courses";
 
 export default {
   props: {
@@ -20,6 +20,11 @@ export default {
     appendNewCourse(data) {
       this.courses = [data, ...this.courses];
     },
+    async deleteCourse(course) {
+      console.log("delete", course);
+      await deleteCourse(course.id);
+      this.courses = this.courses.filter((c) => c.id !== course.id);
+    },
     async fetchCourses() {
       const { data } = await getCourses({ author: this.userId });
       this.courses = data.results;
@@ -37,6 +42,6 @@ export default {
       <h1>Courses</h1>
       <CourseCreateOverlay @append="appendNewCourse" />
     </div>
-    <CourseList :courses="courses" />
+    <CourseList :courses="courses" @delete="deleteCourse" />
   </div>
 </template>
