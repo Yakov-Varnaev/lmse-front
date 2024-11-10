@@ -61,6 +61,12 @@ export const getLessons = async (courseId, chapterId) => {
   return await apiv1.get(`courses/${courseId}/chapters/${chapterId}/lessons/`);
 };
 
+export const retrieveLesssons = async (courseId, chapterId, lessonId) => {
+  return await apiv1.get(
+    `courses/${courseId}/chapters/${chapterId}/lessons/${lessonId}/`,
+  );
+};
+
 export const updateLesson = async (courseId, chapterId, lessonId, data) => {
   return await apiv1.put(
     `courses/${courseId}/chapters/${chapterId}/lessons/${lessonId}/`,

@@ -6,4 +6,10 @@ definePageMeta({
 });
 </script>
 
-<template>Lesson</template>
+<template>
+  <LessonDetail
+    :course-id="$route.params.id"
+    :chapter-id="$route.params.chapterId"
+    :lesson-id="$route.params.lessonId"
+  />
+</template>
