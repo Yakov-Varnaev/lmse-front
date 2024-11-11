@@ -6,6 +6,7 @@ export default {
     chapterId: { type: String, required: true },
     lessonId: { type: String, required: true },
     minify: { type: Boolean, required: true },
+    editMode: { type: Boolean, required: true },
     block: {
       type: Object,
       required: true,
@@ -13,14 +14,13 @@ export default {
   },
   data() {
     return {
-      editMode: false,
-      content: this.block.meta.content,
+      blockEditMode: false,
       blockData: { ...this.block.meta },
     };
   },
   methods: {
     toggleEditMode() {
-      this.editMode = !this.editMode;
+      this.blockEditMode = !this.blockEditMode;
     },
     async updateBlock(blockData) {
       this.$emit("update", this.block, blockData);
@@ -33,7 +33,7 @@ export default {
 <template>
   <div>
     <BlockTextEditor
-      v-if="editMode"
+      v-if="blockEditMode"
       :block="blockData"
       @cancel="toggleEditMode"
       @update="updateBlock"
@@ -41,15 +41,9 @@ export default {
     <BlockTextCard
       v-else
       :block="blockData"
+      :editMode="editMode"
       @edit="toggleEditMode"
       :minify="minify"
     />
   </div>
 </template>
-
-<style scoped>
-.minify {
-  max-height: 50px;
-  color: red;
-}
-</style>

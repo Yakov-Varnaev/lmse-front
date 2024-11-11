@@ -4,15 +4,27 @@ export default {
   props: {
     block: { type: Object, required: true },
     minify: { type: Boolean, required: true },
+    editMode: { type: Boolean, required: true },
+  },
+  computed: {
+    cardHeight() {
+      return this.minify ? 200 : "";
+    },
   },
 };
 </script>
 <template>
   <v-hover>
     <template #default="{ isHovering, props }">
-      <v-card v-bind="props" :class="{ minify: minify }">
+      <v-card
+        v-bind="props"
+        :max-height="cardHeight"
+        :variant="editMode ? 'outlined' : 'text'"
+        class="border-dashed"
+        elevation="0"
+      >
         <v-btn
-          v-if="isHovering"
+          v-if="isHovering && editMode"
           class="position-absolute right-0 mt-2 mr-2"
           @click.stop="$emit('edit')"
         >

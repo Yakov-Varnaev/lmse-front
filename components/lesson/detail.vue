@@ -56,17 +56,24 @@ export default {
 
 <template>
   <v-container>
-    <div class="d-flex">
-      <h1 v-if="!loader.loading">Lesson: {{ lesson.title }}</h1>
-      <v-btn @click="toggleEditMode"></v-btn>
-    </div>
-    <BlockList
-      :editMode="editMode"
-      :blocks="blocks"
-      :course-id="courseId"
-      :chapter-id="chapterId"
-      :lesson-id="lessonId"
-      @update="blockUpdated"
-    />
+    <v-row justify="center">
+      <v-col lg="8">
+        <div class="d-flex align-center">
+          <h1 v-if="!loader.loading">Lesson: {{ lesson.title }}</h1>
+          <v-btn class="ml-auto" variant="outlined" @click="toggleEditMode">
+            {{ editMode ? "normal mode" : "edit mode" }}
+          </v-btn>
+        </div>
+        <BlockList
+          :editMode="editMode"
+          :blocks="blocks"
+          :course-id="courseId"
+          :chapter-id="chapterId"
+          :lesson-id="lessonId"
+          @update="blockUpdated"
+          @refetch="loadBlocks"
+        />
+      </v-col>
+    </v-row>
   </v-container>
 </template>

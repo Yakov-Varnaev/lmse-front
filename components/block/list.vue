@@ -3,7 +3,7 @@ import { updateBlock } from "~/api/courses";
 import { BlockQuestion, BlockText } from "#components";
 
 export default {
-  emits: ["update"],
+  emits: ["update", "refetch"],
   props: {
     editMode: { type: Boolean, required: true },
     courseId: { type: String, required: true },
@@ -24,7 +24,21 @@ export default {
     };
   },
   methods: {
-    updateBlockOrder() {},
+    async updateBlockOrder({ oldIndex, newIndex }) {
+      // Looks unhealthy...
+      const oldBlock = this.blocks[newIndex];
+      await updateBlock(
+        this.courseId,
+        this.chapterId,
+        this.lessonId,
+        oldBlock.id,
+        {
+          ...oldBlock,
+          order: newIndex,
+        },
+      );
+      this.$emit("refetch");
+    },
     async updateBlockContent(block, newMeta) {
       block.meta = newMeta;
       const { data } = await updateBlock(
@@ -34,7 +48,6 @@ export default {
         block.id,
         block,
       );
-      console.log(data);
       this.$emit("update", data);
     },
   },
@@ -44,13 +57,13 @@ export default {
 <template>
   <v-container>
     <!-- Super unsure if this is ok -->
-    <h1 v-if="editMode">Edit!!!</h1>
     <draggable
       @start="drag = true"
       @end="drag = false"
       :list="blocks"
       item-key="id"
       @update="updateBlockOrder"
+      drag-class="minified"
       :disabled="!editMode"
     >
       <template v-slot:item="{ element: block }">
@@ -62,6 +75,7 @@ export default {
             :course-id="courseId"
             :chapter-id="chapterId"
             :lesson-id="lessonId"
+            :editMode="editMode"
             @update="updateBlockContent"
           />
         </div>
@@ -69,3 +83,10 @@ export default {
     </draggable>
   </v-container>
 </template>
+
+<style lang="scss">
+.minified {
+  overflow-y: hidden;
+  max-height: 200px;
+}
+</style>
