@@ -13,7 +13,6 @@ export default {
     <template #default="{ isHovering, props }">
       <v-card
         v-bind="props"
-        :max-height="cardHeight"
         :variant="editMode ? 'outlined' : 'text'"
         class="border-dashed"
         elevation="0"
