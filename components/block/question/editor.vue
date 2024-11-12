@@ -12,11 +12,12 @@ export default {
       this.$emit("update", this.data);
     },
     addVariant() {
-      let id = Math.max(...Object.keys(this.data.variants)) + 1;
-      this.data.variants[id] = { id, text: "", correct: false };
+      let id = this.data.variants.length;
+      this.data.variants.push({ id, text: "", correct: false });
+      console.log(this.data.variants);
     },
     deleteVariant(id) {
-      delete this.data.variants[id];
+      this.data.variants = this.data.variants.filter((v) => v.id !== id);
     },
   },
 };

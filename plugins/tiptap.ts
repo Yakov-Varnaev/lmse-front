@@ -4,6 +4,7 @@ import { BaseKit, Bold, Italic, Underline, Strike, Color, Highlight, Heading, Te
 import 'vuetify-pro-tiptap/styles/editor.css' // only use editor style, not using markdown style
 import './styles/markdown/github.scss'
 
+
 export default defineNuxtPlugin((app) => {
 	const vuetifyProTipTap = createVuetifyProTipTap({
 		lang: 'en',

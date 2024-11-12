@@ -40,7 +40,7 @@ export default {
             v-for="variant in block.variants"
             :key="variant.id"
             class="fill-width pa-0 mt-1"
-            :variant="answerGiven ? 'tonal' : ''"
+            :variant="answerGiven ? 'tonal' : undefined"
             :color="answerGiven ? (variant.correct ? 'success' : 'error') : ''"
           >
             <v-checkbox
@@ -52,7 +52,7 @@ export default {
             />
           </v-card>
         </v-card-text>
-        <v-card-actions>
+        <v-card-actions v-if="!answerGiven && !editMode">
           <v-btn
             v-if="!answerGiven"
             color="success"
