@@ -14,10 +14,9 @@ export default {
     addVariant() {
       let id = this.data.variants.length;
       this.data.variants.push({ id, text: "", correct: false });
-      console.log(this.data.variants);
     },
-    deleteVariant(id) {
-      this.data.variants = this.data.variants.filter((v) => v.id !== id);
+    deleteVariant(idx) {
+      this.data.variants.splice(idx, 1);
     },
   },
 };
@@ -34,7 +33,7 @@ export default {
       <v-sheet class="rounded pa-2 mt-2 bg-surface-light">
         <v-row
           no-gutters
-          v-for="variant in data.variants"
+          v-for="(variant, idx) in data.variants"
           align="center"
           class="mt-3"
         >
@@ -54,7 +53,7 @@ export default {
               icon="mdi-delete-outline"
               class="mx-auto"
               variant="text"
-              @click="() => deleteVariant(variant.id)"
+              @click="() => deleteVariant(idx)"
             >
             </v-btn>
           </v-col>
