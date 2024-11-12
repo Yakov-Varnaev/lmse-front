@@ -6,11 +6,6 @@ export default {
     minify: { type: Boolean, required: true },
     editMode: { type: Boolean, required: true },
   },
-  computed: {
-    cardHeight() {
-      return this.minify ? 200 : "";
-    },
-  },
 };
 </script>
 <template>

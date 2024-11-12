@@ -1,34 +1,19 @@
-<script>
-export default {
-  emits: ["update"],
-  props: {
-    courseId: { type: String, required: true },
-    chapterId: { type: String, required: true },
-    lessonId: { type: String, required: true },
-    minify: { type: Boolean, required: true },
-    editMode: { type: Boolean, required: true },
-    block: {
-      type: Object,
-      required: true,
-    },
+<script setup>
+const props = defineProps({
+  minify: { type: Boolean, required: true },
+  editMode: { type: Boolean, required: true },
+  block: {
+    type: Object,
+    required: true,
   },
-  data() {
-    return {
-      blockEditMode: false,
-      content: this.block.meta.content,
-      blockData: { ...this.block.meta },
-    };
-  },
-  methods: {
-    toggleEditMode() {
-      this.blockEditMode = !this.blockEditMode;
-    },
-    async updateBlock(blockData) {
-      this.$emit("update", this.block, blockData);
-      this.toggleEditMode();
-    },
-  },
-};
+});
+const emit = defineEmits(["update"]);
+
+const { blockEditMode, blockData, toggleEditMode, update } = useBlock(
+  emit,
+  props,
+);
+const { minify, editMode } = props;
 </script>
 
 <template>
@@ -37,7 +22,7 @@ export default {
       v-if="blockEditMode"
       :block="blockData"
       @cancel="toggleEditMode"
-      @update="updateBlock"
+      @update="update"
     />
     <BlockQuestionCard
       v-else

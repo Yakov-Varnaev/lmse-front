@@ -72,9 +72,6 @@ export default {
             :is="{ ...componentMap[block.type] }"
             :minify="drag"
             :block="block"
-            :course-id="courseId"
-            :chapter-id="chapterId"
-            :lesson-id="lessonId"
             :editMode="editMode"
             @update="updateBlockContent"
           />
