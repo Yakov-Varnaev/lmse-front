@@ -13,6 +13,15 @@ export default {
     };
   },
   methods: {
+    cardPressAnswer(id) {
+      const idx = this.answer.indexOf(id);
+      console.log(this.answer, id);
+      if (idx === -1) {
+        this.answer.push(id);
+      } else {
+        this.answer.splice(idx, 1);
+      }
+    },
     processAnswer() {
       this.answerGiven = true;
     },
@@ -39,17 +48,24 @@ export default {
           <v-card
             v-for="variant in block.variants"
             :key="variant.id"
-            class="fill-width pa-0 mt-1"
+            class="fill-width pa-0 mt-1 opacity-1"
             :variant="answerGiven ? 'tonal' : undefined"
             :color="answerGiven ? (variant.correct ? 'success' : 'error') : ''"
+            :disabled="editMode"
           >
             <v-checkbox
+              class="mx-1"
               hide-details
+              :disabled="editMode"
               :label="variant.text"
               v-model="answer"
               :value="variant.id"
               :key="variant.id"
-            />
+            >
+              <template #label>
+                <span class="text-dark ml-1">{{ variant.text }}</span>
+              </template>
+            </v-checkbox>
           </v-card>
         </v-card-text>
         <v-card-actions v-if="!answerGiven && !editMode">
@@ -67,3 +83,10 @@ export default {
     </template>
   </v-hover>
 </template>
+
+<style lang="scss" scope>
+$card-disabled-opacity: 0;
+
+.answer-card {
+}
+</style>

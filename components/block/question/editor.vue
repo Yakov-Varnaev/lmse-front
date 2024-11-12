@@ -17,6 +17,7 @@ export default {
     },
     deleteVariant(idx) {
       this.data.variants.splice(idx, 1);
+      this.data.variants.map((v, i) => (v.id = i));
     },
   },
 };
@@ -30,13 +31,19 @@ export default {
         markdown-theme="github"
       />
 
-      <v-sheet class="rounded pa-2 mt-2 bg-surface-light">
+      <v-divider class="mt-4"></v-divider>
+
+      <v-sheet class="rounded pa-2 bg-surface-light-">
         <v-row
           no-gutters
           v-for="(variant, idx) in data.variants"
           align="center"
           class="mt-3"
         >
+          <v-col class="d-flex" cols="1">
+            <v-checkbox class="mx-auto d-flex" v-model="variant.correct" />
+          </v-col>
+
           <v-col>
             <v-text-field
               hide-details="true"
@@ -44,9 +51,6 @@ export default {
               v-model="variant.text"
               :key="variant.id"
             />
-          </v-col>
-          <v-col class="d-flex" cols="1">
-            <v-checkbox class="mx-auto d-flex" v-model="variant.correct" />
           </v-col>
           <v-col class="d-flex" cols="1">
             <v-btn
@@ -66,6 +70,8 @@ export default {
           </v-col>
         </v-row>
       </v-sheet>
+
+      <v-divider class="mb-4"></v-divider>
     </v-card-text>
     <v-card-actions>
       <ButtonBlock @cancel="$emit('cancel')" @submit="submit" />
