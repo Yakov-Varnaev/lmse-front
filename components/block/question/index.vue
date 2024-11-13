@@ -9,10 +9,8 @@ const props = defineProps({
 });
 const emit = defineEmits(["update"]);
 
-const { blockEditMode, blockData, toggleEditMode, update } = useBlock(
-  emit,
-  props,
-);
+const { blockEditMode, blockData, toggleEditMode, update, deleteBlock } =
+  useBlock(emit, props);
 const { minify, editMode } = props;
 </script>
 
@@ -29,6 +27,7 @@ const { minify, editMode } = props;
       :block="blockData"
       :editMode="editMode"
       @edit="toggleEditMode"
+      @delete="deleteBlock"
       :minify="minify"
     />
   </div>

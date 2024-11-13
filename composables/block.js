@@ -11,5 +11,9 @@ export function useBlock(emit, props) {
     toggleEditMode();
   }
 
-  return { blockEditMode, blockData, toggleEditMode, update };
+  async function deleteBlock() {
+    emit("delete", props.block.id);
+  }
+
+  return { blockEditMode, blockData, toggleEditMode, update, deleteBlock };
 }

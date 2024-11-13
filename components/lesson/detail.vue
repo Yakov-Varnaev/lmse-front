@@ -44,6 +44,9 @@ export default {
     blockUpdated(block) {
       this.blocks = this.blocks.map((b) => (b.id === block.id ? block : b));
     },
+    blockDeleted(id) {
+      this.blocks = this.blocks.filter((b) => b.id !== id);
+    },
   },
   async mounted() {
     this.loader.startLoading();
@@ -71,6 +74,7 @@ export default {
           :chapter-id="chapterId"
           :lesson-id="lessonId"
           @update="blockUpdated"
+          @delete="blockDeleted"
           @refetch="loadBlocks"
         />
       </v-col>

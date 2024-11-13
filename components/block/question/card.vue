@@ -1,6 +1,6 @@
 <script>
 export default {
-  emits: ["edit"],
+  emits: ["edit", "delete"],
   props: {
     block: { type: Object, required: true },
     minify: { type: Boolean, required: true },
@@ -51,17 +51,21 @@ export default {
         :variant="editMode ? 'outlined' : 'text'"
         class="border-dashed"
       >
-        <v-btn
+        <div
           v-if="isHovering && editMode"
           class="position-absolute right-0 mt-2 mr-2"
-          @click.stop="$emit('edit')"
         >
-          edit
-        </v-btn>
+          <v-btn @click.stop="$emit('edit')" icon="mdi-pencil" variant="flat" />
+          <v-btn
+            @click.stop="$emit('delete')"
+            icon="mdi-delete-outline"
+            variant="flat"
+          />
+        </div>
 
         <v-card-title
           v-if="!hasText"
-          class="text-grey text-h5 font-weight-black"
+          class="text-grey text-h4 font-weight-black"
         >
           Add question...
         </v-card-title>
@@ -98,6 +102,7 @@ export default {
         <v-card-actions v-if="!editMode">
           <v-btn
             v-if="!answerGiven"
+            :disabled="!hasText"
             color="success"
             variant="tonal"
             block

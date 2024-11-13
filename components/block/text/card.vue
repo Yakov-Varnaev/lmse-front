@@ -1,6 +1,6 @@
 <script>
 export default {
-  emits: ["edit"],
+  emits: ["edit", "delete"],
   props: {
     block: { type: Object, required: true },
     minify: { type: Boolean, required: true },
@@ -17,17 +17,21 @@ export default {
         class="border-dashed"
         elevation="0"
       >
-        <v-btn
+        <div
           v-if="isHovering && editMode"
           class="position-absolute right-0 mt-2 mr-2"
-          @click.stop="$emit('edit')"
         >
-          edit
-        </v-btn>
+          <v-btn @click.stop="$emit('edit')" icon="mdi-pencil" variant="flat" />
+          <v-btn
+            @click.stop="$emit('delete')"
+            icon="mdi-delete-outline"
+            variant="flat"
+          />
+        </div>
         <v-card-text v-if="block.content && block.content !== '<p></p>'">
           <VuetifyViewer :value="block.content" class="bg-background" />
         </v-card-text>
-        <v-card-title v-else class="text-grey text-h5 font-weight-black">
+        <v-card-title v-else class="text-grey text-h4 font-weight-black">
           Add some text...
         </v-card-title>
       </v-card>

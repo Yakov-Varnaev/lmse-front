@@ -1,9 +1,9 @@
 <script>
-import { updateBlock } from "~/api/courses";
+import { deleteBlock, updateBlock } from "~/api/courses";
 import { BlockQuestion, BlockText } from "#components";
 
 export default {
-  emits: ["update", "refetch"],
+  emits: ["update", "refetch", "delete"],
   props: {
     editMode: { type: Boolean, required: true },
     courseId: { type: String, required: true },
@@ -54,6 +54,10 @@ export default {
       );
       this.$emit("update", data);
     },
+    async onBlockDelete(id) {
+      await deleteBlock(this.courseId, this.chapterId, this.lessonId, id);
+      this.$emit("delete", id);
+    },
   },
 };
 </script>
@@ -78,6 +82,7 @@ export default {
             :block="block"
             :editMode="editMode"
             @update="updateBlockContent"
+            @delete="onBlockDelete"
           />
         </div>
       </template>

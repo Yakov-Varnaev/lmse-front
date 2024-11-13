@@ -107,6 +107,12 @@ export const updateBlock = async (
   );
 };
 
+export const deleteBlock = async (courseId, chapterId, lessonId, blockId) => {
+  return await apiv1.delete(
+    `courses/${courseId}/chapters/${chapterId}/lessons/${lessonId}/blocks/${blockId}/`,
+  );
+};
+
 /* Templates */
 
 export const getTemplates = async () => {

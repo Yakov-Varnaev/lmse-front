@@ -16,6 +16,7 @@ export default {
   },
   methods: {
     toggle() {
+      this.template = null;
       this.isOpen = !this.isOpen;
     },
     async loadTemplates() {
@@ -39,6 +40,7 @@ export default {
   async mounted() {
     this.loadTemplates();
   },
+  unmounted() {},
 };
 </script>
 
