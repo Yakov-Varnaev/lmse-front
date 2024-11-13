@@ -1,5 +1,6 @@
 <script>
 export default {
+  emits: ["close", "created"],
   props: {
     courseId: {
       type: String,
@@ -11,8 +12,8 @@ export default {
     },
   },
   methods: {
-    created(newChapter) {
-      this.$emit("created", newChapter);
+    created(newLesson) {
+      this.$emit("created", newLesson);
     },
   },
 };

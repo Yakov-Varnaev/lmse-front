@@ -106,6 +106,7 @@ export default {
     <LessonCreateDialog
       v-model="createDialog"
       @close="toggleCreateDialog"
+      @created="lessonCreated"
       :course-id="courseId"
       :chapter-id="chapterId"
     />
