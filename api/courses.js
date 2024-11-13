@@ -28,7 +28,6 @@ export const deleteCourse = async (id) => {
 };
 
 export const createChapter = async (courseId, data) => {
-  data.description = "blablabla";
   return await apiv1.post(`courses/${courseId}/chapters/`, data);
 };
 
