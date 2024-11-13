@@ -24,6 +24,10 @@ export default {
     };
   },
   methods: {
+    appendBlock() {
+      // TODO: no need to refetch actually
+      this.$emit("refetch");
+    },
     async updateBlockOrder({ oldIndex, newIndex }) {
       // Looks unhealthy...
       const oldBlock = this.blocks[newIndex];
@@ -69,7 +73,7 @@ export default {
       <template v-slot:item="{ element: block }">
         <div class="mt-2">
           <component
-            :is="{ ...componentMap[block.type] }"
+            :is="{ ...componentMap[block.kind] }"
             :minify="drag"
             :block="block"
             :editMode="editMode"
@@ -78,6 +82,28 @@ export default {
         </div>
       </template>
     </draggable>
+
+    <BlockCreateDialog
+      :course-id="courseId"
+      :chapter-id="chapterId"
+      :lesson-id="lessonId"
+      @created="appendBlock"
+      v-if="editMode"
+    >
+      <template #activator="{ props }">
+        <v-card
+          v-bind="props"
+          variant="tonal"
+          color="primary"
+          elevation="0"
+          class="mt-4 pa-5"
+        >
+          <v-row align="center" no-gutters>
+            <v-col class="text-center"> <span>Add Block </span></v-col>
+          </v-row>
+        </v-card>
+      </template>
+    </BlockCreateDialog>
   </v-container>
 </template>
 

@@ -10,6 +10,7 @@ export default {
     return {
       answer: [],
       answerGiven: false,
+      correctAnswer: false,
     };
   },
   methods: {
@@ -23,7 +24,21 @@ export default {
       }
     },
     processAnswer() {
+      const compareArrays = (a, b) =>
+        a.length === b.length &&
+        a.every((element, index) => element === b[index]);
+
+      const correctAnswers = this.block.variants
+        .filter((v) => v.correct)
+        .map((v) => v.id);
+
+      this.correctAnswer = compareArrays(correctAnswers, this.answer);
       this.answerGiven = true;
+    },
+  },
+  computed: {
+    hasText() {
+      return this.block.text.length > 0 && this.block.text !== "<p></p>";
     },
   },
 };
@@ -43,8 +58,20 @@ export default {
         >
           edit
         </v-btn>
+
+        <v-card-title
+          v-if="!hasText"
+          class="text-grey text-h5 font-weight-black"
+        >
+          Add question...
+        </v-card-title>
+
         <v-card-text>
-          <VuetifyViewer :value="block.text" class="bg-background" />
+          <VuetifyViewer
+            v-if="hasText"
+            :value="block.text"
+            class="bg-background"
+          />
           <v-card
             v-for="variant in block.variants"
             :key="variant.id"
@@ -68,7 +95,7 @@ export default {
             </v-checkbox>
           </v-card>
         </v-card-text>
-        <v-card-actions v-if="!answerGiven && !editMode">
+        <v-card-actions v-if="!editMode">
           <v-btn
             v-if="!answerGiven"
             color="success"
@@ -78,15 +105,19 @@ export default {
           >
             Answer
           </v-btn>
+          <v-row no-gutters justify="center">
+            <span
+              :class="{
+                'text-h5': true,
+                'text-success': correctAnswer,
+                'text-error': !correctAnswer,
+              }"
+            >
+              {{ correctAnswer ? "Correct!" : "Wrong!" }}
+            </span>
+          </v-row>
         </v-card-actions>
       </v-card>
     </template>
   </v-hover>
 </template>
-
-<style lang="scss" scope>
-$card-disabled-opacity: 0;
-
-.answer-card {
-}
-</style>

@@ -24,9 +24,12 @@ export default {
         >
           edit
         </v-btn>
-        <v-card-text>
+        <v-card-text v-if="block.content && block.content !== '<p></p>'">
           <VuetifyViewer :value="block.content" class="bg-background" />
         </v-card-text>
+        <v-card-title v-else class="text-grey text-h5 font-weight-black">
+          Add some text...
+        </v-card-title>
       </v-card>
     </template>
   </v-hover>

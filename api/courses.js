@@ -107,3 +107,9 @@ export const updateBlock = async (
     data,
   );
 };
+
+/* Templates */
+
+export const getTemplates = async () => {
+  return await apiv1.get("templates/");
+};
