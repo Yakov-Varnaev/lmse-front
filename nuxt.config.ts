@@ -12,6 +12,7 @@ export default defineNuxtConfig({
 		port: 3000,
 	},
 	modules: [
+		'@nuxt/devtools',
 		(_options, nuxt) => {
 			nuxt.hooks.hook('vite:extendConfig', (config) => {
 				// @ts-expect-error
@@ -29,6 +30,12 @@ export default defineNuxtConfig({
 			template: {
 				transformAssetUrls,
 			},
+		},
+	},
+	runtimeConfig: {
+
+		public: {
+			baseURL: process.env.BASE_URL || 'http://127.0.0.1:8000',
 		},
 	},
 })

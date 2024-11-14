@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@mdi/font": "^7.4.47",
+    "@nuxt/devtools": "^1.6.0",
     "@pinia-plugin-persistedstate/nuxt": "^1.2.1",
     "@pinia/nuxt": "^0.5.5",
     "@tiptap/extension-code-block-lowlight": "^2.9.1",

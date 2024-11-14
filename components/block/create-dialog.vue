@@ -21,6 +21,7 @@ export default {
     },
     async loadTemplates() {
       const { data } = await getTemplates();
+      console.log(data);
       this.options = data;
     },
     async createBlock() {

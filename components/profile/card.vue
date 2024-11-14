@@ -1,5 +1,5 @@
 <script>
-import { updateMe } from "~/api/users";
+import { retrieveUser, updateMe } from "~/api/users";
 
 export default {
   props: {
@@ -31,7 +31,8 @@ export default {
   },
   methods: {
     async fetchUser() {
-      const user = await this.users.retrieveUser(this.userId);
+      const { data } = await retrieveUser(this.userId);
+      const user = data;
       this.profileData.firstName = user.firstName;
       this.profileData.lastName = user.lastName;
       this.user = user;
