@@ -1,3 +1,7 @@
+export const signup = async (signUpData) => {
+  const { $apiv1 } = useNuxtApp();
+  return await $apiv1.post("/auth/users/", signUpData);
+};
 export const login = async (loginData) => {
   const { $apiv1: apiv1 } = useNuxtApp();
   const response = await apiv1.post("/auth/jwt/create/", loginData);
