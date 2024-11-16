@@ -6,7 +6,5 @@ definePageMeta({
 </script>
 
 <template>
-  <v-col cols="6">
-    <BlockConnection :minify="false" :edit-mode="false" />
-  </v-col>
+  <v-col cols="6"> </v-col>
 </template>
