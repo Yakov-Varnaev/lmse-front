@@ -7,6 +7,6 @@ definePageMeta({
 
 <template>
   <v-col cols="6">
-    <BlockConnectionCard :block="{}" :minify="false" :edit-mode="false" />
+    <BlockConnection :minify="false" :edit-mode="false" />
   </v-col>
 </template>

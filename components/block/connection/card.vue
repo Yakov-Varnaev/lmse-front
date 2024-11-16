@@ -1,6 +1,14 @@
 <script>
 import { useTheme } from "vuetify";
 
+function shuffleArray(array) {
+  for (let i = array.length - 1; i >= 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
 export default {
   emits: ["edit", "delete"],
   props: {
@@ -12,23 +20,20 @@ export default {
     return { theme: useTheme() };
   },
   data() {
+    console.log(this.block);
     return {
+      leftColumn: [...shuffleArray(this.block.variants.map((v) => v.left))],
+      rightColumn: [...shuffleArray(this.block.variants.map((v) => v.right))],
+
+      answerGiven: false,
+      correctAnswer: false,
+
       lockLeft: false,
       currentSelect: null,
       lockRight: false,
       selectedElements: [],
       lines: [],
       mousePosition: { x: 0, y: 0 },
-      leftColumn: [
-        { id: 0, text: "Left 0" },
-        { id: 1, text: "Left 1" },
-        { id: 2, text: "Left 2" },
-      ],
-      rightColumn: [
-        { id: 0, text: "right 0" },
-        { id: 1, text: "right 1" },
-        { id: 2, text: "right 2" },
-      ],
       pairs: {},
       lineCoordinates: {
         x1: 0,
@@ -41,20 +46,54 @@ export default {
     };
   },
   methods: {
+    processAnswer() {
+      this.correctAnswer = Object.entries(this.pairs).every(([k, v]) => {
+        console.log(k, v);
+        return k == v;
+      });
+      this.answerGiven = true;
+    },
     isInLeft(id) {
       return `${id}` in this.pairs;
     },
     isInRight(id) {
       return Object.values(this.pairs).includes(id);
     },
-    selectElement(item, side) {
-      // ensure cannot click on the same column twice
-      // ensure you cannot use same item twice 0 -> 1, 1 -> 1
+    updateTempLine(e) {
+      const card = document.getElementById("card-id");
+      const cardRect = card.getBoundingClientRect();
 
+      this.lineCoordinates.x2 = e.clientX - cardRect.left;
+      this.lineCoordinates.y2 = e.clientY - cardRect.top;
+    },
+    selectElement(item, side, e) {
       // Add the selected element to the list
 
-      // remove line if item was already selected
       this.currentSelect = item.id;
+
+      // remove currenctSelect if pressed the same btn
+      if (side === "left" && this.lockLeft && item.id === this.currentSelect) {
+        this.lockLeft = false;
+        this.selectedElements = [];
+        this.currentSelect = null;
+
+        window.removeEventListener("mousemove", this.updateTempLine);
+        return;
+      }
+      if (
+        side === "right" &&
+        this.lockRight &&
+        item.id === this.currentSelect
+      ) {
+        this.lockRight = false;
+        this.selectedElements = [];
+        this.currentSelect = null;
+
+        window.removeEventListener("mousemove", this.updateTempLine);
+        return;
+      }
+
+      // remove line if item was already selected
       for (const [k, v] of Object.entries(this.pairs)) {
         let d = true;
         if (side === "left") {
@@ -77,6 +116,25 @@ export default {
       } else {
         this.lockRight = true;
         this.selectedElements.push(item);
+      }
+
+      if (this.selectedElements.length === 1) {
+        const card = document.getElementById("card-id");
+        const cardRect = card.getBoundingClientRect();
+
+        const anchor = document
+          .getElementById(`${side}-${item.id}`)
+          .getBoundingClientRect();
+
+        const x1 = anchor.left + anchor.width / 2 - cardRect.left;
+        const y1 = anchor.top + anchor.height / 2 - cardRect.top;
+        this.lineCoordinates.x1 = x1;
+        this.lineCoordinates.y1 = y1;
+        this.lineCoordinates.x2 = e.clientX - cardRect.left;
+        this.lineCoordinates.y2 = e.clientY - cardRect.top;
+        window.addEventListener("mousemove", this.updateTempLine);
+      } else {
+        window.removeEventListener("mousemove", this.updateTempLine);
       }
 
       if (this.selectedElements.length === 2) {
@@ -130,6 +188,15 @@ export default {
   beforeDestroy() {
     // Remove the resize event listener
     window.removeEventListener("resize", this.handleResize);
+    window.removeEventListener("mousemove", this.updateTempLine);
+  },
+  computed: {
+    hasText() {
+      return this.block.text.length > 0 && this.block.text !== "<p></p>";
+    },
+    hasAnswer() {
+      return this.leftColumn.length === Object.keys(this.pairs).length;
+    },
   },
 };
 </script>
@@ -144,6 +211,17 @@ export default {
         elevation="0"
         id="card-id"
       >
+        <svg v-if="currentSelect !== null" class="line-container">
+          <line
+            class="line"
+            :x1="lineCoordinates.x1"
+            :y1="lineCoordinates.y1"
+            :x2="lineCoordinates.x2"
+            :y2="lineCoordinates.y2"
+            :stroke="theme.current.value.colors.primary"
+            stroke-width="2"
+          ></line>
+        </svg>
         <svg class="line-container">
           <line
             class="line"
@@ -157,12 +235,6 @@ export default {
           ></line>
         </svg>
 
-        lines cnt: {{ lines.length }}
-        <div></div>
-        {{ pairs }}
-        <div></div>
-        {{ selectedElements }}
-        <div>{{ lockLeft }} | {{ lockRight }}</div>
         <div
           v-if="isHovering && editMode"
           class="position-absolute right-0 mt-2 mr-2"
@@ -174,7 +246,20 @@ export default {
             variant="flat"
           />
         </div>
+        <v-card-title
+          v-if="!hasText"
+          class="text-grey text-h4 font-weight-black"
+        >
+          Add task description...
+        </v-card-title>
+
         <v-card-text>
+          <VuetifyViewer
+            v-if="hasText"
+            :value="block.text"
+            class="bg-background"
+          />
+
           <!-- connection card -->
           <v-row v-resize="updateLineCoordinates">
             <v-col>
@@ -184,6 +269,7 @@ export default {
               >
                 {{ item.text }}
                 <v-btn
+                  class="bg-background"
                   :disabled="
                     currentSelect === null
                       ? false
@@ -193,12 +279,18 @@ export default {
                   icon
                   variant="flat"
                   :id="`left-${item.id}`"
-                  @click="selectElement(item, 'left')"
+                  @click="(e) => selectElement(item, 'left', e)"
                 >
                   <v-icon
-                    :color="`${item.id}` in pairs ? 'primary' : ''"
+                    :color="
+                      `${item.id}` in pairs ||
+                      (currentSelect === item.id && lockLeft)
+                        ? 'primary'
+                        : ''
+                    "
                     :icon="
-                      `${item.id}` in pairs
+                      `${item.id}` in pairs ||
+                      (currentSelect === item.id && lockLeft)
                         ? 'mdi-record'
                         : 'mdi-radiobox-blank'
                     "
@@ -214,6 +306,7 @@ export default {
               >
                 <v-btn
                   icon
+                  class="bg-background"
                   variant="flat"
                   :id="`right-${item.id}`"
                   :disabled="
@@ -222,14 +315,18 @@ export default {
                       : (lockRight && item.id !== currentSelect) ||
                         isInRight(item.id)
                   "
-                  @click="selectElement(item, 'right')"
+                  @click="(e) => selectElement(item, 'right', e)"
                 >
                   <v-icon
                     :color="
-                      Object.values(pairs).includes(item.id) ? 'primary' : ''
+                      Object.values(pairs).includes(item.id) ||
+                      (currentSelect === item.id && lockRight)
+                        ? 'primary'
+                        : ''
                     "
                     :icon="
-                      Object.values(pairs).includes(item.id)
+                      Object.values(pairs).includes(item.id) ||
+                      (currentSelect === item.id && lockRight)
                         ? 'mdi-record'
                         : 'mdi-radiobox-blank'
                     "
@@ -241,6 +338,29 @@ export default {
           </v-row>
           <!-- connection card -->
         </v-card-text>
+        <v-card-actions v-if="!editMode">
+          <v-btn
+            v-if="!answerGiven"
+            :disabled="!hasAnswer"
+            color="success"
+            variant="tonal"
+            block
+            @click="processAnswer"
+          >
+            Answer
+          </v-btn>
+          <v-row no-gutters justify="center">
+            <span
+              :class="{
+                'text-h5': true,
+                'text-success': correctAnswer,
+                'text-error': !correctAnswer,
+              }"
+            >
+              {{ correctAnswer ? "Correct!" : "Wrong!" }}
+            </span>
+          </v-row>
+        </v-card-actions>
       </v-card>
     </template>
   </v-hover>
@@ -255,8 +375,5 @@ export default {
   position: absolute;
   z-index: 3;
   pointer-events: none;
-}
-
-.line {
 }
 </style>

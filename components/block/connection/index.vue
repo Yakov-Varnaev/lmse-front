@@ -6,6 +6,7 @@ const props = defineProps({
     type: Object,
     required: true,
   },
+  data() {},
 });
 const emit = defineEmits(["update", "delete"]);
 
@@ -16,6 +17,19 @@ const { minify, editMode } = props;
 
 <template>
   <div>
-    <BlockConnectionCard :block="blockData" :editMode="editMode" />
+    <BlockConnectionEditor
+      v-if="blockEditMode"
+      :block="blockData"
+      @cancel="toggleEditMode"
+      @update="update"
+    />
+    <BlockConnectionCard
+      v-else
+      @edit="toggleEditMode"
+      @delete="deleteBlock"
+      :block="blockData"
+      :editMode="editMode"
+      :minify="false"
+    />
   </div>
 </template>
