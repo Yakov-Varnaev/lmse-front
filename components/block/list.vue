@@ -1,6 +1,6 @@
 <script>
 import { deleteBlock, updateBlock } from "~/api/courses";
-import { BlockQuestion, BlockText } from "#components";
+import { BlockConnection, BlockQuestion, BlockText } from "#components";
 
 export default {
   emits: ["update", "refetch", "delete"],
@@ -20,6 +20,7 @@ export default {
       componentMap: {
         text: BlockText,
         question: BlockQuestion,
+        connection: BlockConnection,
       },
     };
   },
