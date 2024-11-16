@@ -33,7 +33,7 @@ export default {
 
       <v-divider class="mt-4"></v-divider>
 
-      <v-sheet class="rounded pa-2 bg-surface-light-">
+      <v-sheet class="rounded pa-2">
         <v-row
           no-gutters
           v-for="(variant, idx) in data.variants"
@@ -62,7 +62,7 @@ export default {
             </v-btn>
           </v-col>
         </v-row>
-        <v-row no-gutters class="mt2">
+        <v-row no-gutters class="mt-2">
           <v-col>
             <v-btn @click="addVariant" block variant="tonal" color="primary">
               Add variant

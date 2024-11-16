@@ -14,15 +14,6 @@ export default {
     };
   },
   methods: {
-    cardPressAnswer(id) {
-      const idx = this.answer.indexOf(id);
-      console.log(this.answer, id);
-      if (idx === -1) {
-        this.answer.push(id);
-      } else {
-        this.answer.splice(idx, 1);
-      }
-    },
     processAnswer() {
       const compareArrays = (a, b) =>
         a.length === b.length &&
