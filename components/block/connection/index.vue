@@ -29,7 +29,7 @@ const { minify, editMode } = props;
       @delete="deleteBlock"
       :block="blockData"
       :editMode="editMode"
-      :minify="false"
+      :minify="minify"
     />
   </div>
 </template>

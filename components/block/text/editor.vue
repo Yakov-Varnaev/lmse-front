@@ -18,6 +18,7 @@ export default {
   <v-card>
     <VuetifyTiptap
       v-model.trim="data.content"
+      max-height="700"
       class="editor bg-background"
       markdown-theme="github"
     />

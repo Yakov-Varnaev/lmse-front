@@ -12,6 +12,7 @@ export default {
   <v-hover>
     <template #default="{ isHovering, props }">
       <v-card
+        :max-height="minify ? 300 : null"
         v-bind="props"
         :variant="editMode ? 'outlined' : 'text'"
         class="border-dashed"

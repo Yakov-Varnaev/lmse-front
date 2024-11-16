@@ -20,7 +20,6 @@ export default {
     return { theme: useTheme() };
   },
   data() {
-    console.log(this.block);
     return {
       leftColumn: [...shuffleArray(this.block.variants.map((v) => v.left))],
       rightColumn: [...shuffleArray(this.block.variants.map((v) => v.right))],
@@ -48,7 +47,6 @@ export default {
   methods: {
     processAnswer() {
       this.correctAnswer = Object.entries(this.pairs).every(([k, v]) => {
-        console.log(k, v);
         return k == v;
       });
       this.answerGiven = true;
@@ -261,7 +259,7 @@ export default {
           />
 
           <!-- connection card -->
-          <v-row v-resize="updateLineCoordinates">
+          <v-row v-if="!minify">
             <v-col>
               <v-card
                 v-for="item in leftColumn"

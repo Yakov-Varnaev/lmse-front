@@ -1,5 +1,5 @@
 <script setup>
-import { login, signup } from "~/api/auth";
+import { signup } from "~/api/auth";
 
 const auth = useAuth();
 
@@ -19,12 +19,10 @@ const togglePasswordVisibility = () => {
 };
 
 const pwdType = computed(() => {
-  console.log(isPasswordVisible.value);
   return isPasswordVisible.value ? "text" : "password";
 });
 
 const updateModelValue = (value) => {
-  console.log(value);
   isValid.value = value;
 };
 
@@ -70,15 +68,13 @@ const passwordRules = [requiredField, minLen(8)];
 const repeatPasswordRules = [requiredField, mustBeEqualTo("password")];
 
 async function onSubmit() {
-  console.log(data);
   try {
     await signup(data);
     useAlert().reportInfo("Welcome!");
   } catch (e) {
-    console.log(e);
     return;
   }
-  const resp = await auth.login({ email: data.email, password: data.password });
+  await auth.login({ email: data.email, password: data.password });
 }
 </script>
 

@@ -115,6 +115,8 @@ export default {
 
 <style lang="scss">
 .minified {
+  transition-property: max-height;
+  transition-delay: 0.3s;
   overflow-y: hidden;
   max-height: 200px;
 }
