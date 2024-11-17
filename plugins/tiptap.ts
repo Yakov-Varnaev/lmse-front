@@ -55,6 +55,7 @@ export default defineNuxtPlugin((app) => {
 			HorizontalRule,
 			CodeBlock.configure({ divider: false }),
 			History,
+			// Fullscreen,
 		]
 	})
 	app.vueApp.use(vuetifyProTipTap)

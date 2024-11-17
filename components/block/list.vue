@@ -105,7 +105,7 @@ export default {
           class="mt-4 pa-5"
         >
           <v-row align="center" no-gutters>
-            <v-col class="text-center"> <span>Add Block </span></v-col>
+            <v-col class="text-center"><span>Add Block</span></v-col>
           </v-row>
         </v-card>
       </template>
