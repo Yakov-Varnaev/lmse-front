@@ -1,8 +1,9 @@
-// import { markRaw } from 'vue'
+import { markRaw } from 'vue'
 import { VuetifyTiptap, VuetifyViewer, createVuetifyProTipTap } from 'vuetify-pro-tiptap'
 import { BaseKit, Bold, Italic, Underline, Strike, Color, Highlight, Heading, TextAlign, FontFamily, FontSize, SubAndSuperScript, BulletList, OrderedList, TaskList, Indent, Link, Image, Video, Table, Blockquote, HorizontalRule, Code, CodeBlock, Clear, Fullscreen, History } from 'vuetify-pro-tiptap'
 import 'vuetify-pro-tiptap/styles/editor.css' // only use editor style, not using markdown style
 import './styles/markdown/github.scss'
+import SelectImage from '~/components/select-image.vue'
 
 
 export default defineNuxtPlugin((app) => {
@@ -37,15 +38,17 @@ export default defineNuxtPlugin((app) => {
 			TaskList,
 			Indent.configure({ divider: true }),
 			Link,
-			// Image.configure({
-			// 	imageTabs: [{ name: 'SELECT', component: markRaw(SelectImage) }],
-			// 	// hiddenTabs: ['upload'],
-			// 	upload(file: File) {
-			// 		const url = URL.createObjectURL(file)
-			// 		console.log('mock upload api :>> ', url)
-			// 		return Promise.resolve(url)
-			// 	}
-			// }),
+			Image.configure({
+				imageTabs: [
+					// { name: 'SELECT', component: markRaw(SelectImage) }
+				],
+				hiddenTabs: ['upload'],
+				upload(file: File) {
+					const url = URL.createObjectURL(file)
+					console.log('mock upload api :>> ', url)
+					return Promise.resolve(url)
+				}
+			}),
 			// Video,
 			Table.configure({ divider: true }),
 			Blockquote,
