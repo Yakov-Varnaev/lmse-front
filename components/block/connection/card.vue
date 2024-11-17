@@ -182,7 +182,7 @@ export default {
         const y2 = rect2.top + rect2.height / 2 - cardRect.top;
 
         // Update the line coordinates
-        this.lines.push({ x1, y1, x2, y2 });
+        this.lines.push({ x1, y1, x2, y2, left: k, right: v });
       }
 
       return;
@@ -242,7 +242,13 @@ export default {
             :y1="line.y1"
             :x2="line.x2"
             :y2="line.y2"
-            :stroke="theme.current.value.colors.primary"
+            :stroke="
+              !answerGiven
+                ? theme.current.value.colors.primary
+                : line.right == line.left
+                  ? theme.current.value.colors.success
+                  : theme.current.value.colors.red
+            "
             stroke-width="2"
           ></line>
         </svg>
