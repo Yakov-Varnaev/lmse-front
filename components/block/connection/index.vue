@@ -27,6 +27,7 @@ const { minify, editMode } = props;
       v-else
       @edit="toggleEditMode"
       @delete="deleteBlock"
+      :blockId="block.id"
       :block="blockData"
       :editMode="editMode"
       :minify="minify"

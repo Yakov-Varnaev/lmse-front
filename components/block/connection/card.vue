@@ -12,6 +12,7 @@ function shuffleArray(array) {
 export default {
   emits: ["edit", "delete"],
   props: {
+    blockId: { type: String, required: true },
     block: { type: Object, required: true },
     minify: { type: Boolean, required: true },
     editMode: { type: Boolean, required: true },
@@ -58,8 +59,21 @@ export default {
       return Object.values(this.pairs).includes(id);
     },
     updateTempLine(e) {
-      const card = document.getElementById("card-id");
+      console.log("templine", `card-id-${this.blockId}`);
+      const card = document.getElementById(`card-id-${this.blockId}`);
       const cardRect = card.getBoundingClientRect();
+
+      if (
+        e.clientX - cardRect.left > cardRect.width ||
+        e.clientX - cardRect.left < 0 ||
+        e.clientY - cardRect.top > cardRect.height ||
+        e.clientY - cardRect.top < 0
+      ) {
+        this.selectedElements = [];
+        this.currentSelect = null;
+        this.lockLeft = false;
+        this.lockRight = false;
+      }
 
       this.lineCoordinates.x2 = e.clientX - cardRect.left;
       this.lineCoordinates.y2 = e.clientY - cardRect.top;
@@ -117,11 +131,12 @@ export default {
       }
 
       if (this.selectedElements.length === 1) {
-        const card = document.getElementById("card-id");
+        const cardId = `card-id-${this.blockId}`;
+        const card = document.getElementById(cardId);
         const cardRect = card.getBoundingClientRect();
 
         const anchor = document
-          .getElementById(`${side}-${item.id}`)
+          .getElementById(`${side}-${item.id}-${this.blockId}`)
           .getBoundingClientRect();
 
         const x1 = anchor.left + anchor.width / 2 - cardRect.left;
@@ -147,17 +162,17 @@ export default {
       }
     },
     updateLineCoordinates() {
-      const card = document.getElementById("card-id");
+      const card = document.getElementById(`card-id-${this.blockId}`);
       const cardRect = card.getBoundingClientRect();
 
       // Maybe worth optimization
       this.lines = [];
       for (const [k, v] of Object.entries(this.pairs)) {
         const rect1 = document
-          .getElementById(`left-${k}`)
+          .getElementById(`left-${k}-${this.blockId}`)
           .getBoundingClientRect();
         const rect2 = document
-          .getElementById(`right-${v}`)
+          .getElementById(`right-${v}-${this.blockId}`)
           .getBoundingClientRect();
 
         // Calculate the center points of both elements
@@ -181,6 +196,7 @@ export default {
   },
   mounted() {
     // Update line position on window resize
+    console.log(this.blockId);
     window.addEventListener("resize", this.handleResize);
   },
   beforeDestroy() {
@@ -207,7 +223,7 @@ export default {
         :variant="editMode ? 'outlined' : 'text'"
         class="border-dashed"
         elevation="0"
-        id="card-id"
+        v-bind:id="`card-id-${blockId}`"
       >
         <svg v-if="currentSelect !== null" class="line-container">
           <line
@@ -276,7 +292,7 @@ export default {
                   "
                   icon
                   variant="flat"
-                  :id="`left-${item.id}`"
+                  :id="`left-${item.id}-${blockId}`"
                   @click="(e) => selectElement(item, 'left', e)"
                 >
                   <v-icon
@@ -306,7 +322,7 @@ export default {
                   icon
                   class="bg-background"
                   variant="flat"
-                  :id="`right-${item.id}`"
+                  :id="`right-${item.id}-${blockId}`"
                   :disabled="
                     currentSelect === null
                       ? false
