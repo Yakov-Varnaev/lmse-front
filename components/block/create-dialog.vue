@@ -9,6 +9,17 @@ export default {
   },
   data() {
     return {
+      templateMap: {
+        text: { title: "Text", subtitle: "Rich text block" },
+        question: {
+          title: "Question with variants",
+          subtitle: "Block with question and several variants",
+        },
+        connection: {
+          title: "Connection Puzzle",
+          subtitle: "Connect matching elements",
+        },
+      },
       isOpen: false,
       options: [],
       template: null,
@@ -21,7 +32,15 @@ export default {
     },
     async loadTemplates() {
       const { data } = await getTemplates();
-      this.options = data;
+      let processedData = data.map((t) => {
+        console.log(t.kind, this.templateMap[t.kind].title);
+        return {
+          ...t,
+          title: this.templateMap[t.kind].title,
+          subtitle: this.templateMap[t.kind].subtitle,
+        };
+      });
+      this.options = processedData;
     },
     async createBlock() {
       const { data } = await createBlock(
@@ -53,7 +72,13 @@ export default {
       <v-card>
         <v-card-title>Add Block</v-card-title>
         <v-card-text>
-          <v-combobox item-title="kind" :items="options" v-model="template" />
+          <v-combobox
+            :items="options"
+            v-model="template"
+            item-props
+            return-object
+          >
+          </v-combobox>
         </v-card-text>
         <v-card-actions>
           <ButtonBlock @cancel="toggle" @submit="createBlock" />
