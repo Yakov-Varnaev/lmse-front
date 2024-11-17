@@ -8,22 +8,19 @@ export default {
   },
   data() {
     return {
-      answer: [],
+      answer: "",
       answerGiven: false,
       correctAnswer: false,
     };
   },
   methods: {
     processAnswer() {
-      const compareArrays = (a, b) =>
-        a.length === b.length &&
-        a.every((element, index) => element === b[index]);
-
-      const correctAnswers = this.block.variants
-        .filter((v) => v.correct)
-        .map((v) => v.id);
-
-      this.correctAnswer = compareArrays(correctAnswers, this.answer);
+      if (this.block.caseSensitive) {
+        this.correctAnswer = this.answer == this.block.answer.text;
+      } else {
+        this.correctAnswer =
+          this.answer.toLowerCase() == this.block.answer.text.toLowerCase();
+      }
       this.answerGiven = true;
     },
   },
@@ -58,7 +55,7 @@ export default {
           v-if="!hasText"
           class="text-grey text-h4 font-weight-black"
         >
-          Question with Variants
+          Open Question
         </v-card-title>
 
         <v-card-text>
@@ -67,33 +64,29 @@ export default {
             :value="block.text"
             class="bg-background"
           />
-          <v-card
-            v-for="variant in block.variants"
-            :key="variant.id"
-            class="fill-width pa-0 mt-1 opacity-1"
-            :variant="answerGiven ? 'tonal' : undefined"
-            :color="answerGiven ? (variant.correct ? 'success' : 'error') : ''"
+
+          <v-text-field
+            v-if="!answerGiven"
             :disabled="editMode"
-          >
-            <v-checkbox
-              class="mx-1"
-              hide-details
-              :disabled="editMode"
-              :label="variant.text"
-              v-model="answer"
-              :value="variant.id"
-              :key="variant.id"
+            v-model.trim="answer"
+            :value="
+              editMode ? this.block.answer.text || 'Add answer...' : answer
+            "
+          />
+          <v-card v-else class="mb-5">
+            <v-card-text
+              :class="
+                answerGiven ? (correctAnswer ? 'bg-success' : 'bg-red') : ''
+              "
             >
-              <template #label>
-                <span class="text-dark ml-1">{{ variant.text }}</span>
-              </template>
-            </v-checkbox>
+              {{ answer }}
+            </v-card-text>
           </v-card>
         </v-card-text>
         <v-card-actions v-if="!editMode">
           <v-btn
             v-if="!answerGiven"
-            :disabled="!hasText"
+            :disabled="!this.answer"
             color="success"
             variant="tonal"
             block

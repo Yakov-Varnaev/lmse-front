@@ -12,6 +12,10 @@ export default {
       this.$emit("update", this.data);
     },
     addVariant() {
+      if (this.data.variants.length >= 10) {
+        this.alert.reportError("Maximum amount of variants achived!");
+        return;
+      }
       let id = this.data.variants.length;
       this.data.variants.push({ id, text: "", correct: false });
     },

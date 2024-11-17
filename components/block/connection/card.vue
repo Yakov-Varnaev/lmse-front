@@ -59,7 +59,6 @@ export default {
       return Object.values(this.pairs).includes(id);
     },
     updateTempLine(e) {
-      console.log("templine", `card-id-${this.blockId}`);
       const card = document.getElementById(`card-id-${this.blockId}`);
       const cardRect = card.getBoundingClientRect();
 
@@ -196,7 +195,6 @@ export default {
   },
   mounted() {
     // Update line position on window resize
-    console.log(this.blockId);
     window.addEventListener("resize", this.handleResize);
   },
   beforeDestroy() {
@@ -264,7 +262,7 @@ export default {
           v-if="!hasText"
           class="text-grey text-h4 font-weight-black"
         >
-          Add task description...
+          Connection Puzzle
         </v-card-title>
 
         <v-card-text>

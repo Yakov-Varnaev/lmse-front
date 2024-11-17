@@ -12,26 +12,33 @@ export default {
 </script>
 
 <template>
-  <div class="alerts_container ma-5">
-    <v-slide-y-reverse-transition :group="true">
-      <AlertMessage
-        v-for="alert in alerts"
-        :type="alert.type"
-        :text="alert.text"
-        :key="alert.id"
-        class="mt-2"
-        :alert="alert"
-      />
-    </v-slide-y-reverse-transition>
+  <div id="alert-container-parent">
+    <div id="alert-container" class="ma-5">
+      <v-slide-y-reverse-transition :group="true">
+        <AlertMessage
+          v-for="alert in alerts"
+          :type="alert.type"
+          :text="alert.text"
+          :key="alert.id"
+          class="mt-2 notification"
+          :alert="alert"
+        />
+      </v-slide-y-reverse-transition>
+    </div>
   </div>
 </template>
 
-<style scoped>
-.alerts_container {
+<style scoped lang="scss">
+#alert-container-parent {
+  position: sticky;
+  display: flex;
+  flex-direction: row-reverse;
   bottom: 0;
   right: 0;
-  position: absolute;
-  width: 30vh;
-  max-height: 400px;
+  pointer-events: none;
+}
+
+#alert-container {
+  width: 30vw;
 }
 </style>

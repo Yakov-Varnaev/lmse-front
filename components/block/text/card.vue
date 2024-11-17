@@ -33,7 +33,7 @@ export default {
           <VuetifyViewer :value="block.content" class="bg-background" />
         </v-card-text>
         <v-card-title v-else class="text-grey text-h4 font-weight-black">
-          Add some text...
+          Text
         </v-card-title>
       </v-card>
     </template>

@@ -19,6 +19,10 @@ export default {
           title: "Connection Puzzle",
           subtitle: "Connect matching elements",
         },
+        "open-question": {
+          title: "Open Question",
+          subtitle: "Question where student have to type answer",
+        },
       },
       isOpen: false,
       options: [],
@@ -33,7 +37,6 @@ export default {
     async loadTemplates() {
       const { data } = await getTemplates();
       let processedData = data.map((t) => {
-        console.log(t.kind, this.templateMap[t.kind].title);
         return {
           ...t,
           title: this.templateMap[t.kind].title,

@@ -1,6 +1,11 @@
 <script>
 import { deleteBlock, updateBlock } from "~/api/courses";
-import { BlockConnection, BlockQuestion, BlockText } from "#components";
+import {
+  BlockConnection,
+  BlockOpenQuestion,
+  BlockQuestion,
+  BlockText,
+} from "#components";
 
 export default {
   emits: ["update", "refetch", "delete"],
@@ -21,6 +26,7 @@ export default {
         text: BlockText,
         question: BlockQuestion,
         connection: BlockConnection,
+        "open-question": BlockOpenQuestion,
       },
     };
   },
