@@ -21,7 +21,6 @@ export default {
       this.courses = [data, ...this.courses];
     },
     async deleteCourse(course) {
-      console.log("delete", course);
       await deleteCourse(course.id);
       this.courses = this.courses.filter((c) => c.id !== course.id);
     },

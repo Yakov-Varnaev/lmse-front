@@ -10,6 +10,7 @@ definePageMeta({
   <v-container>
     <v-col lg="8" offset-lg="2" xl="6" offset-xl="3">
       <ProfileCard :user-id="$route.params.id" />
+      <v-divider class="my-4"></v-divider>
       <CourseProfile :userId="$route.params.id" />
     </v-col>
   </v-container>

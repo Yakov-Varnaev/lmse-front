@@ -77,8 +77,11 @@ export default {
         @click="pushToProfile"
         elevation="0"
       >
-        <v-avatar color="primary" class="mr-2">
-          {{ authStore.user.firstName[0] }}{{ authStore.user.lastName[0] }}
+        <v-avatar size="32" color="primary" class="mr-2">
+          <v-img v-if="authStore.user.avatar" :src="authStore.user.avatar" />
+          <span v-else>
+            {{ authStore.user.firstName[0] }}{{ authStore.user.lastName[0] }}
+          </span>
         </v-avatar>
         <div>
           <span class="ma-0 pa-0">{{ authStore.getFullName }}</span>
