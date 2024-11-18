@@ -14,6 +14,9 @@ export default {
     };
   },
   methods: {
+    reset() {
+      Object.assign(this.$data, this.$options.data.apply(this));
+    },
     processAnswer() {
       const compareArrays = (a, b) =>
         a.length === b.length &&
@@ -102,15 +105,25 @@ export default {
             Answer
           </v-btn>
           <v-row no-gutters justify="center">
-            <span
-              :class="{
-                'text-h5': true,
-                'text-success': correctAnswer,
-                'text-error': !correctAnswer,
-              }"
-            >
-              {{ correctAnswer ? "Correct!" : "Wrong!" }}
-            </span>
+            <div class="d-flex align-center">
+              <span
+                :class="{
+                  'text-h5': true,
+                  'text-success': correctAnswer,
+                  'text-error': !correctAnswer,
+                }"
+              >
+                {{ correctAnswer ? "Correct!" : "Wrong!" }}
+              </span>
+              <v-btn
+                class="ml-2"
+                plain
+                prepend-icon="mdi-reload"
+                @click="reset"
+              >
+                Try Again
+              </v-btn>
+            </div>
           </v-row>
         </v-card-actions>
       </v-card>

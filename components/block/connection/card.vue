@@ -46,6 +46,9 @@ export default {
     };
   },
   methods: {
+    reset() {
+      Object.assign(this.$data, this.$options.data.apply(this));
+    },
     processAnswer() {
       this.correctAnswer = Object.entries(this.pairs).every(([k, v]) => {
         return k == v;
@@ -192,6 +195,39 @@ export default {
         this.updateLineCoordinates();
       }
     },
+    getBtnColor(side, id) {
+      if (this.answerGiven) {
+        return this.pairs[id] == id ? "success" : "red";
+      }
+      if (side === "left") {
+        return `${id}` in this.pairs ||
+          (this.currentSelect === id && this.lockLeft)
+          ? "primary"
+          : "";
+      } else {
+        return Object.values(this.pairs).includes(id) ||
+          (this.currentSelect === id && this.lockRight)
+          ? "primary"
+          : "";
+      }
+    },
+    getCardColor(side, id) {
+      let res = this.getBtnColor(side, id);
+      return res === "red" ? "error" : res;
+    },
+    isBtnDisabled(side, id) {
+      if (this.editMode) return true;
+      if (this.currentSelect === null) return false;
+      if (side == "left") {
+        return (
+          (this.lockLeft && id !== this.currentSelect) || this.isInLeft(id)
+        );
+      } else {
+        return (
+          (this.lockRight && id !== this.currentSelect) || this.isInRight(id)
+        );
+      }
+    },
   },
   mounted() {
     // Update line position on window resize
@@ -247,7 +283,7 @@ export default {
                 ? theme.current.value.colors.primary
                 : line.right == line.left
                   ? theme.current.value.colors.success
-                  : theme.current.value.colors.red
+                  : '#F44336'
             "
             stroke-width="2"
           ></line>
@@ -283,29 +319,25 @@ export default {
             <v-col>
               <v-card
                 v-for="item in leftColumn"
+                :variant="
+                  answerGiven || isInLeft(item.id) ? 'tonal' : 'elevated'
+                "
+                :color="getCardColor('left', item.id)"
                 class="pa-2 ma-2 d-flex align-center justify-space-between"
               >
                 {{ item.text }}
                 <v-btn
                   class="bg-background"
-                  :disabled="
-                    currentSelect === null
-                      ? false
-                      : (lockLeft && item.id !== currentSelect) ||
-                        isInLeft(item.id)
-                  "
+                  :disabled="isBtnDisabled('left', item.id)"
+                  :readonly="answerGiven"
+                  exactn
                   icon
                   variant="flat"
                   :id="`left-${item.id}-${blockId}`"
                   @click="(e) => selectElement(item, 'left', e)"
                 >
                   <v-icon
-                    :color="
-                      `${item.id}` in pairs ||
-                      (currentSelect === item.id && lockLeft)
-                        ? 'primary'
-                        : ''
-                    "
+                    :color="getBtnColor('left', item.id)"
                     :icon="
                       `${item.id}` in pairs ||
                       (currentSelect === item.id && lockLeft)
@@ -320,6 +352,10 @@ export default {
             <v-col>
               <v-card
                 v-for="item in rightColumn"
+                :variant="
+                  answerGiven || isInRight(item.id) ? 'tonal' : 'elevated'
+                "
+                :color="getCardColor('right', item.id)"
                 class="pa-2 ma-2 d-flex align-center justify-space-between"
               >
                 <v-btn
@@ -327,21 +363,12 @@ export default {
                   class="bg-background"
                   variant="flat"
                   :id="`right-${item.id}-${blockId}`"
-                  :disabled="
-                    currentSelect === null
-                      ? false
-                      : (lockRight && item.id !== currentSelect) ||
-                        isInRight(item.id)
-                  "
+                  :disabled="isBtnDisabled('right', item.id)"
+                  :readonly="answerGiven"
                   @click="(e) => selectElement(item, 'right', e)"
                 >
                   <v-icon
-                    :color="
-                      Object.values(pairs).includes(item.id) ||
-                      (currentSelect === item.id && lockRight)
-                        ? 'primary'
-                        : ''
-                    "
+                    :color="getBtnColor('right', item.id)"
                     :icon="
                       Object.values(pairs).includes(item.id) ||
                       (currentSelect === item.id && lockRight)
@@ -368,15 +395,25 @@ export default {
             Answer
           </v-btn>
           <v-row no-gutters justify="center">
-            <span
-              :class="{
-                'text-h5': true,
-                'text-success': correctAnswer,
-                'text-error': !correctAnswer,
-              }"
-            >
-              {{ correctAnswer ? "Correct!" : "Wrong!" }}
-            </span>
+            <div class="d-flex align-center">
+              <span
+                :class="{
+                  'text-h5': true,
+                  'text-success': correctAnswer,
+                  'text-error': !correctAnswer,
+                }"
+              >
+                {{ correctAnswer ? "Correct!" : "Wrong!" }}
+              </span>
+              <v-btn
+                class="ml-2"
+                plain
+                prepend-icon="mdi-reload"
+                @click="reset"
+              >
+                Try Again
+              </v-btn>
+            </div>
           </v-row>
         </v-card-actions>
       </v-card>

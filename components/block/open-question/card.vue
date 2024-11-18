@@ -14,6 +14,9 @@ export default {
     };
   },
   methods: {
+    reset() {
+      Object.assign(this.$data, this.$options.data.apply(this));
+    },
     processAnswer() {
       if (this.block.caseSensitive) {
         this.correctAnswer = this.answer == this.block.answer.text;
@@ -73,12 +76,13 @@ export default {
               editMode ? this.block.answer.text || 'Add answer...' : answer
             "
           />
-          <v-card v-else class="mb-5">
-            <v-card-text
-              :class="
-                answerGiven ? (correctAnswer ? 'bg-success' : 'bg-red') : ''
-              "
-            >
+          <v-card
+            v-else
+            class="mb-5"
+            :variant="!answerGiven ? 'text' : 'tonal'"
+            :color="answerGiven ? (correctAnswer ? 'success' : 'error') : ''"
+          >
+            <v-card-text>
               {{ answer }}
             </v-card-text>
           </v-card>
@@ -95,15 +99,25 @@ export default {
             Answer
           </v-btn>
           <v-row no-gutters justify="center">
-            <span
-              :class="{
-                'text-h5': true,
-                'text-success': correctAnswer,
-                'text-error': !correctAnswer,
-              }"
-            >
-              {{ correctAnswer ? "Correct!" : "Wrong!" }}
-            </span>
+            <div class="d-flex align-center">
+              <span
+                :class="{
+                  'text-h5': true,
+                  'text-success': correctAnswer,
+                  'text-error': !correctAnswer,
+                }"
+              >
+                {{ correctAnswer ? "Correct!" : "Wrong!" }}
+              </span>
+              <v-btn
+                class="ml-2"
+                plain
+                prepend-icon="mdi-reload"
+                @click="reset"
+              >
+                Try Again
+              </v-btn>
+            </div>
           </v-row>
         </v-card-actions>
       </v-card>
