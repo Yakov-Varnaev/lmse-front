@@ -233,8 +233,7 @@ export default {
     // Update line position on window resize
     window.addEventListener("resize", this.handleResize);
   },
-  beforeDestroy() {
-    // Remove the resize event listener
+  beforeUnmount() {
     window.removeEventListener("resize", this.handleResize);
     window.removeEventListener("mousemove", this.updateTempLine);
   },
