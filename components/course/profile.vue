@@ -18,7 +18,7 @@ export default {
   },
   methods: {
     appendNewCourse(data) {
-      this.courses = [data, ...this.courses];
+      this.courses.push(data);
     },
     async deleteCourse(course) {
       await deleteCourse(course.id);
