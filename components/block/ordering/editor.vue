@@ -10,8 +10,11 @@ export default {
   data() {
     return {
       data: { ...this.block },
-      newOption: "",
+      newOptionText: "",
+      optionText: "",
       allowPop: false,
+      drag: false,
+      selectedOption: null,
     };
   },
   methods: {
@@ -19,7 +22,7 @@ export default {
       this.$emit("update", this.data);
     },
     addVariant() {
-      if (this.newOption.trim().length === 0) {
+      if (this.newOptionText.trim().length === 0) {
         this.alert.reportInfo("Item cannot be blank!");
         return;
       }
@@ -28,11 +31,11 @@ export default {
         return;
       }
       let id = this.data.options.length;
-      this.data.options.push({ id, text: this.newOption });
-      this.newOption = "";
+      this.data.options.push({ id, text: this.newOptionText });
+      this.newOptionText = "";
     },
     popLast() {
-      if (this.newOption.length !== 0) {
+      if (this.optionText.length !== 0) {
         return;
       } else if (!this.allowPop) {
         this.allowPop = true;
@@ -43,22 +46,41 @@ export default {
       }
       if (!this.allowPop) return;
       let last = this.data.options.pop();
-      this.newOption = last.text;
+      this.newOptionText = last.text;
     },
     deleteVariant(idx) {
       this.data.options.splice(idx, 1);
       this.data.options.map((v, i) => (v.id = i));
     },
+    editOption(idx) {
+      if (this.selectedOption === idx) {
+        this.selectedOption = null;
+        this.optionText = "";
+        return;
+      }
+      this.optionText = this.data.options[idx].text;
+      this.selectedOption = idx;
+    },
+    saveOption() {
+      if (this.optionText.trim().length === 0) {
+        this.alert.reportInfo("Item cannot be blank!");
+        return;
+      }
+
+      this.data.options[this.selectedOption].text = this.optionText;
+      this.selectedOption = null;
+      this.optionText = "";
+    },
   },
   watch: {
     newOption() {
-      if (this.newOption.length < 2) return;
-      let l = this.newOption.length;
+      if (this.optionText.length < 2) return;
+      let l = this.optionText.length;
       if (
-        this.newOption.charAt(l - 1) === " " &&
-        this.newOption.charAt(l - 2) === " "
+        this.optionText.charAt(l - 1) === " " &&
+        this.optionText.charAt(l - 2) === " "
       ) {
-        this.newOption = this.newOption.trim();
+        this.optionText = this.optionText.trim();
         this.addVariant();
       }
     },
@@ -78,43 +100,84 @@ export default {
 
       <v-sheet class="rounded pa-2">
         <v-row no-gutters>
+          <v-checkbox v-model="data.failOnFirst" label="Fail on first" />
+        </v-row>
+        <v-row no-gutters>
           <v-card min-height="50" width="100%" color="primary" variant="tonal">
             <div v-if="data.options.length">
-              <v-chip
-                class="ma-2"
-                color="primary"
-                label
-                readonly
-                v-for="(option, idx) in block.options"
-                :key="idx"
+              <draggable
+                animation="200"
+                v-model="data.options"
+                item-key="id"
+                @start="drag = true"
+                @end="drag = false"
               >
-                {{ option.text }}
-                <template #append>
-                  <v-icon
-                    icon="mdi-close-circle"
-                    size="md"
-                    class="ml-2"
-                    @click.stop="() => deleteVariant(idx)"
-                  />
+                <template #item="{ element: option, index: idx }">
+                  <v-chip
+                    :class="{
+                      'ma-2': true,
+                      'cursor-grab': !drag,
+                      'cursor-grabbing': drag,
+                    }"
+                    :color="selectedOption === idx ? 'warning' : 'primary'"
+                    label
+                    readonly
+                    @click="() => editOption(idx)"
+                  >
+                    {{ option.text }}
+                    <template #append>
+                      <v-icon
+                        icon="mdi-close-circle"
+                        size="md"
+                        class="ml-2"
+                        @click.stop="() => deleteVariant(idx)"
+                      />
+                    </template>
+                  </v-chip>
                 </template>
-              </v-chip>
+              </draggable>
             </div>
-            <div v-else></div>
+            <div v-else class="d-flex fill-height align-center pa-3">
+              <span> No items yet... </span>
+            </div>
           </v-card>
         </v-row>
         <v-row no-gutters align="center" class="mt-3">
           <v-text-field
+            v-if="selectedOption === null"
             hide-details="true"
             density="compact"
             v-on:keyup.enter="addVariant"
             v-on:keyup.backspace="popLast"
-            v-model="newOption"
+            v-model="newOptionText"
+          />
+          <v-text-field
+            v-else
+            hide-details="true"
+            density="compact"
+            v-on:keyup.enter="saveOption"
+            v-model="optionText"
           />
         </v-row>
         <v-row no-gutters class="mt-2">
           <v-col>
-            <v-btn @click="addVariant" block variant="tonal" color="primary">
+            <v-btn
+              v-if="selectedOption === null"
+              @click="addVariant"
+              block
+              variant="tonal"
+              color="primary"
+            >
               Add item
+            </v-btn>
+            <v-btn
+              v-else
+              @click="saveOption"
+              block
+              variant="tonal"
+              color="primary"
+            >
+              Save
             </v-btn>
           </v-col>
         </v-row>

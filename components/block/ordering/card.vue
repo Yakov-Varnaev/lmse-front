@@ -7,11 +7,14 @@ export default {
     editMode: { type: Boolean, required: true },
   },
   data() {
+    let opts = !this.editMode
+      ? shuffleArray(this.block.options)
+      : this.block.options;
     return {
       groupName: crypto.randomUUID(),
       answer: [],
       drag: false,
-      options: [...shuffleArray([...this.block.options])],
+      options: [...opts],
       answerGiven: false,
       correctAnswer: false,
     };
@@ -164,7 +167,6 @@ export default {
                     'cursor-grab': !drag,
                     'cursor-grabbing': drag,
                   }"
-                  @click="() => console.log(idx)"
                 />
               </template>
             </draggable>
