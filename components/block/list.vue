@@ -3,6 +3,7 @@ import { deleteBlock, updateBlock } from "~/api/courses";
 import {
   BlockConnection,
   BlockOpenQuestion,
+  BlockOrdering,
   BlockQuestion,
   BlockText,
 } from "#components";
@@ -27,6 +28,7 @@ export default {
         question: BlockQuestion,
         connection: BlockConnection,
         "open-question": BlockOpenQuestion,
+        ordering: BlockOrdering,
       },
     };
   },

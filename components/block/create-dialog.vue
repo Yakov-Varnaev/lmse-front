@@ -23,6 +23,10 @@ export default {
           title: "Open Question",
           subtitle: "Question where student have to type answer",
         },
+        ordering: {
+          title: "Ordering puzzle",
+          subtitle: "Put blocks in correct order",
+        },
       },
       isOpen: false,
       options: [],
