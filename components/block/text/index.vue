@@ -1,17 +1,19 @@
 <script setup>
 const props = defineProps({
-  minify: { type: Boolean, required: true },
   editMode: { type: Boolean, required: true },
+  isLast: { type: Boolean, required: true },
+  isFirst: { type: Boolean, required: true },
+
   block: {
     type: Object,
     required: true,
   },
 });
-const emit = defineEmits(["update", "delete"]);
+const emit = defineEmits(["update", "delete", "up", "down"]);
 
 const { blockEditMode, blockData, toggleEditMode, update, deleteBlock } =
   useBlock(emit, props);
-const { minify, editMode } = props;
+const { editMode } = props;
 </script>
 
 <template>
@@ -24,11 +26,14 @@ const { minify, editMode } = props;
     />
     <BlockTextCard
       v-else
+      :isFirst="isFirst"
+      :isLast="isLast"
       :block="blockData"
       :editMode="editMode"
+      @up="$emit('up')"
+      @down="$emit('down')"
       @edit="toggleEditMode"
       @delete="deleteBlock"
-      :minify="minify"
     />
   </div>
 </template>

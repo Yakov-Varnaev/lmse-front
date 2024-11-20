@@ -67,35 +67,72 @@ export default {
       await deleteBlock(this.courseId, this.chapterId, this.lessonId, id);
       this.$emit("delete", id);
     },
+    async moveUp(idx) {
+      if (idx === 0) {
+        return;
+      }
+      const oldBlock = this.blocks[idx];
+      await updateBlock(
+        this.courseId,
+        this.chapterId,
+        this.lessonId,
+        oldBlock.id,
+        {
+          ...oldBlock,
+          order: idx - 1,
+        },
+      );
+      [this.blocks[idx], this.blocks[idx - 1]] = [
+        this.blocks[idx - 1],
+        this.blocks[idx],
+      ];
+      // this.$emit("refetch");
+    },
+    async moveDown(idx) {
+      if (idx === this.blocks.length - 1) {
+        return;
+      }
+      this.drag = true;
+      setTimeout(() => (this.drag = false), 200);
+      const oldBlock = this.blocks[idx];
+      await updateBlock(
+        this.courseId,
+        this.chapterId,
+        this.lessonId,
+        oldBlock.id,
+        {
+          ...oldBlock,
+          order: idx + 1,
+        },
+      );
+      [this.blocks[idx], this.blocks[idx + 1]] = [
+        this.blocks[idx + 1],
+        this.blocks[idx],
+      ];
+      // this.$emit("refetch");
+    },
   },
 };
 </script>
 
 <template>
   <v-container>
-    <!-- Super unsure if this is ok -->
-    <draggable
-      @start="drag = true"
-      @end="drag = false"
-      :list="blocks"
-      item-key="id"
-      @update="updateBlockOrder"
-      drag-class="minified"
-      :disabled="!editMode"
-    >
-      <template v-slot:item="{ element: block }">
-        <div class="mt-2">
-          <component
-            :is="{ ...componentMap[block.kind] }"
-            :minify="drag"
-            :block="block"
-            :editMode="editMode"
-            @update="updateBlockContent"
-            @delete="onBlockDelete"
-          />
-        </div>
-      </template>
-    </draggable>
+    <div class="mt-2">
+      <component
+        :key="block.id"
+        v-for="(block, idx) in blocks"
+        class="fill-width mt-2"
+        :is="{ ...componentMap[block.kind] }"
+        :block="block"
+        :editMode="editMode"
+        :isFirst="idx === 0"
+        :isLast="idx === blocks.length - 1"
+        @update="updateBlockContent"
+        @delete="onBlockDelete"
+        @up="async () => await moveUp(idx)"
+        @down="async () => await moveDown(idx)"
+      />
+    </div>
 
     <BlockCreateDialog
       :course-id="courseId"
@@ -120,12 +157,3 @@ export default {
     </BlockCreateDialog>
   </v-container>
 </template>
-
-<style lang="scss">
-.minified {
-  transition-property: max-height;
-  transition-delay: 0.3s;
-  overflow-y: hidden;
-  max-height: 200px;
-}
-</style>

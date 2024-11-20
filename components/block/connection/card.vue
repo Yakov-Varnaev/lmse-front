@@ -10,12 +10,13 @@ function shuffleArray(array) {
 }
 
 export default {
-  emits: ["edit", "delete"],
+  emits: ["edit", "delete", "up", "down"],
   props: {
     blockId: { type: String, required: true },
     block: { type: Object, required: true },
-    minify: { type: Boolean, required: true },
     editMode: { type: Boolean, required: true },
+    isLast: { type: Boolean, required: true },
+    isFirst: { type: Boolean, required: true },
   },
   setup() {
     return { theme: useTheme() };
@@ -62,7 +63,9 @@ export default {
       return Object.values(this.pairs).includes(id);
     },
     updateTempLine(e) {
-      const card = document.getElementById(`card-id-${this.blockId}`);
+      const card = document.getElementById(
+        `connection-puzzle-id-${this.blockId}`,
+      );
       const cardRect = card.getBoundingClientRect();
 
       if (
@@ -133,7 +136,7 @@ export default {
       }
 
       if (this.selectedElements.length === 1) {
-        const cardId = `card-id-${this.blockId}`;
+        const cardId = `connection-puzzle-id-${this.blockId}`;
         const card = document.getElementById(cardId);
         const cardRect = card.getBoundingClientRect();
 
@@ -164,7 +167,9 @@ export default {
       }
     },
     updateLineCoordinates() {
-      const card = document.getElementById(`card-id-${this.blockId}`);
+      const card = document.getElementById(
+        `connection-puzzle-id-${this.blockId}`,
+      );
       const cardRect = card.getBoundingClientRect();
 
       // Maybe worth optimization
@@ -249,175 +254,146 @@ export default {
 </script>
 
 <template>
-  <v-hover>
-    <template #default="{ isHovering, props }">
-      <v-card
-        v-bind="props"
-        :variant="editMode ? 'outlined' : 'text'"
-        class="border-dashed"
-        elevation="0"
-        v-bind:id="`card-id-${blockId}`"
-      >
-        <svg v-if="currentSelect !== null" class="line-container">
-          <line
-            class="line"
-            :x1="lineCoordinates.x1"
-            :y1="lineCoordinates.y1"
-            :x2="lineCoordinates.x2"
-            :y2="lineCoordinates.y2"
-            :stroke="theme.current.value.colors.primary"
-            stroke-width="2"
-          ></line>
-        </svg>
-        <svg class="line-container">
-          <line
-            class="line"
-            v-for="line in lines"
-            :x1="line.x1"
-            :y1="line.y1"
-            :x2="line.x2"
-            :y2="line.y2"
-            :stroke="
-              !answerGiven
-                ? theme.current.value.colors.primary
-                : line.right == line.left
-                  ? theme.current.value.colors.success
-                  : '#F44336'
-            "
-            stroke-width="2"
-          ></line>
-        </svg>
+  <BlockCardBase
+    :edit-mode="editMode"
+    :isFirst="isFirst"
+    :isLast="isLast"
+    :id="`connection-puzzle-id-${blockId}`"
+    @up="$emit('up')"
+    @down="$emit('down')"
+    @edit="$emit('edit')"
+    @delete="$emit('delete')"
+  >
+    <svg v-if="currentSelect !== null" class="line-container">
+      <line
+        class="line"
+        :x1="lineCoordinates.x1"
+        :y1="lineCoordinates.y1"
+        :x2="lineCoordinates.x2"
+        :y2="lineCoordinates.y2"
+        :stroke="theme.current.value.colors.primary"
+        stroke-width="2"
+      ></line>
+    </svg>
+    <svg class="line-container">
+      <line
+        class="line"
+        v-for="line in lines"
+        :x1="line.x1"
+        :y1="line.y1"
+        :x2="line.x2"
+        :y2="line.y2"
+        :stroke="
+          !answerGiven
+            ? theme.current.value.colors.primary
+            : line.right == line.left
+              ? theme.current.value.colors.success
+              : '#F44336'
+        "
+        stroke-width="2"
+      ></line>
+    </svg>
+    <v-card-title v-if="!hasText" class="text-grey text-h4 font-weight-black">
+      Connection Puzzle
+    </v-card-title>
 
-        <div
-          v-if="isHovering && editMode"
-          class="position-absolute right-0 mt-2 mr-2"
-        >
-          <v-btn @click.stop="$emit('edit')" icon="mdi-pencil" variant="flat" />
-          <v-btn
-            @click.stop="$emit('delete')"
-            icon="mdi-delete-outline"
-            variant="flat"
-          />
-        </div>
-        <v-card-title
-          v-if="!hasText"
-          class="text-grey text-h4 font-weight-black"
-        >
-          Connection Puzzle
-        </v-card-title>
+    <v-card-text>
+      <VuetifyViewer v-if="hasText" :value="block.text" class="bg-background" />
 
-        <v-card-text>
-          <VuetifyViewer
-            v-if="hasText"
-            :value="block.text"
-            class="bg-background"
-          />
-
-          <!-- connection card -->
-          <v-row v-if="!minify">
-            <v-col>
-              <v-card
-                v-for="item in leftColumn"
-                :variant="
-                  answerGiven || isInLeft(item.id) ? 'tonal' : 'elevated'
-                "
-                :color="getCardColor('left', item.id)"
-                class="pa-2 ma-2 d-flex align-center justify-space-between"
-              >
-                {{ item.text }}
-                <v-btn
-                  class="bg-background"
-                  :disabled="isBtnDisabled('left', item.id)"
-                  :readonly="answerGiven"
-                  exactn
-                  icon
-                  variant="flat"
-                  :id="`left-${item.id}-${blockId}`"
-                  @click="(e) => selectElement(item, 'left', e)"
-                >
-                  <v-icon
-                    :color="getBtnColor('left', item.id)"
-                    :icon="
-                      `${item.id}` in pairs ||
-                      (currentSelect === item.id && lockLeft)
-                        ? 'mdi-record'
-                        : 'mdi-radiobox-blank'
-                    "
-                  />
-                </v-btn>
-              </v-card>
-            </v-col>
-            <v-col cols="1"></v-col>
-            <v-col>
-              <v-card
-                v-for="item in rightColumn"
-                :variant="
-                  answerGiven || isInRight(item.id) ? 'tonal' : 'elevated'
-                "
-                :color="getCardColor('right', item.id)"
-                class="pa-2 ma-2 d-flex align-center justify-space-between"
-              >
-                <v-btn
-                  icon
-                  class="bg-background"
-                  variant="flat"
-                  :id="`right-${item.id}-${blockId}`"
-                  :disabled="isBtnDisabled('right', item.id)"
-                  :readonly="answerGiven"
-                  @click="(e) => selectElement(item, 'right', e)"
-                >
-                  <v-icon
-                    :color="getBtnColor('right', item.id)"
-                    :icon="
-                      Object.values(pairs).includes(item.id) ||
-                      (currentSelect === item.id && lockRight)
-                        ? 'mdi-record'
-                        : 'mdi-radiobox-blank'
-                    "
-                  />
-                </v-btn>
-                {{ item.text }}
-              </v-card>
-            </v-col>
-          </v-row>
-          <!-- connection card -->
-        </v-card-text>
-        <v-card-actions v-if="!editMode">
-          <v-btn
-            v-if="!answerGiven"
-            :disabled="!hasAnswer"
-            color="success"
-            variant="tonal"
-            block
-            @click="processAnswer"
+      <!-- connection card -->
+      <v-row>
+        <v-col>
+          <v-card
+            v-for="item in leftColumn"
+            :variant="answerGiven || isInLeft(item.id) ? 'tonal' : 'elevated'"
+            :color="getCardColor('left', item.id)"
+            class="pa-2 ma-2 d-flex align-center justify-space-between"
           >
-            Answer
+            {{ item.text }}
+            <v-btn
+              class="bg-background"
+              :disabled="isBtnDisabled('left', item.id)"
+              :readonly="answerGiven"
+              exactn
+              icon
+              variant="flat"
+              :id="`left-${item.id}-${blockId}`"
+              @click="(e) => selectElement(item, 'left', e)"
+            >
+              <v-icon
+                :color="getBtnColor('left', item.id)"
+                :icon="
+                  `${item.id}` in pairs ||
+                  (currentSelect === item.id && lockLeft)
+                    ? 'mdi-record'
+                    : 'mdi-radiobox-blank'
+                "
+              />
+            </v-btn>
+          </v-card>
+        </v-col>
+        <v-col cols="1"></v-col>
+        <v-col>
+          <v-card
+            v-for="item in rightColumn"
+            :variant="answerGiven || isInRight(item.id) ? 'tonal' : 'elevated'"
+            :color="getCardColor('right', item.id)"
+            class="pa-2 ma-2 d-flex align-center justify-space-between"
+          >
+            <v-btn
+              icon
+              class="bg-background"
+              variant="flat"
+              :id="`right-${item.id}-${blockId}`"
+              :disabled="isBtnDisabled('right', item.id)"
+              :readonly="answerGiven"
+              @click="(e) => selectElement(item, 'right', e)"
+            >
+              <v-icon
+                :color="getBtnColor('right', item.id)"
+                :icon="
+                  Object.values(pairs).includes(item.id) ||
+                  (currentSelect === item.id && lockRight)
+                    ? 'mdi-record'
+                    : 'mdi-radiobox-blank'
+                "
+              />
+            </v-btn>
+            {{ item.text }}
+          </v-card>
+        </v-col>
+      </v-row>
+      <!-- connection card -->
+    </v-card-text>
+    <v-card-actions v-if="!editMode">
+      <v-btn
+        v-if="!answerGiven"
+        :disabled="!hasAnswer"
+        color="success"
+        variant="tonal"
+        block
+        @click="processAnswer"
+      >
+        Answer
+      </v-btn>
+      <v-row no-gutters justify="center">
+        <div class="d-flex align-center">
+          <span
+            :class="{
+              'text-h5': true,
+              'text-success': correctAnswer,
+              'text-error': !correctAnswer,
+            }"
+          >
+            {{ correctAnswer ? "Correct!" : "Wrong!" }}
+          </span>
+          <v-btn class="ml-2" plain prepend-icon="mdi-reload" @click="reset">
+            Try Again
           </v-btn>
-          <v-row no-gutters justify="center">
-            <div class="d-flex align-center">
-              <span
-                :class="{
-                  'text-h5': true,
-                  'text-success': correctAnswer,
-                  'text-error': !correctAnswer,
-                }"
-              >
-                {{ correctAnswer ? "Correct!" : "Wrong!" }}
-              </span>
-              <v-btn
-                class="ml-2"
-                plain
-                prepend-icon="mdi-reload"
-                @click="reset"
-              >
-                Try Again
-              </v-btn>
-            </div>
-          </v-row>
-        </v-card-actions>
-      </v-card>
-    </template>
-  </v-hover>
+        </div>
+      </v-row>
+    </v-card-actions>
+  </BlockCardBase>
 </template>
 
 <style lang="scss">

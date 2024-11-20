@@ -1,10 +1,11 @@
 <script>
 export default {
-  emits: ["edit", "delete"],
+  emits: ["edit", "delete", "up", "down"],
   props: {
     block: { type: Object, required: true },
-    minify: { type: Boolean, required: true },
     editMode: { type: Boolean, required: true },
+    isLast: { type: Boolean, required: true },
+    isFirst: { type: Boolean, required: true },
   },
   data() {
     return {
@@ -35,92 +36,66 @@ export default {
 };
 </script>
 <template>
-  <v-hover>
-    <template #default="{ isHovering, props }">
+  <BlockCardBase
+    :edit-mode="editMode"
+    :isFirst="isFirst"
+    :isLast="isLast"
+    @up="$emit('up')"
+    @down="$emit('down')"
+    @edit="$emit('edit')"
+    @delete="$emit('delete')"
+  >
+    <v-card-title v-if="!hasText" class="text-grey text-h4 font-weight-black">
+      Open Question
+    </v-card-title>
+
+    <v-card-text>
+      <VuetifyViewer v-if="hasText" :value="block.text" class="bg-background" />
+
+      <v-text-field
+        v-if="!answerGiven"
+        :disabled="editMode"
+        v-model.trim="answer"
+        :value="editMode ? this.block.answer.text || 'Add answer...' : answer"
+      />
       <v-card
-        v-bind="props"
-        :variant="editMode ? 'outlined' : 'text'"
-        class="border-dashed"
+        v-else
+        class="mb-5"
+        :variant="!answerGiven ? 'text' : 'tonal'"
+        :color="answerGiven ? (correctAnswer ? 'success' : 'error') : ''"
       >
-        <div
-          v-if="isHovering && editMode"
-          class="position-absolute right-0 mt-2 mr-2"
-        >
-          <v-btn @click.stop="$emit('edit')" icon="mdi-pencil" variant="flat" />
-          <v-btn
-            @click.stop="$emit('delete')"
-            icon="mdi-delete-outline"
-            variant="flat"
-          />
-        </div>
-
-        <v-card-title
-          v-if="!hasText"
-          class="text-grey text-h4 font-weight-black"
-        >
-          Open Question
-        </v-card-title>
-
         <v-card-text>
-          <VuetifyViewer
-            v-if="hasText"
-            :value="block.text"
-            class="bg-background"
-          />
-
-          <v-text-field
-            v-if="!answerGiven"
-            :disabled="editMode"
-            v-model.trim="answer"
-            :value="
-              editMode ? this.block.answer.text || 'Add answer...' : answer
-            "
-          />
-          <v-card
-            v-else
-            class="mb-5"
-            :variant="!answerGiven ? 'text' : 'tonal'"
-            :color="answerGiven ? (correctAnswer ? 'success' : 'error') : ''"
-          >
-            <v-card-text>
-              {{ answer }}
-            </v-card-text>
-          </v-card>
+          {{ answer }}
         </v-card-text>
-        <v-card-actions v-if="!editMode">
-          <v-btn
-            v-if="!answerGiven"
-            :disabled="!this.answer"
-            color="success"
-            variant="tonal"
-            block
-            @click="processAnswer"
-          >
-            Answer
-          </v-btn>
-          <v-row no-gutters justify="center">
-            <div class="d-flex align-center">
-              <span
-                :class="{
-                  'text-h5': true,
-                  'text-success': correctAnswer,
-                  'text-error': !correctAnswer,
-                }"
-              >
-                {{ correctAnswer ? "Correct!" : "Wrong!" }}
-              </span>
-              <v-btn
-                class="ml-2"
-                plain
-                prepend-icon="mdi-reload"
-                @click="reset"
-              >
-                Try Again
-              </v-btn>
-            </div>
-          </v-row>
-        </v-card-actions>
       </v-card>
-    </template>
-  </v-hover>
+    </v-card-text>
+    <v-card-actions v-if="!editMode">
+      <v-btn
+        v-if="!answerGiven"
+        :disabled="!this.answer"
+        color="success"
+        variant="tonal"
+        block
+        @click="processAnswer"
+      >
+        Answer
+      </v-btn>
+      <v-row no-gutters justify="center">
+        <div class="d-flex align-center">
+          <span
+            :class="{
+              'text-h5': true,
+              'text-success': correctAnswer,
+              'text-error': !correctAnswer,
+            }"
+          >
+            {{ correctAnswer ? "Correct!" : "Wrong!" }}
+          </span>
+          <v-btn class="ml-2" plain prepend-icon="mdi-reload" @click="reset">
+            Try Again
+          </v-btn>
+        </div>
+      </v-row>
+    </v-card-actions>
+  </BlockCardBase>
 </template>

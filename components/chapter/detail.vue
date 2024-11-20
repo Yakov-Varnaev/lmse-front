@@ -56,12 +56,14 @@ export default {
       this.toggleEditMode();
     },
     async updateLessonOrder(data) {
+      // TODO: refetch is not optimal solution
       const { oldIndex, newIndex } = data;
       const oldLesson = this.lessons[oldIndex];
       await updateLesson(this.courseId, this.chapterId, oldLesson.id, {
         ...oldLesson,
         order: newIndex,
       });
+      await this.loadLessons();
     },
     async deleteLessonItem(lesson) {
       await deleteLesson(this.courseId, this.chapterId, lesson.id);

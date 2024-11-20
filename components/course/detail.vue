@@ -4,6 +4,7 @@ import {
   getChapters,
   updateChapter,
   deleteChapter,
+  getBlocks,
 } from "~/api/courses";
 export default {
   setup() {
@@ -41,12 +42,17 @@ export default {
       this.toggleEditMode();
     },
     async updateChapterOrder(data) {
+      // TODO: im not sure if refetch is a good idea here.
       const { oldIndex, newIndex } = data;
       const oldChapter = this.chapters[oldIndex];
+
       await updateChapter(this.courseId, oldChapter.id, {
         ...oldChapter,
         order: newIndex,
       });
+
+      var { data } = await getChapters(this.courseId);
+      this.chapters = data;
     },
     async deleteChapter(chapter) {
       await deleteChapter(this.courseId, chapter.id);

@@ -1,18 +1,19 @@
 <script setup>
 const props = defineProps({
-  minify: { type: Boolean, required: true },
   editMode: { type: Boolean, required: true },
+  isLast: { type: Boolean, required: true },
+  isFirst: { type: Boolean, required: true },
   block: {
     type: Object,
     required: true,
   },
   data() {},
 });
-const emit = defineEmits(["update", "delete"]);
+const emit = defineEmits(["update", "delete", "up", "down"]);
 
 const { blockEditMode, blockData, toggleEditMode, update, deleteBlock } =
   useBlock(emit, props);
-const { minify, editMode } = props;
+const { editMode } = props;
 </script>
 
 <template>
@@ -25,12 +26,15 @@ const { minify, editMode } = props;
     />
     <BlockConnectionCard
       v-else
-      @edit="toggleEditMode"
-      @delete="deleteBlock"
       :blockId="block.id"
       :block="blockData"
       :editMode="editMode"
-      :minify="minify"
+      :isFirst="isFirst"
+      :isLast="isLast"
+      @up="$emit('up')"
+      @down="$emit('down')"
+      @edit="toggleEditMode"
+      @delete="deleteBlock"
     />
   </div>
 </template>
