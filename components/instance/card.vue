@@ -18,30 +18,18 @@ export default {
 </script>
 
 <template>
-  <v-hover>
-    <template v-slot:default="{ isHovering, props }">
-      <v-card elevation="0" v-bind="props">
-        <v-card-title>
-          <div class="d-flex align-center">
-            <div class="course-title">
-              {{ title }}
-            </div>
-            <v-btn
-              class="ml-auto"
-              label
-              v-if="isHovering"
-              @click="$emit('openEdit')"
-            >
-              Click to edit
-            </v-btn>
-          </div>
-        </v-card-title>
-        <v-card-text>
-          <VuetifyViewer :value="content" class="bg-background" />
-        </v-card-text>
-      </v-card>
-    </template>
-  </v-hover>
+  <v-card elevation="0">
+    <v-card-title>
+      <div class="d-flex align-center">
+        <div class="course-title">
+          {{ title }}
+        </div>
+      </div>
+    </v-card-title>
+    <v-card-text>
+      <VuetifyViewer :value="content" class="bg-background" />
+    </v-card-text>
+  </v-card>
 </template>
 
 <style scoped>

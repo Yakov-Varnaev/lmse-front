@@ -4,13 +4,13 @@ import {
   getChapters,
   updateChapter,
   deleteChapter,
-  getBlocks,
 } from "~/api/courses";
 export default {
   setup() {
     return {
       loader: useLoader(),
       bread: useBreadcrumbs(),
+      mode: useMode(),
     };
   },
   props: {
@@ -24,7 +24,6 @@ export default {
       course: {},
       chapters: [],
       drawerItems: [],
-      editMode: false,
     };
   },
   methods: {
@@ -64,7 +63,7 @@ export default {
       this.processDrawerItems();
     },
     toggleEditMode() {
-      this.editMode = !this.editMode;
+      mode.toggle_edit();
     },
   },
   async mounted() {
@@ -72,9 +71,11 @@ export default {
     var { data } = await retrieveCourse(this.courseId);
     this.course = data;
     this.bread.addToMap(this.course);
-    var { data } = await getChapters(this.courseId);
-    this.chapters = data;
-    this.processDrawerItems();
+    try {
+      var { data } = await getChapters(this.courseId);
+      this.chapters = data;
+      this.processDrawerItems();
+    } catch {}
     this.loader.stopLoading();
   },
 };
@@ -85,7 +86,7 @@ export default {
     <SideDrawer
       title="Chapters"
       :items="drawerItems"
-      :edit-mode="editMode"
+      :edit-mode="mode.edit"
       @updated="updateChapterOrder"
       @deleted="deleteChapter"
     >
@@ -107,7 +108,7 @@ export default {
       <template #append>
         <v-hover>
           <template #default="{ isHovering, props }">
-            <v-list-item v-if="editMode">
+            <v-list-item v-if="mode.edit">
               <v-btn
                 v-bind="props"
                 :class="{ 'text-red': isHovering, 'mb-1': true }"
@@ -126,13 +127,18 @@ export default {
     <v-container v-if="!loader.loading" class="align-start content-container">
       <v-row dense class="content-container" justify="center">
         <v-col lg="9" xl="9">
-          <CourseCardEditor
-            :course="course"
+          <InstanceEditor
+            :instance="course"
             @updated="courseUpdated"
             @cancel="toggleEditMode"
-            v-if="editMode"
+            v-if="mode.edit"
+          >
+          </InstanceEditor>
+          <InstanceCard
+            v-else
+            :title="course.title"
+            :content="course.description"
           />
-          <CourseCard v-else :course="course" @openEdit="toggleEditMode" />
         </v-col>
       </v-row>
     </v-container>

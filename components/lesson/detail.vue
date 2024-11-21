@@ -1,5 +1,6 @@
 <script>
 import { getBlocks, retrieveLesssons, updateLesson } from "~/api/courses";
+import { useMode } from "~/stores/mode";
 
 export default {
   props: {
@@ -11,18 +12,18 @@ export default {
     return {
       loader: useLoader(),
       bread: useBreadcrumbs(),
+      mode: useMode(),
     };
   },
   data() {
     return {
-      editMode: false,
       lesson: { title: "" },
       blocks: [],
     };
   },
   methods: {
     toggleEditMode() {
-      this.editMode = !this.editMode;
+      this.mode.toggle_edit();
     },
     async updateLessonTitle(updatedData) {
       const { data } = await updateLesson(
@@ -70,27 +71,20 @@ export default {
   <v-container>
     <v-row justify="center">
       <v-col lg="8">
-        <v-card v-if="!editMode" variant="text">
+        <v-card v-if="!mode.edit" variant="text">
           <v-card-title> {{ lesson.title }} </v-card-title>
         </v-card>
         <TitleEditor
-          v-if="editMode"
+          v-if="mode.edit"
           @update="updateLessonTitle"
           :title="lesson.title"
         />
-        <v-btn
-          class="ml-auto position-absolute bottom-0 left-0"
-          variant="outlined"
-          @click="toggleEditMode"
-        >
-          {{ editMode ? "normal mode" : "edit mode" }}
-        </v-btn>
       </v-col>
     </v-row>
-    <v-row>
-      <v-col>
+    <v-row justify="center">
+      <v-col md="8">
         <BlockList
-          :editMode="editMode"
+          :editMode="mode.edit"
           :blocks="blocks"
           :course-id="courseId"
           :chapter-id="chapterId"
@@ -101,5 +95,6 @@ export default {
         />
       </v-col>
     </v-row>
+    <EditToggler absolute />
   </v-container>
 </template>

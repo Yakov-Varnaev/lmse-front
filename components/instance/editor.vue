@@ -1,5 +1,6 @@
 <script>
 export default {
+  emits: ["updated", "cancel"],
   props: {
     instance: {
       type: Object,

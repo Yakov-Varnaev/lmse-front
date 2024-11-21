@@ -19,12 +19,11 @@ export default {
     },
   },
   setup() {
-    return { loader: useLoader() };
+    return { loader: useLoader(), mode: useMode() };
   },
   data() {
     return {
       createDialog: false,
-      editMode: false,
       chapter: { title: "", description: "" },
       lessons: [],
       drawerItems: [],
@@ -45,7 +44,7 @@ export default {
       }));
     },
     toggleEditMode() {
-      this.editMode = !this.editMode;
+      this.mode.toggle_edit();
     },
     toggleCreateDialog() {
       this.createDialog = !this.createDialog;
@@ -99,7 +98,7 @@ export default {
   <div>
     <SideDrawer
       title="Lessons"
-      :edit-mode="editMode"
+      :edit-mode="mode.edit"
       @updated="updateLessonOrder"
       @deleted="deleteLessonItem"
       :items="drawerItems"
@@ -117,7 +116,7 @@ export default {
       <v-row dense class="content-container" justify="center">
         <v-col lg="9" xl="9">
           <InstanceEditor
-            v-if="editMode"
+            v-if="mode.edit"
             :instance="chapter"
             @cancel="toggleEditMode"
             @updated="updateChapterData"

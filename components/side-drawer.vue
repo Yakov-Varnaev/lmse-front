@@ -93,6 +93,9 @@ export default {
       </template>
     </draggable>
     <template #append>
+      <v-list-item>
+        <EditToggler block />
+      </v-list-item>
       <slot name="append"></slot>
     </template>
   </v-navigation-drawer>

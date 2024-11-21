@@ -10,7 +10,7 @@ export const getCourses = async (params = { my: null, author: null }) => {
     parsedParams.my = true;
   }
   if (params.author) {
-    parsedParams.author = params.author;
+    parsedParams.owner = params.author;
   }
   return await apiv1.get("courses/", { params: parsedParams });
 };
