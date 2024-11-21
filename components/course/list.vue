@@ -1,6 +1,10 @@
 <script>
 export default {
   props: {
+    isAuthor: {
+      type: Boolean,
+      required: true,
+    },
     courses: {
       type: Array[Object],
       required: true,
@@ -35,7 +39,7 @@ export default {
         </v-list-item-title>
         <v-spacer></v-spacer>
         <template v-slot:append>
-          <v-hover>
+          <v-hover v-if="isAuthor">
             <template #default="{ isHovering, props }">
               <v-btn
                 v-bind="props"

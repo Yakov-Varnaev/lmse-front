@@ -4,13 +4,17 @@ import {
   getChapters,
   updateChapter,
   deleteChapter,
+  updateCourse,
+  publishCourse,
 } from "~/api/courses";
+
 export default {
   setup() {
     return {
       loader: useLoader(),
       bread: useBreadcrumbs(),
       mode: useMode(),
+      courseContext: useCourseContext(),
     };
   },
   props: {
@@ -36,8 +40,13 @@ export default {
         },
       }));
     },
-    courseUpdated(data) {
+    async courseUpdated(updData) {
+      const { data } = await updateCourse(this.courseId, updData);
       this.course = data;
+      this.toggleEditMode();
+    },
+    async publishCourse() {
+      await publishCourse(this.courseId);
       this.toggleEditMode();
     },
     async updateChapterOrder(data) {
@@ -63,13 +72,14 @@ export default {
       this.processDrawerItems();
     },
     toggleEditMode() {
-      mode.toggle_edit();
+      this.mode.toggle_edit();
     },
   },
   async mounted() {
     this.loader.startLoading();
     var { data } = await retrieveCourse(this.courseId);
     this.course = data;
+    this.courseContext.setCourse(this.course);
     this.bread.addToMap(this.course);
     try {
       var { data } = await getChapters(this.courseId);
@@ -139,6 +149,18 @@ export default {
             :title="course.title"
             :content="course.description"
           />
+        </v-col>
+      </v-row>
+      <v-row justify="center">
+        <v-col lg="9" xl="9">
+          <v-card
+            v-if="mode.edit"
+            @click="publishCourse"
+            variant="tonal"
+            color="primary"
+          >
+            <v-card-text class="d-flex"> Publish! </v-card-text>
+          </v-card>
         </v-col>
       </v-row>
     </v-container>

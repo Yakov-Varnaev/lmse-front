@@ -9,7 +9,7 @@ export default {
     },
   },
   setup() {
-    return { loader: useLoader() };
+    return { loader: useLoader(), auth: useAuth() };
   },
   data() {
     return {
@@ -29,6 +29,11 @@ export default {
       this.courses = data.results;
     },
   },
+  computed: {
+    isAuthor() {
+      return this.auth.user.id === this.userId;
+    },
+  },
   async mounted() {
     await this.loader.withLoader(this.fetchCourses);
   },
@@ -39,8 +44,12 @@ export default {
   <div>
     <div class="d-flex justify-space-between mb-2 pa-2 bg-primary rounded">
       <h1>Courses</h1>
-      <CourseCreateOverlay @append="appendNewCourse" />
+      <CourseCreateOverlay @append="appendNewCourse" v-if="isAuthor" />
     </div>
-    <CourseList :courses="courses" @delete="deleteCourse" />
+    <CourseList
+      :courses="courses"
+      @delete="deleteCourse"
+      :isAuthor="isAuthor"
+    />
   </div>
 </template>

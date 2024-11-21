@@ -1,15 +1,14 @@
 <script setup>
-import { useMode } from "~/stores/mode";
-
 const props = defineProps({
   absolute: { type: Boolean, default: false },
 });
 
 const mode = useMode();
+const context = useCourseContext();
 </script>
 
 <template>
-  <div :id="absolute ? 'mode-container' : ''">
+  <div :id="absolute ? 'mode-container' : ''" v-if="context.isOwner">
     <v-btn
       v-bind="$attrs"
       @click="mode.toggle_edit"
