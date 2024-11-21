@@ -1,5 +1,5 @@
 <script>
-import { getBlocks, retrieveLesssons } from "~/api/courses";
+import { getBlocks, retrieveLesssons, updateLesson } from "~/api/courses";
 
 export default {
   props: {
@@ -23,6 +23,15 @@ export default {
   methods: {
     toggleEditMode() {
       this.editMode = !this.editMode;
+    },
+    async updateLessonTitle(updatedData) {
+      const { data } = await updateLesson(
+        this.courseId,
+        this.chapterId,
+        this.lessonId,
+        updatedData,
+      );
+      this.lesson = data;
     },
     async loadLesson() {
       const { data } = await retrieveLesssons(
@@ -61,12 +70,25 @@ export default {
   <v-container>
     <v-row justify="center">
       <v-col lg="8">
-        <div class="d-flex align-center">
-          <h1 v-if="!loader.loading">Lesson: {{ lesson.title }}</h1>
-          <v-btn class="ml-auto" variant="outlined" @click="toggleEditMode">
-            {{ editMode ? "normal mode" : "edit mode" }}
-          </v-btn>
-        </div>
+        <v-card v-if="!editMode" variant="text">
+          <v-card-title> {{ lesson.title }} </v-card-title>
+        </v-card>
+        <TitleEditor
+          v-if="editMode"
+          @update="updateLessonTitle"
+          :title="lesson.title"
+        />
+        <v-btn
+          class="ml-auto position-absolute bottom-0 left-0"
+          variant="outlined"
+          @click="toggleEditMode"
+        >
+          {{ editMode ? "normal mode" : "edit mode" }}
+        </v-btn>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
         <BlockList
           :editMode="editMode"
           :blocks="blocks"

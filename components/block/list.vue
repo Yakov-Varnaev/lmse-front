@@ -116,7 +116,7 @@ export default {
 </script>
 
 <template>
-  <v-container>
+  <div>
     <div class="mt-2">
       <component
         :key="block.id"
@@ -155,5 +155,5 @@ export default {
         </v-card>
       </template>
     </BlockCreateDialog>
-  </v-container>
+  </div>
 </template>
