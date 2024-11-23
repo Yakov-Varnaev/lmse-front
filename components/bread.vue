@@ -46,8 +46,9 @@ export default {
 </script>
 
 <template>
-  <v-breadcrumbs :items="routes" />
-  <!-- class="rounded-b-lg mt-n3 pt-6" -->
+  <v-chip color="primary" @click="">
+    <v-breadcrumbs :items="routes" />
+  </v-chip>
 </template>
 
 <style scoped lang="scss">

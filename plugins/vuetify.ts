@@ -2,11 +2,15 @@
 
 import '@mdi/font/css/materialdesignicons.css'
 import 'vuetify/styles'
+import { VTreeview } from 'vuetify/labs/VTreeview'
 import { createVuetify } from 'vuetify'
 
 export default defineNuxtPlugin((app) => {
 	const vuetify = createVuetify({
 		// ... your configuration
+		components: {
+			VTreeview,
+		},
 		defaults: {
 			VNavigationDrawer: {
 				class: "bg-background"

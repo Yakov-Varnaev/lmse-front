@@ -13,7 +13,7 @@ export default {
   methods: {
     redirectToCourse(courseId) {
       return () =>
-        useRouter().push({ name: "courses-detail", params: { id: courseId } });
+        useRouter().push({ name: "course-editor", params: { id: courseId } });
     },
   },
 };

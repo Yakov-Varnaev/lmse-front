@@ -1,174 +1,153 @@
 <script>
-import {
-  retrieveCourse,
-  getChapters,
-  updateChapter,
-  deleteChapter,
-  updateCourse,
-  publishCourse,
-} from "~/api/courses";
+import { enrollCourse, getChapters, retrieveCourse } from "~/api/courses";
 
 export default {
+  props: {
+    courseId: { type: String, required: true },
+  },
   setup() {
     return {
       loader: useLoader(),
-      bread: useBreadcrumbs(),
-      mode: useMode(),
-      courseContext: useCourseContext(),
+      auth: useAuth(),
+      context: useCourseContext(),
     };
-  },
-  props: {
-    courseId: {
-      type: String,
-      required: true,
-    },
   },
   data() {
     return {
+      key: "course-detail",
       course: {},
       chapters: [],
-      drawerItems: [],
     };
   },
   methods: {
-    processDrawerItems() {
-      this.drawerItems = this.chapters.map((chapter) => ({
-        ...chapter,
-        to: {
-          name: "chapters",
-          params: { id: chapter.course.id, chapterId: chapter.id },
-        },
-      }));
+    goToEditor() {
+      navigateTo({ name: "course-editor", params: { id: this.course.id } });
     },
-    async courseUpdated(updData) {
-      const { data } = await updateCourse(this.courseId, updData);
+    async enroll() {
+      console.log("here");
+      try {
+        await enrollCourse(this.course.id);
+        this.course.isStudent = true;
+      } catch (e) {
+        console.log(e);
+        // todo: handle this somehow
+      }
+    },
+    async loadCourse() {
+      const { data } = await retrieveCourse(this.courseId);
+      this.context.setCourse(data);
       this.course = data;
-      this.toggleEditMode();
     },
-    async publishCourse() {
-      await publishCourse(this.courseId);
-      this.toggleEditMode();
-    },
-    async updateChapterOrder(data) {
-      // TODO: im not sure if refetch is a good idea here.
-      const { oldIndex, newIndex } = data;
-      const oldChapter = this.chapters[oldIndex];
-
-      await updateChapter(this.courseId, oldChapter.id, {
-        ...oldChapter,
-        order: newIndex,
-      });
-
-      var { data } = await getChapters(this.courseId);
+    async loadChapters() {
+      const { data } = await getChapters(this.courseId);
       this.chapters = data;
-    },
-    async deleteChapter(chapter) {
-      await deleteChapter(this.courseId, chapter.id);
-      this.chapters = this.chapters.filter((v) => v.id !== chapter.id);
-      this.processDrawerItems();
-    },
-    appendChapter(newChapter) {
-      this.chapters = [...this.chapters, newChapter];
-      this.processDrawerItems();
-    },
-    toggleEditMode() {
-      this.mode.toggle_edit();
     },
   },
   async mounted() {
-    this.loader.startLoading();
-    var { data } = await retrieveCourse(this.courseId);
-    this.course = data;
-    this.courseContext.setCourse(this.course);
-    this.bread.addToMap(this.course);
-    try {
-      var { data } = await getChapters(this.courseId);
-      this.chapters = data;
-      this.processDrawerItems();
-    } catch {}
-    this.loader.stopLoading();
+    this.loader.startKeyLoading(this.key);
+    await this.loadCourse();
+    await this.loadChapters();
+    this.loader.stopKeyLoading(this.key);
   },
 };
 </script>
-
 <template>
-  <div class="fill-height">
-    <SideDrawer
-      title="Chapters"
-      :items="drawerItems"
-      :edit-mode="mode.edit"
-      @updated="updateChapterOrder"
-      @deleted="deleteChapter"
-    >
-      <template v-slot:actionButton>
-        <ChapterCreateDialog @created="appendChapter" :course-id="courseId">
-          <template v-slot:activator="{ props: activatorProps }">
-            <v-btn
-              v-bind="activatorProps"
-              icon
-              color="primary"
-              class="ml-auto"
-              elevation="0"
+  <v-container>
+    <v-row>
+      <!-- side -->
+      <v-col lg="3" md="12" cols="12">
+        <v-card
+          variant="tonal"
+          color="primary"
+          :loading="loader.loaderMap[key]"
+        >
+          <v-card-title>
+            {{ course.title }}
+          </v-card-title>
+          <v-card-subtitle>
+            by
+            <v-chip prepend-icon="mdi-at">
+              {{ course.owner?.firstName }} {{ course.owner?.lastName }}
+            </v-chip>
+          </v-card-subtitle>
+          <v-card-text>
+            <div class="text-center">
+              <v-rating hover lenght="5" model-value="5"></v-rating>
+            </div>
+          </v-card-text>
+          <v-divider class="mx-2"></v-divider>
+          <v-card-actions class="pt-0">
+            <v-chip
+              v-if="!course.isStudent && !context.isOwner"
+              @click=""
+              class="centered-chip"
             >
-              <v-icon>mdi-plus</v-icon>
-            </v-btn>
-          </template>
-        </ChapterCreateDialog>
-      </template>
-      <template #append>
-        <v-hover>
-          <template #default="{ isHovering, props }">
-            <v-list-item v-if="mode.edit">
-              <v-btn
-                v-bind="props"
-                :class="{ 'text-red': isHovering, 'mb-1': true }"
-                block
-                variant="flat"
-                prepend-icon="mdi-delete-outline"
-              >
-                Delete
-              </v-btn>
-            </v-list-item>
-          </template>
-        </v-hover>
-      </template>
-    </SideDrawer>
-    <!-- content -->
-    <v-container v-if="!loader.loading" class="align-start content-container">
-      <v-row dense class="content-container" justify="center">
-        <v-col lg="9" xl="9">
-          <InstanceEditor
-            :instance="course"
-            @updated="courseUpdated"
-            @cancel="toggleEditMode"
-            v-if="mode.edit"
-          >
-          </InstanceEditor>
-          <InstanceCard
-            v-else
-            :title="course.title"
-            :content="course.description"
-          />
-        </v-col>
-      </v-row>
-      <v-row justify="center">
-        <v-col lg="9" xl="9">
-          <v-card
-            v-if="mode.edit"
-            @click="publishCourse"
-            variant="tonal"
-            color="primary"
-          >
-            <v-card-text class="d-flex"> Publish! </v-card-text>
+              <v-icon icon="mdi-heart-outline" />
+            </v-chip>
+            <v-chip
+              v-if="!course.isStudent && !context.isOwner"
+              @click="enroll"
+              color="success"
+              class="centered-chip"
+            >
+              <span class="d-flex justify-center"> Enroll </span>
+            </v-chip>
+            <v-chip
+              v-if="course.isStudent"
+              @click=""
+              color="success"
+              class="centered-chip"
+            >
+              Continue
+            </v-chip>
+            <v-chip
+              v-if="context.isOwner"
+              @click="goToEditor"
+              class="centered-chip"
+            >
+              Edit
+            </v-chip>
+          </v-card-actions>
+        </v-card>
+      </v-col>
+
+      <!-- main -->
+      <v-col>
+        <v-row no-gutters>
+          <v-card variant="text" color="primary">
+            <v-card-text>
+              {{ course.shortDescription }}
+            </v-card-text>
           </v-card>
-        </v-col>
-      </v-row>
-    </v-container>
-  </div>
+          <v-divider class="my-4"></v-divider>
+        </v-row>
+        <v-row>
+          <v-col>
+            <v-card variant="text">
+              <v-card-text>
+                <VuetifyViewer :value="course.description" />
+              </v-card-text>
+            </v-card>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
+            <v-treeview
+              :items="chapters"
+              item-children="lessons"
+              open-all
+              item-value="id"
+            />
+          </v-col>
+        </v-row>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
-<style scoped>
-.content-container {
-  height: 100%;
+<style lang="scss">
+.centered-chip {
+  width: 100%;
+  justify-content: center;
 }
 </style>

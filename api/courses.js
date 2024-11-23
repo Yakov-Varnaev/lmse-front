@@ -35,6 +35,13 @@ export const deleteCourse = async (id) => {
   return await apiv1.delete(`courses/${id}/`);
 };
 
+export const enrollCourse = async (id) => {
+  const { $apiv1: apiv1 } = useNuxtApp();
+  return await apiv1.post(`courses/${id}/students/`);
+};
+
+/* chapters */
+
 export const createChapter = async (courseId, data) => {
   const { $apiv1: apiv1 } = useNuxtApp();
   return await apiv1.post(`courses/${courseId}/chapters/`, data);

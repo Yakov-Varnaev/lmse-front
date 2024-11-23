@@ -60,7 +60,7 @@ export default {
       <v-col cols="4" cols-md="3" v-for="course in courses" :key="course.id">
         <v-card
           variant="flat"
-          :to="{ name: 'courses-detail', params: { id: course.id } }"
+          :to="{ name: 'course-detail', params: { id: course.id } }"
         >
           <v-card-text>
             <v-img src="https://cdn.vuetifyjs.com/images/cards/house.jpg">

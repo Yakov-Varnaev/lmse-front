@@ -2,14 +2,16 @@
 export default {
   setup() {
     definePageMeta({
-      name: "course-detail",
+      name: "course-editor",
       middleware: "authenticated",
       extra: { obj: "course", field: "courseId" },
     });
+
+    return {};
   },
 };
 </script>
 
 <template>
-  <CourseDetail :course-id="$route.params.id" />
+  <CourseEditor :course-id="$route.params.id" />
 </template>
