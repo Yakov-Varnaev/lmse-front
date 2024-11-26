@@ -25,7 +25,7 @@ const { editMode } = props;
     />
     <BlockQuestionCard
       v-else
-      :block="blockData"
+      :block="block"
       :editMode="editMode"
       :isFirst="isFirst"
       :isLast="isLast"

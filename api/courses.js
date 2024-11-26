@@ -148,3 +148,25 @@ export const getTemplates = async () => {
   const { $apiv1: apiv1 } = useNuxtApp();
   return await apiv1.get("templates/");
 };
+
+/* Answers */
+export const createAnswer = async (
+  courseId,
+  chapterId,
+  lessonId,
+  blockId,
+  data,
+) => {
+  const { $apiv1: apiv1 } = useNuxtApp();
+  return await apiv1.post(
+    `courses/${courseId}/chapters/${chapterId}/lessons/${lessonId}/blocks/${blockId}/answers/`,
+    data,
+  );
+};
+
+export const getAnswers = async (courseId, chapterId, lessonId) => {
+  const { $apiv1: apiv1 } = useNuxtApp();
+  return await apiv1.get(
+    `courses/${courseId}/chapters/${chapterId}/lessons/${lessonId}/answers/`,
+  );
+};

@@ -1,43 +1,33 @@
-<script>
-export default {
-  emits: ["edit", "delete", "up", "down"],
-  props: {
-    block: { type: Object, required: true },
-    editMode: { type: Boolean, required: true },
-    isLast: { type: Boolean, required: true },
-    isFirst: { type: Boolean, required: true },
-  },
-  data() {
-    return {
-      answer: [],
-      answerGiven: false,
-      correctAnswer: false,
-    };
-  },
-  methods: {
-    reset() {
-      Object.assign(this.$data, this.$options.data.apply(this));
-    },
-    processAnswer() {
-      const compareArrays = (a, b) =>
-        a.length === b.length &&
-        a.every((element, index) => element === b[index]);
+<script setup lang="ts">
+import type { Block } from "~/types";
 
-      const correctAnswers = this.block.variants
-        .filter((v) => v.correct)
-        .map((v) => v.id);
+const emits = defineEmits(["edit", "delete", "up", "down"]);
+const props = defineProps<{
+  block: Block;
+  editMode: boolean;
+  isLast: boolean;
+  isFirst: boolean;
+}>();
 
-      this.correctAnswer = compareArrays(correctAnswers, this.answer);
-      this.answerGiven = true;
-    },
-  },
-  computed: {
-    hasText() {
-      return this.block.text.length > 0 && this.block.text !== "<p></p>";
-    },
-  },
-};
+const {
+  answerGiven,
+  isCorrect,
+  isAnswerLoading,
+  processAnswer,
+  answerData,
+  reset,
+} = useBlockCard<{ variants: Number[] }>({
+  block: props.block,
+  initialAnswerData: () => ({ variants: [] }),
+});
+
+const hasText = computed(() => {
+  return (
+    props.block.meta.text.length > 0 && props.block.meta.text !== "<p></p>"
+  );
+});
 </script>
+
 <template>
   <BlockCardBase
     :edit-mode="editMode"
@@ -53,9 +43,13 @@ export default {
     </v-card-title>
 
     <v-card-text>
-      <VuetifyViewer v-if="hasText" :value="block.text" class="bg-background" />
+      <VuetifyViewer
+        v-if="hasText"
+        :value="block.meta.text"
+        class="bg-background"
+      />
       <v-card
-        v-for="variant in block.variants"
+        v-for="variant in block.meta.variants"
         :key="variant.id"
         class="fill-width pa-0 mt-1 opacity-1"
         :variant="answerGiven ? 'tonal' : undefined"
@@ -66,8 +60,9 @@ export default {
           class="mx-1"
           hide-details
           :disabled="editMode"
+          :readonly="answerGiven"
           :label="variant.text"
-          v-model="answer"
+          v-model="answerData.variants"
           :value="variant.id"
           :key="variant.id"
         >
@@ -80,6 +75,7 @@ export default {
     <v-card-actions v-if="!editMode">
       <v-btn
         v-if="!answerGiven"
+        :loading="isAnswerLoading"
         :disabled="!hasText"
         color="success"
         variant="tonal"
@@ -93,13 +89,19 @@ export default {
           <span
             :class="{
               'text-h5': true,
-              'text-success': correctAnswer,
-              'text-error': !correctAnswer,
+              'text-success': isCorrect,
+              'text-error': !isCorrect,
             }"
           >
-            {{ correctAnswer ? "Correct!" : "Wrong!" }}
+            {{ isCorrect ? "Correct!" : "Wrong!" }}
           </span>
-          <v-btn class="ml-2" plain prepend-icon="mdi-reload" @click="reset">
+          <v-btn
+            v-if="!isCorrect"
+            class="ml-2"
+            plain
+            prepend-icon="mdi-reload"
+            @click="reset"
+          >
             Try Again
           </v-btn>
         </div>

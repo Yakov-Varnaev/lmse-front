@@ -1,5 +1,10 @@
 <script>
-import { getBlocks, retrieveLesssons, updateLesson } from "~/api/courses";
+import {
+  getAnswers,
+  getBlocks,
+  retrieveLesssons,
+  updateLesson,
+} from "~/api/courses";
 import { useMode } from "~/stores/mode";
 
 export default {
@@ -50,6 +55,14 @@ export default {
         this.lessonId,
       );
       this.blocks = data;
+    },
+    async loadAnswers() {
+      const { data } = await getAnswers(
+        this.courseId,
+        this.chapterId,
+        this.lessonId,
+      );
+      this.answers = data;
     },
     blockUpdated(block) {
       this.blocks = this.blocks.map((b) => (b.id === block.id ? block : b));

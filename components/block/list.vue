@@ -11,14 +11,21 @@ import {
 export default {
   emits: ["update", "refetch", "delete"],
   props: {
-    editMode: { type: Boolean, required: true },
     courseId: { type: String, required: true },
     chapterId: { type: String, required: true },
     lessonId: { type: String, required: true },
+    editMode: { type: Boolean, required: true },
     blocks: {
       type: Array,
-      required: Boolean,
+      required: true,
     },
+  },
+  provide() {
+    return {
+      courseId: this.courseId,
+      chapterId: this.chapterId,
+      lessonId: this.lessonId,
+    };
   },
   data() {
     return {
