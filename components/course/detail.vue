@@ -21,7 +21,10 @@ export default {
   },
   methods: {
     goToEditor() {
-      navigateTo({ name: "course-editor", params: { id: this.course.id } });
+      navigateTo({
+        name: "chapter-detail",
+        params: { id: this.course.id, chapterId: this.chapters[0].id },
+      });
     },
     async enroll() {
       console.log("here");
@@ -32,6 +35,12 @@ export default {
         console.log(e);
         // todo: handle this somehow
       }
+    },
+    goToFirstChapter() {
+      navigateTo({
+        name: "chapter-detail",
+        params: { id: this.course.id, chapterId: this.chapters[0].id },
+      });
     },
     async loadCourse() {
       const { data } = await retrieveCourse(this.courseId);
@@ -94,11 +103,12 @@ export default {
             </v-chip>
             <v-chip
               v-if="course.isStudent"
-              @click=""
+              @click="goToFirstChapter"
               color="success"
               class="centered-chip"
+              prepend-icon="mdi-school-outline"
             >
-              Continue
+              Learn
             </v-chip>
             <v-chip
               v-if="context.isOwner"

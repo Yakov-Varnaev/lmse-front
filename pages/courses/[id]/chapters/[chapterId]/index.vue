@@ -1,6 +1,6 @@
 <script setup>
 definePageMeta({
-  name: "chapters",
+  name: "chapter-detail",
   middleware: "authenticated",
   extra: { obj: "chapter", field: "chapterId" },
 });

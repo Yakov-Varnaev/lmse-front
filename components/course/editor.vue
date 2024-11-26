@@ -35,7 +35,7 @@ export default {
       this.drawerItems = this.chapters.map((chapter) => ({
         ...chapter,
         to: {
-          name: "chapters",
+          name: "chapter-detail",
           params: { id: chapter.course.id, chapterId: chapter.id },
         },
       }));
