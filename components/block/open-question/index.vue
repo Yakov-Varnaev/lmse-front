@@ -3,7 +3,6 @@ const props = defineProps({
   editMode: { type: Boolean, required: true },
   isLast: { type: Boolean, required: true },
   isFirst: { type: Boolean, required: true },
-
   block: {
     type: Object,
     required: true,
@@ -26,7 +25,7 @@ const { editMode } = props;
     />
     <BlockOpenQuestionCard
       v-else
-      :block="blockData"
+      :block="block"
       :editMode="editMode"
       :isFirst="isFirst"
       :isLast="isLast"

@@ -1,40 +1,32 @@
-<script>
-export default {
-  emits: ["edit", "delete", "up", "down"],
-  props: {
-    block: { type: Object, required: true },
-    editMode: { type: Boolean, required: true },
-    isLast: { type: Boolean, required: true },
-    isFirst: { type: Boolean, required: true },
-  },
-  data() {
-    return {
-      answer: "",
-      answerGiven: false,
-      correctAnswer: false,
-    };
-  },
-  methods: {
-    reset() {
-      Object.assign(this.$data, this.$options.data.apply(this));
-    },
-    processAnswer() {
-      if (this.block.caseSensitive) {
-        this.correctAnswer = this.answer == this.block.answer.text;
-      } else {
-        this.correctAnswer =
-          this.answer.toLowerCase() == this.block.answer.text.toLowerCase();
-      }
-      this.answerGiven = true;
-    },
-  },
-  computed: {
-    hasText() {
-      return this.block.text.length > 0 && this.block.text !== "<p></p>";
-    },
-  },
-};
+<script setup lang="ts">
+import type { Block } from "~/types";
+
+const emit = defineEmits(["edit", "delete", "up", "down"]);
+const props = defineProps<{
+  block: Block;
+  editMode: boolean;
+  isLast: boolean;
+  isFirst: boolean;
+}>();
+
+const {
+  answerGiven,
+  isCorrect,
+  isAnswerLoading,
+  processAnswer,
+  answerData,
+  reset,
+} = useBlockCard<{ text: string }>({
+  block: props.block,
+  initialAnswerData: () => ({ text: "" }),
+});
+const hasText = computed((): boolean => {
+  return (
+    props.block.meta.text.length > 0 && props.block.meta.text !== "<p></p>"
+  );
+});
 </script>
+
 <template>
   <BlockCardBase
     :edit-mode="editMode"
@@ -50,29 +42,38 @@ export default {
     </v-card-title>
 
     <v-card-text>
-      <VuetifyViewer v-if="hasText" :value="block.text" class="bg-background" />
+      <VuetifyViewer
+        v-if="hasText"
+        :value="block.meta.text"
+        class="bg-background"
+      />
 
       <v-text-field
         v-if="!answerGiven"
         :disabled="editMode"
-        v-model.trim="answer"
-        :value="editMode ? this.block.answer.text || 'Add answer...' : answer"
+        v-model.trim="answerData.text"
+        :value="
+          editMode
+            ? props.block.meta.answer.text || 'Add answer...'
+            : answerData.text
+        "
       />
       <v-card
         v-else
         class="mb-5"
         :variant="!answerGiven ? 'text' : 'tonal'"
-        :color="answerGiven ? (correctAnswer ? 'success' : 'error') : ''"
+        :color="answerGiven ? (isCorrect ? 'success' : 'error') : ''"
       >
         <v-card-text>
-          {{ answer }}
+          {{ answerData.text }}
         </v-card-text>
       </v-card>
     </v-card-text>
     <v-card-actions v-if="!editMode">
       <v-btn
         v-if="!answerGiven"
-        :disabled="!this.answer"
+        :disabled="!answerData.text"
+        :loading="isAnswerLoading"
         color="success"
         variant="tonal"
         block
@@ -85,11 +86,11 @@ export default {
           <span
             :class="{
               'text-h5': true,
-              'text-success': correctAnswer,
-              'text-error': !correctAnswer,
+              'text-success': isCorrect,
+              'text-error': !isCorrect,
             }"
           >
-            {{ correctAnswer ? "Correct!" : "Wrong!" }}
+            {{ isCorrect ? "Correct!" : "Wrong!" }}
           </span>
           <v-btn class="ml-2" plain prepend-icon="mdi-reload" @click="reset">
             Try Again
