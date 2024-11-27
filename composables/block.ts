@@ -70,11 +70,12 @@ export function useBlockCard<T extends Object>({ block, initialAnswerData }: { b
 	const answerGiven = ref(block.answerData !== null);
 	const isCorrect = ref(false)
 	const _data = initialAnswerData()
-	if (block.answerData !== null) {
-		Object.assign(_data, block.answerData.meta)
+	if (!!block.answerData) {
+		Object.assign(_data, block.answerData.meta);
+		isCorrect.value = block.answerData.isCorrect;
 	}
 
-	const answerData = reactive(_data)
+	const answerData = reactive({ ..._data })
 
 	async function processAnswer() {
 		loader.startKeyLoading(`${block.id}-answer`);

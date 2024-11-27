@@ -26,8 +26,7 @@ const { editMode } = props;
     />
     <BlockConnectionCard
       v-else
-      :blockId="block.id"
-      :block="blockData"
+      :block="block"
       :editMode="editMode"
       :isFirst="isFirst"
       :isLast="isLast"
