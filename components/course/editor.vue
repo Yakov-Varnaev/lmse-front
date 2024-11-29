@@ -79,11 +79,10 @@ export default {
     this.loader.startKeyLoading("editor");
   },
   async mounted() {
-    this.loader.startKeyLoading("editor");
     var { data } = await retrieveCourse(this.courseId);
     this.course = data;
     this.courseContext.setCourse(this.course);
-    this.bread.addToMap(this.course);
+    this.bread.loadFromContext();
     try {
       var { data } = await getChapters(this.courseId);
       this.chapters = data;
@@ -172,7 +171,6 @@ export default {
         </v-col>
       </v-row>
     </v-container>
-    <v-container> Loading!!! </v-container>
   </div>
 </template>
 

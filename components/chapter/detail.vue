@@ -19,7 +19,12 @@ export default {
     },
   },
   setup() {
-    return { loader: useLoader(), mode: useMode() };
+    return {
+      loader: useLoader(),
+      mode: useMode(),
+      bread: useBreadcrumbs(),
+      courseContext: useCourseContext(),
+    };
   },
   data() {
     return {
@@ -71,7 +76,6 @@ export default {
     },
     async loadChapter() {
       const { data } = await retrieveChapter(this.courseId, this.chapterId);
-      useBreadcrumbs().addToMap(data);
       this.chapter = data;
     },
     async loadLessons() {
@@ -87,6 +91,8 @@ export default {
   async mounted() {
     this.loader.startLoading();
     await this.loadChapter();
+    this.courseContext.setChapter(this.chapter);
+    this.bread.loadFromContext();
     await this.loadLessons();
     this.processDrawerItems();
     this.loader.stopLoading();

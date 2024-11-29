@@ -82,7 +82,7 @@ export const getLessons = async (courseId, chapterId) => {
   return await apiv1.get(`courses/${courseId}/chapters/${chapterId}/lessons/`);
 };
 
-export const retrieveLesssons = async (courseId, chapterId, lessonId) => {
+export const retrieveLesson = async (courseId, chapterId, lessonId) => {
   const { $apiv1: apiv1 } = useNuxtApp();
   return await apiv1.get(
     `courses/${courseId}/chapters/${chapterId}/lessons/${lessonId}/`,

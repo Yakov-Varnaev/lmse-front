@@ -2,7 +2,7 @@
 import {
   getAnswers,
   getBlocks,
-  retrieveLesssons,
+  retrieveLesson,
   updateLesson,
 } from "~/api/courses";
 import { useMode } from "~/stores/mode";
@@ -18,6 +18,7 @@ export default {
       loader: useLoader(),
       bread: useBreadcrumbs(),
       mode: useMode(),
+      courseContext: useCourseContext(),
     };
   },
   data() {
@@ -40,13 +41,12 @@ export default {
       this.lesson = data;
     },
     async loadLesson() {
-      const { data } = await retrieveLesssons(
+      const { data } = await retrieveLesson(
         this.courseId,
         this.chapterId,
         this.lessonId,
       );
       this.lesson = data;
-      this.bread.addToMap(this.lesson);
     },
     async loadBlocks() {
       const { data } = await getBlocks(
@@ -74,6 +74,8 @@ export default {
   async mounted() {
     this.loader.startLoading();
     await this.loadLesson();
+    this.courseContext.setLesson(this.lesson);
+    this.bread.loadFromContext();
     await this.loadBlocks();
     this.loader.stopLoading();
   },

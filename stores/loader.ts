@@ -28,5 +28,10 @@ export const useLoader = defineStore("loader", {
 		stopLoading() {
 			this.loading = false;
 		},
+		async withKeyLoader(key: string, callable: () => Promise<any>) {
+			this.startKeyLoading(key)
+			await callable()
+			this.stopKeyLoading(key)
+		}
 	},
 });

@@ -1,3 +1,44 @@
+export type User = {
+	id: string,
+	email: string,
+	firstName: string,
+	lastName: string,
+	avatar: string,
+}
+
+export type Course = {
+	id: string,
+	title: string,
+	shortDescription: string,
+	description: string,
+	owner: {
+		id: string,
+		email: string,
+		firstName: string,
+		lastName: string,
+	},
+	created: Date,
+	isStudent: boolean,
+	state: string,
+}
+
+export type Chapter = {
+	id: string,
+	order: number,
+	title: string,
+	description: string,
+	course: string
+	lessons: Lesson[],
+}
+
+export type Lesson = {
+	id: string,
+	title: string,
+	order: number,
+	description: string,
+	chapter: string
+}
+
 export type Answer = {
 	id: string,
 	student: string,
