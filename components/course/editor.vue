@@ -75,8 +75,11 @@ export default {
       this.mode.toggle_edit();
     },
   },
+  beforeMount() {
+    this.loader.startKeyLoading("editor");
+  },
   async mounted() {
-    this.loader.startLoading();
+    this.loader.startKeyLoading("editor");
     var { data } = await retrieveCourse(this.courseId);
     this.course = data;
     this.courseContext.setCourse(this.course);
@@ -86,7 +89,12 @@ export default {
       this.chapters = data;
       this.processDrawerItems();
     } catch {}
-    this.loader.stopLoading();
+    this.loader.stopKeyLoading("editor");
+  },
+  computed: {
+    isLoading() {
+      return this.loader.loaderMap["editor"];
+    },
   },
 };
 </script>
@@ -134,7 +142,7 @@ export default {
       </template>
     </SideDrawer>
     <!-- content -->
-    <v-container v-if="!loader.loading" class="align-start content-container">
+    <v-container v-if="!isLoading" class="align-start content-container">
       <v-row dense class="content-container" justify="center">
         <v-col lg="9" xl="9">
           <InstanceEditor
@@ -164,6 +172,7 @@ export default {
         </v-col>
       </v-row>
     </v-container>
+    <v-container> Loading!!! </v-container>
   </div>
 </template>
 

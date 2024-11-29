@@ -26,7 +26,7 @@ export default {
         v-for="course in courses"
         class="mt-2"
         rounded
-        @click="redirectToCourse(course.id)()"
+        @click="redirectToCourse(course.id)"
         :key="course.id"
       >
         <template #prepend>
