@@ -8,6 +8,10 @@ type Item = {
   text: string;
 };
 
+interface ItemMap {
+  [key: string]: number;
+}
+
 function shuffleArray<T>(array: T[]): T[] {
   for (let i = array.length - 1; i >= 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -30,7 +34,7 @@ const {
   processAnswer,
   answerData,
   reset,
-} = useBlockCard<{ pairs: Object }>({
+} = useBlockCard<{ pairs: ItemMap }, Object>({
   block: props.block,
   initialAnswerData: () => ({ pairs: {} }),
 });
@@ -64,7 +68,7 @@ const lines = ref<
     y1: number;
     x2: number;
     y2: number;
-    left: number;
+    left: number | string;
     right: number;
   }[]
 >([]);
@@ -140,7 +144,8 @@ const selectElement = (item: Item, side: string, e: MouseEvent) => {
     }
 
     if (d) {
-      delete answerData.pairs[k];
+      let key = k as keyof Object;
+      delete answerData.pairs[key];
       updateLineCoordinates();
       currentSelect.value = null;
       window.removeEventListener("mousemove", updateTempLine);
@@ -180,8 +185,8 @@ const selectElement = (item: Item, side: string, e: MouseEvent) => {
     lockLeft.value = false;
     lockRight.value = false;
     currentSelect.value = null;
-    answerData.pairs[selectedElements.value[0].id] =
-      selectedElements.value[1].id;
+    let id = `${selectedElements.value[0].id}` as keyof Object;
+    answerData.pairs[id] = selectedElements.value[1].id;
     updateLineCoordinates();
 
     // Clear the selected elements after connecting

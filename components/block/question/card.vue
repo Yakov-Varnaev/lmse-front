@@ -16,7 +16,7 @@ const {
   processAnswer,
   answerData,
   reset,
-} = useBlockCard<{ variants: Number[] }>({
+} = useBlockCard<{ variants: number[] }, Object>({
   block: props.block,
   initialAnswerData: () => ({ variants: [] }),
 });

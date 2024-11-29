@@ -16,7 +16,7 @@ const {
   processAnswer,
   answerData,
   reset,
-} = useBlockCard<{ text: string }>({
+} = useBlockCard<{ text: string }, Object>({
   block: props.block,
   initialAnswerData: () => ({ text: "" }),
 });

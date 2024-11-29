@@ -1,64 +1,100 @@
-<script>
-export default {
-  emits: ["edit", "delete", "up", "down"],
-  props: {
-    block: { type: Object, required: true },
-    editMode: { type: Boolean, required: true },
-    isLast: { type: Boolean, required: true },
-    isFirst: { type: Boolean, required: true },
-  },
-  data() {
-    let opts = !this.editMode
-      ? shuffleArray(this.block.options)
-      : this.block.options;
-    return {
-      groupName: crypto.randomUUID(),
-      answer: [],
-      drag: false,
-      options: [...opts],
-      answerGiven: false,
-      correctAnswer: false,
-    };
-  },
-  methods: {
-    reset() {
-      Object.assign(this.$data, this.$options.data.apply(this));
-    },
-    processAnswer() {
-      var failed = false;
-      this.correctnessArr = this.block.options.map((opt, i) => {
-        let correct = opt.text == this.answer[i].text;
-        if (!correct) {
-          failed = true;
-        } else {
-          if (failed && this.block.failOnFirst) {
-            return false;
-          }
-        }
-        return correct;
-      });
-      this.correctAnswer = this.correctnessArr.every((v) => {
-        return v;
-      });
+<script setup lang="ts">
+import type { Block } from "~/types";
 
-      this.answerGiven = true;
-    },
-  },
-  watch: {
-    drag() {
-      if (!this.answerGiven) return;
-      this.answerGiven = false;
-      this.correctAnswer = false;
-      this.correctnessArr = [];
-    },
-  },
-  computed: {
-    hasText() {
-      return this.block.text.length > 0 && this.block.text !== "<p></p>";
-    },
-  },
+const emits = defineEmits(["edit", "delete", "up", "down"]);
+const props = defineProps<{
+  block: Block;
+  editMode: boolean;
+  isLast: boolean;
+  isFirst: boolean;
+}>();
+type variant = {
+  id: number;
+  text: string;
 };
+
+const {
+  answerGiven,
+  isCorrect,
+  isAnswerLoading,
+  processAnswer,
+  answerData,
+  reset: blockReset,
+} = useBlockCard<{ order: variant[] }, { correct: boolean[] }>(
+  {
+    block: props.block,
+    initialAnswerData: (): { order: variant[] } => ({ order: [] }),
+  },
+  {
+    answerProcessor: {
+      to: (answer: { order: variant[] }) => ({
+        order: answer.order.map((o) => o.id),
+      }),
+      from: (answer: any): { order: variant[] } => {
+        let m: Map<number, variant> = new Map();
+        for (const opt of props.block.meta.options) {
+          m.set(opt.id, opt);
+        }
+        return { order: answer.order.map((i: number): variant => m.get(i)!) };
+      },
+    },
+  },
+);
+
+const getCorrectnessArr = (): boolean[] => {
+  var failed = false;
+  return props.block.meta.options.map((opt: variant, i: number) => {
+    let correct = opt.text == answerData.order[i].text;
+    if (!correct) {
+      failed = true;
+    } else {
+      if (failed && props.block.meta.failOnFirst) {
+        return false;
+      }
+    }
+    return correct;
+  });
+};
+
+const correctnessArr = ref<boolean[]>(
+  answerGiven.value ? getCorrectnessArr() : [],
+);
+
+const drag = ref(false);
+const options = ref(
+  answerGiven.value
+    ? []
+    : !props.editMode
+      ? shuffleArray(props.block.meta.options)
+      : props.block.meta.options,
+);
+
+const reset = () => {
+  blockReset();
+  options.value = shuffleArray(props.block.meta.options);
+};
+
+watch(drag, () => {
+  if (!answerGiven.value) return;
+  answerGiven.value = false;
+  isCorrect.value = false;
+  // .value = [];
+});
+
+const groupName = crypto.randomUUID();
+
+const giveAnswer = async () => {
+  await processAnswer();
+  correctnessArr.value = getCorrectnessArr();
+};
+
+const hasText = computed((): boolean => {
+  return (
+    props.block.meta.text.length > 0 && props.block.meta.text !== "<p></p>"
+  );
+});
 </script>
+
 <template>
   <BlockCardBase
     :edit-mode="editMode"
@@ -76,7 +112,7 @@ export default {
     <v-card-text>
       <VuetifyViewer
         v-if="hasText"
-        :value="block.text"
+        :value="block.meta.text"
         class="bg-background"
         style="min-height: 50px"
       />
@@ -112,14 +148,12 @@ export default {
         class="rounded d-flex flex-wrap"
         min-height="50"
         variant="tonal"
-        :color="
-          !answerGiven ? 'primary' : correctAnswer ? 'success' : 'primary'
-        "
+        :color="!answerGiven ? 'primary' : isCorrect ? 'success' : 'primary'"
       >
         <v-tooltip
           activator="parent"
           location="top"
-          v-if="!answer.length && !editMode"
+          v-if="!answerData.order.length && !editMode"
         >
           Drag items from above
         </v-tooltip>
@@ -130,9 +164,9 @@ export default {
           @end="drag = false"
           :group="groupName"
           animation="200"
-          v-model="answer"
+          v-model="answerData.order"
           item-key="id"
-          :disabled="editMode || (answerGiven && correctAnswer)"
+          :disabled="editMode || (answerGiven && isCorrect)"
         >
           <template v-slot:item="{ element: option, index }">
             <v-chip
@@ -156,10 +190,11 @@ export default {
       <v-btn
         v-if="!answerGiven"
         :disabled="options.length > 0"
+        :loading="isAnswerLoading"
         color="success"
         variant="tonal"
         block
-        @click="processAnswer"
+        @click="giveAnswer"
       >
         Answer
       </v-btn>
@@ -169,11 +204,11 @@ export default {
           <span
             :class="{
               'text-h5': true,
-              'text-success': correctAnswer,
-              'text-error': !correctAnswer,
+              'text-success': isCorrect,
+              'text-error': !isCorrect,
             }"
           >
-            {{ correctAnswer ? "Correct!" : "Wrong!" }}
+            {{ isCorrect ? "Correct!" : "Wrong!" }}
           </span>
           <v-btn class="ml-2" plain prepend-icon="mdi-reload" @click="reset">
             Try Again

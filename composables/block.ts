@@ -1,4 +1,4 @@
-import type { EmitFn } from "vue";
+import type { EmitFn, Reactive } from "vue";
 import { createAnswer } from "~/api/courses";
 import type { Block } from "~/types";
 
@@ -61,7 +61,28 @@ export function useAnswer(courseId: string, chapterId: string, lessonId: string,
 	return { create };
 }
 
-export function useBlockCard<T extends Object>({ block, initialAnswerData }: { block: Block, initialAnswerData: () => T }) {
+export function useBlockCard<T extends Object, AnswerExtra extends Object>(
+	{
+		block,
+		initialAnswerData,
+
+	}: {
+		block: Block,
+		initialAnswerData: () => T,
+
+	},
+	{
+		answerProcessor = {
+			to: (answer: Reactive<T>) => answer,
+			from: (answer: any): T => answer,
+		}
+	}: Partial<{
+		answerProcessor: {
+			to: (answer: Reactive<T>) => any,
+			from: (answer: any) => T,
+		}
+	}> = {},
+) {
 	const loader = useLoader();
 	const courseId = inject("courseId");
 	const chapterId = inject("chapterId");
@@ -69,13 +90,15 @@ export function useBlockCard<T extends Object>({ block, initialAnswerData }: { b
 
 	const answerGiven = ref(block.answerData !== null);
 	const isCorrect = ref(false)
+	const answerExtra = ref<AnswerExtra>(Object())
 	const _data = initialAnswerData()
+
 	if (!!block.answerData) {
-		Object.assign(_data, block.answerData.meta);
+		Object.assign(_data, answerProcessor.from(block.answerData.meta));
 		isCorrect.value = block.answerData.isCorrect;
 	}
 
-	const answerData = reactive({ ..._data })
+	const answerData = reactive<T>(_data)
 
 	async function processAnswer() {
 		loader.startKeyLoading(`${block.id}-answer`);
@@ -84,12 +107,14 @@ export function useBlockCard<T extends Object>({ block, initialAnswerData }: { b
 			chapterId,
 			lessonId,
 			block.id,
-			answerData
+			answerProcessor.to(answerData)
 		);
+		const { answer, result } = respData
+		answerExtra.value = result
 		loader.stopKeyLoading(`${block.id}-answer`);
 		answerGiven.value = true;
-		isCorrect.value = respData.isCorrect;
-		return respData;
+		isCorrect.value = answer.isCorrect;
+		return answer;
 	}
 
 	const isAnswerLoading = computed(() => {
@@ -108,6 +133,7 @@ export function useBlockCard<T extends Object>({ block, initialAnswerData }: { b
 		isAnswerLoading,
 		processAnswer,
 		answerData,
+		answerExtra,
 		reset,
 	}
 }
