@@ -150,12 +150,26 @@ export default {
             @cancel="toggleEditMode"
             v-if="mode.edit"
           >
+            <template #inline="{ data }">
+              <v-textarea
+                counter
+                v-model="data.shortDescription"
+                class="mb-3"
+              />
+            </template>
           </InstanceEditor>
           <InstanceCard
             v-else
             :title="course.title"
             :content="course.description"
-          />
+          >
+            <template #inline>
+              <v-divider class="my-4"></v-divider>
+              <h2>Short Description</h2>
+              {{ course.shortDescription }}
+              <v-divider class="my-4"></v-divider>
+            </template>
+          </InstanceCard>
         </v-col>
       </v-row>
       <v-row justify="center">
