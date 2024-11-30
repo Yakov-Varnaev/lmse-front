@@ -1,13 +1,8 @@
-<script>
-export default {
-  setup() {
-    definePageMeta({
-      name: "course-detail",
-      middleware: "authenticated",
-      extra: { obj: "course", field: "courseId" },
-    });
-  },
-};
+<script setup>
+definePageMeta({
+  name: "course-detail",
+  middleware: "authenticated",
+});
 </script>
 
 <template>

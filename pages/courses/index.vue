@@ -61,19 +61,24 @@ export default {
         <v-card
           variant="flat"
           :to="{ name: 'course-detail', params: { id: course.id } }"
+          class="fill-height d-flex flex-column"
         >
-          <v-card-text>
-            <v-img src="https://cdn.vuetifyjs.com/images/cards/house.jpg">
-            </v-img>
-          </v-card-text>
-          <v-card-title>
-            {{ course.title }}
-          </v-card-title>
-          <v-card-text class="short-description">
-            {{ course.description }}
-          </v-card-text>
-          <v-card-text>
+          <div>
+            <v-card-text>
+              <v-img src="https://cdn.vuetifyjs.com/images/cards/house.jpg">
+              </v-img>
+            </v-card-text>
+            <v-card-title>
+              {{ course.title }}
+            </v-card-title>
+            <v-card-text class="short-description">
+              {{ course.shortDescription }}
+            </v-card-text>
+          </div>
+
+          <v-card-actions class="mt-auto">
             <v-chip
+              class="mt-auto"
               pill
               color="primary"
               :to="{ name: 'profile', params: { id: course.owner.id } }"
@@ -81,7 +86,7 @@ export default {
               <v-icon class="mr-2">mdi-account-circle</v-icon>
               {{ course.owner.firstName + " " + course.owner.lastName }}
             </v-chip>
-          </v-card-text>
+          </v-card-actions>
         </v-card>
       </v-col>
     </v-row>
@@ -92,13 +97,3 @@ export default {
     </v-row>
   </v-container>
 </template>
-
-<style scoped>
-.short-description {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
-  line-clamp: 3;
-  overflow: hidden;
-}
-</style>

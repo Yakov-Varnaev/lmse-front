@@ -21,6 +21,9 @@ export default defineNuxtPlugin((app) => {
 			VCard: {
 				class: "bg-background"
 			},
+			VBreadcrumbsItem: {
+				nuxt: true,
+			}
 		}
 	})
 	app.vueApp.use(vuetify)

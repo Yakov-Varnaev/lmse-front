@@ -23,9 +23,6 @@ export const useBreadcrumbs = defineStore("bread", {
 		objectMap: {}
 	}),
 	actions: {
-		addToMap(o: HasId) {
-			this.objectMap[o.id] = o;
-		},
 		push(crumb: Crumb) {
 			this.crumbs = [...this.crumbs, crumb];
 		},

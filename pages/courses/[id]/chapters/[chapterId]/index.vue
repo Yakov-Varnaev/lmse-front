@@ -6,10 +6,6 @@ definePageMeta({
 });
 </script>
 
-<script>
-export default {};
-</script>
-
 <template>
   <ChapterDetail
     :course-id="$route.params.id"

@@ -5,6 +5,7 @@ export default {
   },
 };
 </script>
+
 <template>
   <v-app>
     <LmseAppBar app />

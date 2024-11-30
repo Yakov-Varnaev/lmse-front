@@ -15,7 +15,7 @@ export default {
   },
   data() {
     return {
-      key: "course-detail",
+      key: "course-detail-loading",
       course: {},
       chapters: [],
     };
@@ -28,7 +28,6 @@ export default {
       });
     },
     async enroll() {
-      console.log("here");
       try {
         await enrollCourse(this.course.id);
         this.course.isStudent = true;
@@ -45,7 +44,6 @@ export default {
     },
     async loadCourse() {
       const { data } = await retrieveCourse(this.courseId);
-      this.context.setCourse(data);
       this.course = data;
     },
     async loadChapters() {
@@ -56,6 +54,7 @@ export default {
   async mounted() {
     this.loader.startKeyLoading(this.key);
     await this.loadCourse();
+    this.context.setCourse(this.course);
     await this.loadChapters();
     this.bread.loadFromContext();
     this.loader.stopKeyLoading(this.key);

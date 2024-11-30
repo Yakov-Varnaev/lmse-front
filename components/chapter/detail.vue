@@ -92,7 +92,8 @@ export default {
     this.loader.startLoading();
     await this.loadChapter();
     this.courseContext.setChapter(this.chapter);
-    this.bread.loadFromContext();
+    await this.courseContext.load();
+    await this.bread.loadFromContext();
     await this.loadLessons();
     this.processDrawerItems();
     this.loader.stopLoading();
