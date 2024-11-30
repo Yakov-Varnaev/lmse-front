@@ -27,6 +27,7 @@ export default {
       </div>
     </v-card-title>
     <v-card-text>
+      <slot name="inline" />
       <VuetifyViewer :value="content" class="bg-background" />
     </v-card-text>
   </v-card>

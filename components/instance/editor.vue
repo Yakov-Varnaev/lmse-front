@@ -29,6 +29,7 @@ export default {
 <template>
   <v-container class="bg-background editor-container">
     <v-text-field v-model.trim="data.title" />
+    <slot name="inline" :data="data" />
     <VuetifyTiptap
       v-model.trim="data.description"
       class="editor bg-background"
