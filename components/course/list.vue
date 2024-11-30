@@ -1,21 +1,27 @@
-<script>
-export default {
-  props: {
-    isAuthor: {
-      type: Boolean,
-      required: true,
-    },
-    courses: {
-      type: Array[Object],
-      required: true,
-    },
-  },
-  methods: {
-    redirectToCourse(courseId) {
-      return () =>
-        useRouter().push({ name: "course-editor", params: { id: courseId } });
-    },
-  },
+<script setup lang="ts">
+import type { Course } from "~/types";
+
+const props = defineProps<{
+  isAuthor: boolean;
+  courses: Course[];
+}>();
+
+const emit = defineEmits(["delete"]);
+
+const deleteConfirmationDialog = ref(false);
+
+const toggleDeleteConfirmationDialog = () => {
+  deleteConfirmationDialog.value = !deleteConfirmationDialog.value;
+};
+
+const performDelete = (course: Course) => {
+  toggleDeleteConfirmationDialog();
+  emit("delete", course);
+};
+
+const redirectToCourse = (courseId: string) => {
+  return () =>
+    useRouter().push({ name: "course-editor", params: { id: courseId } });
 };
 </script>
 
@@ -39,19 +45,35 @@ export default {
         </v-list-item-title>
         <v-spacer></v-spacer>
         <template v-slot:append>
-          <v-hover v-if="isAuthor">
-            <template #default="{ isHovering, props }">
-              <v-btn
-                v-bind="props"
-                icon
-                flat
-                @click.stop="$emit('delete', course)"
-                :class="{ 'text-red': isHovering }"
-              >
-                <v-icon icon="mdi-delete-outline" />
-              </v-btn>
+          <v-dialog v-model="deleteConfirmationDialog">
+            <template v-slot:activator="{ props: activatorProps }">
+              <v-hover v-if="isAuthor">
+                <template #default="{ isHovering, props }">
+                  <v-btn
+                    v-bind="{ ...props, ...activatorProps }"
+                    icon
+                    flat
+                    :class="{ 'text-red': isHovering }"
+                  >
+                    <v-icon icon="mdi-delete-outline" />
+                  </v-btn>
+                </template>
+              </v-hover>
             </template>
-          </v-hover>
+            <v-row align="center" justify="center">
+              <v-col cols="4">
+                <v-card>
+                  <v-card-text> Are you sure? </v-card-text>
+                  <v-card-actions>
+                    <ButtonBlock
+                      @cancel="deleteConfirmationDialog = false"
+                      @submit="() => performDelete(course)"
+                    />
+                  </v-card-actions>
+                </v-card>
+              </v-col>
+            </v-row>
+          </v-dialog>
         </template>
       </v-list-item>
     </v-list>
