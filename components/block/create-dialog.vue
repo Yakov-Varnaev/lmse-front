@@ -88,7 +88,11 @@ export default {
           </v-combobox>
         </v-card-text>
         <v-card-actions>
-          <ButtonBlock @cancel="toggle" @submit="createBlock" />
+          <ButtonBlock
+            @cancel="toggle"
+            @submit="createBlock"
+            :is-submit-active="!!template"
+          />
         </v-card-actions>
       </v-card>
     </template>
