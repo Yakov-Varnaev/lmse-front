@@ -1,31 +1,17 @@
-<script>
+<script setup lang="ts">
 import { createCourse } from "~/api/courses";
+const emit = defineEmits(["cancel", "created"]);
 
-export default {
-  setup() {
-    return {
-      loader: useLoader(),
-    };
-  },
-  data() {
-    return {
-      courseData: {
-        title: "",
-      },
-    };
-  },
-  methods: {
-    cancel() {
-      this.$emit("cancel");
-    },
-    async create() {
-      const { data } = await this.loader.withLoader(
-        createCourse,
-        this.courseData,
-      );
-      this.$emit("created", data);
-    },
-  },
+const courseData = reactive({
+  title: "",
+});
+const cancel = () => {
+  emit("cancel");
+};
+
+const create = async () => {
+  const { data } = await createCourse(courseData);
+  emit("created", data);
 };
 </script>
 
@@ -42,14 +28,7 @@ export default {
       </v-form>
     </v-card-text>
     <v-card-actions>
-      <v-row>
-        <v-col>
-          <v-btn color="primary" block @click="create"> Submit</v-btn>
-        </v-col>
-        <v-col>
-          <v-btn color="red" block @click="cancel">Cancel</v-btn>
-        </v-col>
-      </v-row>
+      <ButtonBlock @submit="create" , @cancel="cancel" />
     </v-card-actions>
   </v-card>
 </template>

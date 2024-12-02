@@ -62,7 +62,7 @@ export default {
       var { data } = await getChapters(this.courseId);
       this.chapters = data;
     },
-    async deleteChapter(chapter) {
+    async deleteChapterFromList(chapter) {
       await deleteChapter(this.courseId, chapter.id);
       this.chapters = this.chapters.filter((v) => v.id !== chapter.id);
       this.processDrawerItems();
@@ -105,7 +105,7 @@ export default {
       :items="drawerItems"
       :edit-mode="mode.edit"
       @updated="updateChapterOrder"
-      @deleted="deleteChapter"
+      :onDelete="deleteChapterFromList"
     >
       <template v-slot:actionButton>
         <ChapterCreateDialog @created="appendChapter" :course-id="courseId">
@@ -122,6 +122,7 @@ export default {
           </template>
         </ChapterCreateDialog>
       </template>
+
       <template #append>
         <v-hover>
           <template #default="{ isHovering, props }">

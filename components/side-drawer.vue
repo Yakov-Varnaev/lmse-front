@@ -1,25 +1,51 @@
-<script>
-export default {
-  props: {
-    title: { type: String, required: true },
-    editMode: { type: Boolean, default: false },
-    items: { type: Array, required: true },
-  },
-  methods: {
-    itemUpdate(data) {
-      this.$emit("updated", data);
-    },
-  },
-  data() {
-    return {
-      drag: true,
-      showTooltipFor: {},
-    };
-  },
+<script setup lang="ts">
+const emit = defineEmits(["updated", "openCreate", "delete"]);
+const props = defineProps<{
+  title: string;
+  editMode: boolean;
+  items: Object[];
+  onDelete: (item: any) => Promise<void>;
+}>();
+
+const deleteConfirmationDialog = ref(false);
+const toggleDeleteDialog = () => {
+  deleteConfirmationDialog.value = !deleteConfirmationDialog.value;
+};
+
+const itemUpdate = (data: any) => {
+  emit("updated", data);
+};
+
+const itemToDelete = ref<any | null>(null);
+
+const performDelete = (item: any) => {
+  itemToDelete.value = item;
+  toggleDeleteDialog();
+};
+
+const performItemDelete = async () => {
+  await props.onDelete(itemToDelete.value);
+  toggleDeleteDialog();
 };
 </script>
 <template>
   <v-navigation-drawer :border="0">
+    <v-dialog id="deleteDialog" v-model="deleteConfirmationDialog">
+      <v-row justify="center">
+        <v-col cols="4">
+          <v-card>
+            <v-card-text> Are you sure? </v-card-text>
+            <v-card-actions>
+              <ButtonBlock
+                @cancel="toggleDeleteDialog"
+                @submit="() => performItemDelete()"
+              />
+            </v-card-actions>
+          </v-card>
+        </v-col>
+      </v-row>
+    </v-dialog>
+
     <v-list-item class="pa-3 bg-primary border rounded-e-lg">
       <div class="d-flex align-center">
         <h1>{{ $props.title }}</h1>
@@ -29,7 +55,7 @@ export default {
             color="primary"
             class="ml-auto"
             elevation="0"
-            @click="$emit('openCreate')"
+            @click="emit('openCreate')"
           >
             <v-icon>mdi-plus</v-icon>
           </v-btn>
@@ -74,7 +100,7 @@ export default {
                   color="background"
                   size="xs"
                   class="pa-1"
-                  @click="$emit('deleted', element)"
+                  @click="performDelete(element)"
                 >
                   <v-icon
                     size="xs"

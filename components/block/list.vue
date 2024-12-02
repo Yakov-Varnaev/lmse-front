@@ -37,6 +37,8 @@ export default {
         "open-question": BlockOpenQuestion,
         ordering: BlockOrdering,
       },
+      deleteDialog: false,
+      blockToDelete: null,
     };
   },
   methods: {
@@ -70,9 +72,22 @@ export default {
       );
       this.$emit("update", data);
     },
+    toggleDeleteDialog() {
+      this.deleteDialog = !this.deleteDialog;
+    },
     async onBlockDelete(id) {
-      await deleteBlock(this.courseId, this.chapterId, this.lessonId, id);
-      this.$emit("delete", id);
+      this.blockToDelete = id;
+      this.toggleDeleteDialog();
+    },
+    async performBlockDelete() {
+      await deleteBlock(
+        this.courseId,
+        this.chapterId,
+        this.lessonId,
+        this.blockToDelete,
+      );
+      this.$emit("delete", this.blockToDelete);
+      this.toggleDeleteDialog();
     },
     async moveUp(idx) {
       if (idx === 0) {
@@ -124,6 +139,21 @@ export default {
 
 <template>
   <div>
+    <v-dialog v-model="deleteDialog">
+      <v-row>
+        <v-col cols="3">
+          <v-card>
+            <v-card-text>Are you sure?</v-card-text>
+            <v-card-actions>
+              <ButtonBlock
+                @cancel="toggleDeleteDialog"
+                @submit="performBlockDelete"
+              />
+            </v-card-actions>
+          </v-card>
+        </v-col>
+      </v-row>
+    </v-dialog>
     <div class="mt-2">
       <component
         :key="block.id"

@@ -12,6 +12,11 @@ export default (error) => {
     return Promise.reject(error);
   }
 
+  let errs = error.response?.data || [];
+  errs.forEach((msg) => {
+    alert.reportError(msg);
+  });
+
   // if (error) {
   //   if (error.response?.data) {
   //     for (const [key, value] of Object.entries(error.response.data)) {

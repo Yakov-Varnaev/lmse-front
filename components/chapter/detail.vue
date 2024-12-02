@@ -107,7 +107,7 @@ export default {
       title="Lessons"
       :edit-mode="mode.edit"
       @updated="updateLessonOrder"
-      @deleted="deleteLessonItem"
+      :onDelete="deleteLessonItem"
       :items="drawerItems"
       @openCreate="toggleCreateDialog"
     />
