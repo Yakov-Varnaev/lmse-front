@@ -1,5 +1,10 @@
 <script setup lang="ts">
 const bread = useBreadcrumbs();
+const loader = useLoader();
+
+const isLoading = computed(() => {
+  return !!loader.loaderMap["braed"];
+});
 
 const crumbs = computed((): Partial<Crumb>[] => {
   let route = useRoute();
@@ -31,6 +36,7 @@ const crumbs = computed((): Partial<Crumb>[] => {
 
 <template>
   <v-chip color="primary">
-    <v-breadcrumbs :items="crumbs" />
+    <v-breadcrumbs v-if="!isLoading" :items="crumbs" />
+    <span v-else>loading</span>
   </v-chip>
 </template>

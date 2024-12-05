@@ -55,8 +55,8 @@ export default {
     this.loader.startKeyLoading(this.key);
     await this.loadCourse();
     this.context.setCourse(this.course);
+    await this.bread.loadFromContext();
     await this.loadChapters();
-    this.bread.loadFromContext();
     this.loader.stopKeyLoading(this.key);
   },
 };

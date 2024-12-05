@@ -31,9 +31,10 @@ export const useBreadcrumbs = defineStore("bread", {
 		},
 		async loadFromContext() {
 			const loader = useLoader()
-			const ctx = useCourseContext()
-			this.crumbs = [];
+
 			loader.withKeyLoader('bread', async () => {
+				const ctx = useCourseContext()
+				this.crumbs = [];
 				await ctx.load()
 				if (ctx.course === null) {
 					return;
