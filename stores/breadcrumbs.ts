@@ -48,7 +48,7 @@ export const useBreadcrumbs = defineStore("bread", {
 				}
 				this.crumbs.push({
 					title: ctx.lesson.title,
-					to: { name: 'lessons', params: { id: ctx.course.id, chapterId: ctx.chapter.id, lessonId: ctx.lesson.id } }
+					to: { name: 'lesson-detail', params: { id: ctx.course.id, chapterId: ctx.chapter.id, lessonId: ctx.lesson.id } }
 				})
 			})
 		}

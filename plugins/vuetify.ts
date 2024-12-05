@@ -2,7 +2,7 @@
 
 import '@mdi/font/css/materialdesignicons.css'
 import 'vuetify/styles'
-import { VTreeview } from 'vuetify/labs/VTreeview'
+import { VTreeview, VTreeviewItem } from 'vuetify/labs/VTreeview'
 import { createVuetify } from 'vuetify'
 
 export default defineNuxtPlugin((app) => {
@@ -10,6 +10,7 @@ export default defineNuxtPlugin((app) => {
 		// ... your configuration
 		components: {
 			VTreeview,
+			VTreeviewItem,
 		},
 		defaults: {
 			VNavigationDrawer: {

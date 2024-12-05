@@ -6,6 +6,7 @@ import {
   deleteChapter,
   updateCourse,
   publishCourse,
+  checkCourse,
 } from "~/api/courses";
 
 export default {
@@ -28,6 +29,7 @@ export default {
       course: {},
       chapters: [],
       drawerItems: [],
+      errors: {},
     };
   },
   methods: {
@@ -48,6 +50,10 @@ export default {
     async publishCourse() {
       await publishCourse(this.courseId);
       this.toggleEditMode();
+    },
+    async checkCourseBeforePublishing() {
+      const { data } = await checkCourse(this.courseId);
+      this.errors = data;
     },
     async updateChapterOrder(data) {
       // TODO: im not sure if refetch is a good idea here.
@@ -177,6 +183,23 @@ export default {
         <v-col lg="9" xl="9">
           <v-card
             v-if="mode.edit"
+            @click="checkCourseBeforePublishing"
+            variant="tonal"
+            color="warning"
+          >
+            <v-card-text class="d-flex"> Check </v-card-text>
+          </v-card>
+        </v-col>
+      </v-row>
+      <v-row justify="center">
+        <v-col lg="9" xl="9">
+          <CourseCheckTree :data="errors" />
+        </v-col>
+      </v-row>
+      <v-row justify="center">
+        <v-col lg="9" xl="9">
+          <v-card
+            v-if="mode.edit"
             @click="publishCourse"
             variant="tonal"
             color="primary"
@@ -188,9 +211,3 @@ export default {
     </v-container>
   </div>
 </template>
-
-<style scoped>
-.content-container {
-  height: 100%;
-}
-</style>

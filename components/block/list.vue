@@ -1,4 +1,4 @@
-<script>
+<script setup lang="ts">
 import { deleteBlock, updateBlock } from "~/api/courses";
 import {
   BlockConnection,
@@ -7,140 +7,101 @@ import {
   BlockQuestion,
   BlockText,
 } from "#components";
+import type { Block } from "~/types";
 
-export default {
-  emits: ["update", "refetch", "delete"],
-  props: {
-    courseId: { type: String, required: true },
-    chapterId: { type: String, required: true },
-    lessonId: { type: String, required: true },
-    editMode: { type: Boolean, required: true },
-    blocks: {
-      type: Array,
-      required: true,
-    },
-  },
-  provide() {
-    return {
-      courseId: this.courseId,
-      chapterId: this.chapterId,
-      lessonId: this.lessonId,
-    };
-  },
-  data() {
-    return {
-      drag: false,
-      componentMap: {
-        text: BlockText,
-        question: BlockQuestion,
-        connection: BlockConnection,
-        "open-question": BlockOpenQuestion,
-        ordering: BlockOrdering,
-      },
-      deleteDialog: false,
-      blockToDelete: null,
-    };
-  },
-  methods: {
-    appendBlock() {
-      // TODO: no need to refetch actually
-      this.$emit("refetch");
-    },
-    async updateBlockOrder({ oldIndex, newIndex }) {
-      // Looks unhealthy...
-      const oldBlock = this.blocks[newIndex];
-      await updateBlock(
-        this.courseId,
-        this.chapterId,
-        this.lessonId,
-        oldBlock.id,
-        {
-          ...oldBlock,
-          order: newIndex,
-        },
-      );
-      this.$emit("refetch");
-    },
-    async updateBlockContent(block, newMeta) {
-      block.meta = newMeta;
-      const { data } = await updateBlock(
-        this.courseId,
-        this.chapterId,
-        this.lessonId,
-        block.id,
-        block,
-      );
-      this.$emit("update", data);
-    },
-    toggleDeleteDialog() {
-      this.deleteDialog = !this.deleteDialog;
-    },
-    async onBlockDelete(id) {
-      this.blockToDelete = id;
-      this.toggleDeleteDialog();
-    },
-    async performBlockDelete() {
-      await deleteBlock(
-        this.courseId,
-        this.chapterId,
-        this.lessonId,
-        this.blockToDelete,
-      );
-      this.$emit("delete", this.blockToDelete);
-      this.toggleDeleteDialog();
-    },
-    async moveUp(idx) {
-      if (idx === 0) {
-        return;
-      }
-      const oldBlock = this.blocks[idx];
-      await updateBlock(
-        this.courseId,
-        this.chapterId,
-        this.lessonId,
-        oldBlock.id,
-        {
-          ...oldBlock,
-          order: idx - 1,
-        },
-      );
-      [this.blocks[idx], this.blocks[idx - 1]] = [
-        this.blocks[idx - 1],
-        this.blocks[idx],
-      ];
-      // this.$emit("refetch");
-    },
-    async moveDown(idx) {
-      if (idx === this.blocks.length - 1) {
-        return;
-      }
-      this.drag = true;
-      setTimeout(() => (this.drag = false), 200);
-      const oldBlock = this.blocks[idx];
-      await updateBlock(
-        this.courseId,
-        this.chapterId,
-        this.lessonId,
-        oldBlock.id,
-        {
-          ...oldBlock,
-          order: idx + 1,
-        },
-      );
-      [this.blocks[idx], this.blocks[idx + 1]] = [
-        this.blocks[idx + 1],
-        this.blocks[idx],
-      ];
-      // this.$emit("refetch");
-    },
-  },
+const emit = defineEmits(["update", "refetch", "delete"]);
+const { courseId, chapterId, lessonId, editMode, blocks } = defineProps<{
+  courseId: string;
+  chapterId: string;
+  lessonId: string;
+  editMode: boolean;
+  blocks: Block[];
+}>();
+
+provide("courseId", courseId);
+provide("chapterId", chapterId);
+provide("lessonId", lessonId);
+
+const drag = ref(false);
+
+const componentMap: { [key: string]: Component } = {
+  text: BlockText,
+  question: BlockQuestion,
+  connection: BlockConnection,
+  "open-question": BlockOpenQuestion,
+  ordering: BlockOrdering,
 };
+const deleteDialog = ref(false);
+const blockToDelete = ref<string | null>(null);
+
+const appendBlock = () => {
+  // TODO: no need to refetch actually
+  emit("refetch");
+};
+
+async function updateBlockContent(block: Block, newMeta: any) {
+  block.meta = newMeta;
+  const { data } = await updateBlock(
+    courseId,
+    chapterId,
+    lessonId,
+    block.id,
+    block,
+  );
+  emit("update", data);
+}
+const toggleDeleteDialog = () => {
+  deleteDialog.value = !deleteDialog.value;
+};
+async function onBlockDelete(id: string) {
+  blockToDelete.value = id;
+  toggleDeleteDialog();
+}
+const performBlockDelete = async () => {
+  await deleteBlock(courseId, chapterId, lessonId, blockToDelete.value);
+  emit("delete", blockToDelete.value);
+  toggleDeleteDialog();
+};
+async function moveUp(idx: number) {
+  if (idx === 0) {
+    return;
+  }
+  const oldBlock = blocks[idx];
+  await updateBlock(courseId, chapterId, lessonId, oldBlock.id, {
+    ...oldBlock,
+    order: idx - 1,
+  });
+  [blocks[idx], blocks[idx - 1]] = [blocks[idx - 1], blocks[idx]];
+}
+async function moveDown(idx: number) {
+  if (idx === blocks.length - 1) {
+    return;
+  }
+  drag.value = true;
+  setTimeout(() => (drag.value = false), 200);
+  const oldBlock = blocks[idx];
+  await updateBlock(courseId, chapterId, lessonId, oldBlock.id, {
+    ...oldBlock,
+    order: idx + 1,
+  });
+  [blocks[idx], blocks[idx + 1]] = [blocks[idx + 1], blocks[idx]];
+}
+
+onMounted(() => {
+  setTimeout(() => {
+    const bid = useRoute().query.blockId;
+    if (!bid) return;
+    const block = document.getElementById(bid.toString());
+    if (!block) return;
+    block.scrollIntoView({ behavior: "smooth" });
+  }, 300);
+});
 </script>
 
 <template>
   <div>
     <v-dialog v-model="deleteDialog">
-      <v-row>
+      <v-row justify="center">
         <v-col cols="3">
           <v-card>
             <v-card-text>Are you sure?</v-card-text>
@@ -156,6 +117,7 @@ export default {
     </v-dialog>
     <div class="mt-2">
       <component
+        :id="block.id"
         :key="block.id"
         v-for="(block, idx) in blocks"
         class="fill-width mt-2"

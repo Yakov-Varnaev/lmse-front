@@ -1,6 +1,6 @@
 <script setup>
 definePageMeta({
-  name: "lessons",
+  name: "lesson-detail",
   middleware: "authenticated",
   extra: { obj: "lesson", field: "lessonId" },
 });

@@ -33,14 +33,12 @@ export const useCourseContext = defineStore("store/course-context", {
 
 			let chapterId = useRoute().params.chapterId;
 			if (chapterId && !this.chapter) {
-				console.log('chapter', chapterId)
 				const { data: chapterData } = await retrieveChapter(courseId, chapterId);
 				this.setChapter(chapterData);
 			}
 
 			let lessonId = useRoute().params.lessonId;
 			if (lessonId && !this.lesson) {
-				console.log('lesson', lessonId)
 				const { data: lessonData } = await retrieveLesson(
 					courseId,
 					chapterId,

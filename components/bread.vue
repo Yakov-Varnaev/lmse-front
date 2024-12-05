@@ -2,17 +2,18 @@
 const bread = useBreadcrumbs();
 
 const crumbs = computed((): Partial<Crumb>[] => {
-  console.log("crumbs");
   let route = useRoute();
   let router = useRouter();
   const r = router.resolve(route.fullPath);
   let smartCrumb = false;
-  console.log(r.name);
   if (
     r.name &&
-    ["course-detail", "course-editor", "chapter-detail", "lessons"].includes(
-      r.name,
-    )
+    [
+      "course-detail",
+      "course-editor",
+      "chapter-detail",
+      "lesson-detail",
+    ].includes(r.name)
   ) {
     smartCrumb = true;
   }

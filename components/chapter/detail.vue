@@ -39,7 +39,7 @@ export default {
       this.drawerItems = this.lessons.map((lesson) => ({
         ...lesson,
         to: {
-          name: "lessons",
+          name: "lesson-detail",
           params: {
             id: this.courseId,
             chapterId: this.chapterId,
