@@ -94,6 +94,10 @@ onMounted(() => {
     const block = document.getElementById(bid.toString());
     if (!block) return;
     block.scrollIntoView({ behavior: "smooth" });
+    let route = useRoute();
+    let query = { ...route.query };
+    delete query.blockId;
+    useRouter().replace({ query: { ...query } });
   }, 300);
 });
 </script>

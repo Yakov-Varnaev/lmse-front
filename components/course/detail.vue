@@ -23,8 +23,8 @@ export default {
   methods: {
     goToEditor() {
       navigateTo({
-        name: "chapter-detail",
-        params: { id: this.course.id, chapterId: this.chapters[0].id },
+        name: "course-editor",
+        params: { id: this.course.id },
       });
     },
     async enroll() {

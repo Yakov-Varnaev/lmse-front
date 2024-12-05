@@ -29,7 +29,7 @@ export default {
       course: {},
       chapters: [],
       drawerItems: [],
-      errors: {},
+      errors: null,
     };
   },
   methods: {
@@ -128,24 +128,6 @@ export default {
           </template>
         </ChapterCreateDialog>
       </template>
-
-      <template #append>
-        <v-hover>
-          <template #default="{ isHovering, props }">
-            <v-list-item v-if="mode.edit">
-              <v-btn
-                v-bind="props"
-                :class="{ 'text-red': isHovering, 'mb-1': true }"
-                block
-                variant="flat"
-                prepend-icon="mdi-delete-outline"
-              >
-                Delete
-              </v-btn>
-            </v-list-item>
-          </template>
-        </v-hover>
-      </template>
     </SideDrawer>
     <!-- content -->
     <v-container v-if="!isLoading" class="align-start content-container">
@@ -192,19 +174,19 @@ export default {
         </v-col>
       </v-row>
       <v-row justify="center">
-        <v-col lg="9" xl="9">
-          <CourseCheckTree :data="errors" />
-        </v-col>
-      </v-row>
-      <v-row justify="center">
-        <v-col lg="9" xl="9">
-          <v-card
-            v-if="mode.edit"
-            @click="publishCourse"
-            variant="tonal"
-            color="primary"
-          >
-            <v-card-text class="d-flex"> Publish! </v-card-text>
+        <v-col lg="9" xl="9" v-if="errors !== null">
+          <CourseCheckTree v-if="!errors.valid" :data="errors" />
+          <v-card variant="outlined" color="success">
+            <v-card-title>All good!</v-card-title>
+            <v-card
+              class="ma-2"
+              v-if="mode.edit"
+              @click="publishCourse"
+              variant="tonal"
+              color="success"
+            >
+              <v-card-text class="d-flex"> Publish! </v-card-text>
+            </v-card>
           </v-card>
         </v-col>
       </v-row>
