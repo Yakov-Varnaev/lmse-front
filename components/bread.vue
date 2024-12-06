@@ -6,7 +6,7 @@ const isLoading = computed(() => {
   return !!loader.loaderMap["braed"];
 });
 
-const crumbs = computed((): Partial<Crumb>[] => {
+const crumbs = computed((): Crumb[] => {
   let route = useRoute();
   let router = useRouter();
   const r = router.resolve(route.fullPath);
@@ -18,7 +18,7 @@ const crumbs = computed((): Partial<Crumb>[] => {
       "course-editor",
       "chapter-detail",
       "lesson-detail",
-    ].includes(r.name)
+    ].includes(String(r.name))
   ) {
     smartCrumb = true;
   }

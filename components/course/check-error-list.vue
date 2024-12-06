@@ -1,25 +1,37 @@
 <script setup lang="ts">
 defineProps<{ errors: { code: string }[] }>();
 
-const errCodeMap = {
+const errCodeMap: { [key: string]: { en: string } } = {
   "course.error.short.short-description": {
     en: "Course short description is too short!",
   },
-  "course.error.short.description": { en: "Course description is too short!" },
-  "course.error.no.chapters": { en: "Course must have at least one chapter!" },
+  "course.error.short.description": {
+    en: "Course description is too short!",
+  },
+  "course.error.no.chapters": {
+    en: "Course must have at least one chapter!",
+  },
   "chapter.error.short.description": {
     en: "Chapter description is too short!",
   },
-  "chapter.error.no.lessons": { en: "Chapter must have at least one lesson!" },
-  "lesson.error.no.blocks": { en: "Lesson must have at least one block!" },
-  "block.text.empty": { en: "Block has no text!" },
+  "chapter.error.no.lessons": {
+    en: "Chapter must have at least one lesson!",
+  },
+  "lesson.error.no.blocks": {
+    en: "Lesson must have at least one block!",
+  },
+  "block.text.empty": {
+    en: "Block has no text!",
+  },
   "block.answer.empty": {
     en: "Block must have some answer!",
   },
   "block.content.empty": {
     en: "Block content is empty",
   },
-  "block.content.invalid": { en: "Block content is invalid" },
+  "block.content.invalid": {
+    en: "Block content is invalid",
+  },
   "block.ordering.options.empty": {
     en: "Ordering block must have at least one option!",
   },

@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 
 export interface Crumb {
 	title: string,
-	to: Object | null,
+	to?: Object,
 }
 
 interface HasId {
