@@ -1,6 +1,5 @@
 <script setup lang="ts">
 const { variant, answerGiven, answerCorrect, selected } = defineProps<{
-  correct: boolean;
   selected: boolean;
   readonly: boolean;
   answerCorrect: boolean;

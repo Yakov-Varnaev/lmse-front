@@ -17,6 +17,8 @@ const props = defineProps<{
   isFirst: boolean;
 }>();
 
+const courseContext = useCourseContext();
+
 const {
   answerGiven,
   isCorrect,
@@ -111,7 +113,7 @@ const hasText = computed(() => {
             {{ isCorrect ? "Correct!" : "Wrong!" }}
           </span>
           <v-btn
-            v-if="!isCorrect"
+            v-if="!isCorrect || courseContext.isOwner"
             class="ml-2"
             plain
             prepend-icon="mdi-reload"

@@ -83,6 +83,7 @@ export function useBlockCard<T extends Object, AnswerExtra extends Object>(
 		}
 	}> = {},
 ) {
+	const context = useCourseContext();
 	const loader = useLoader();
 	const courseId = inject("courseId");
 	const chapterId = inject("chapterId");
@@ -107,7 +108,8 @@ export function useBlockCard<T extends Object, AnswerExtra extends Object>(
 			chapterId,
 			lessonId,
 			block.id,
-			answerProcessor.to(answerData)
+			answerProcessor.to(answerData),
+			context.isOwner,
 		);
 		const { answer, result } = respData
 		answerExtra.value = result

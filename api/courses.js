@@ -175,11 +175,17 @@ export const createAnswer = async (
   lessonId,
   blockId,
   data,
+  fake = null,
 ) => {
   const { $apiv1: apiv1 } = useNuxtApp();
+  const params = {};
+  if (fake) {
+    params.fake = fake;
+  }
   return await apiv1.post(
     `courses/${courseId}/chapters/${chapterId}/lessons/${lessonId}/blocks/${blockId}/answers/`,
     data,
+    { params },
   );
 };
 
