@@ -78,7 +78,7 @@ export default {
       this.imageChanged = false;
       this.closeProfileEdit();
     },
-    async updateFile(e) {
+    updateFile(e) {
       const file = e.target.files[0];
       this.file = file;
       this.fileUrl = URL.createObjectURL(file);

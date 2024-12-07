@@ -147,6 +147,20 @@ export const deleteBlock = async (courseId, chapterId, lessonId, blockId) => {
   );
 };
 
+export const uploadBlockMedia = async (
+  courseId,
+  chapterId,
+  lessonId,
+  blockId,
+  data,
+) => {
+  const { $apiv1: apiv1 } = useNuxtApp();
+  return await apiv1.post(
+    `courses/${courseId}/chapters/${chapterId}/lessons/${lessonId}/blocks/${blockId}/media/`,
+    data,
+  );
+};
+
 /* Templates */
 
 export const getTemplates = async () => {

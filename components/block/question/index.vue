@@ -19,7 +19,7 @@ const { editMode } = props;
   <div>
     <BlockQuestionEditor
       v-if="blockEditMode"
-      :block="blockData"
+      :block="block"
       @cancel="toggleEditMode"
       @update="update"
     />

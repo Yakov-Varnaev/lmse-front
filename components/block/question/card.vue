@@ -3,7 +3,15 @@ import type { Block } from "~/types";
 
 const emits = defineEmits(["edit", "delete", "up", "down"]);
 const props = defineProps<{
-  block: Block;
+  block: Block<{
+    text: string;
+    variants: {
+      id: number;
+      correct: boolean;
+      text?: string;
+      image?: { src: string; id: string };
+    }[];
+  }>;
   editMode: boolean;
   isLast: boolean;
   isFirst: boolean;
@@ -20,6 +28,19 @@ const {
   block: props.block,
   initialAnswerData: () => ({ variants: [] }),
 });
+
+const selectVariant = (id: number): void => {
+  if (answerData.variants.includes(id)) {
+    const idx = answerData.variants.indexOf(id);
+    answerData.variants.splice(idx, 1);
+  } else {
+    answerData.variants.push(id);
+  }
+};
+
+const isSelected = (id: number): boolean => {
+  return answerData.variants.includes(id);
+};
 
 const hasText = computed(() => {
   return (
@@ -48,35 +69,29 @@ const hasText = computed(() => {
         :value="block.meta.text"
         class="bg-background"
       />
-      <v-card
-        v-for="variant in block.meta.variants"
-        :key="variant.id"
-        class="fill-width pa-0 mt-1 opacity-1"
-        :variant="answerGiven ? 'tonal' : undefined"
-        :color="answerGiven ? (variant.correct ? 'success' : 'error') : ''"
-        :disabled="editMode"
-      >
-        <v-checkbox
-          class="mx-1"
-          hide-details
-          :disabled="editMode"
-          :readonly="answerGiven"
-          :label="variant.text"
-          v-model="answerData.variants"
-          :value="variant.id"
-          :key="variant.id"
+      <v-row class="variant-box" justify="center" align="center">
+        <v-col
+          v-for="variant in block.meta.variants"
+          :cols="variant.image ? 6 : 12"
         >
-          <template #label>
-            <span class="text-dark ml-1">{{ variant.text }}</span>
-          </template>
-        </v-checkbox>
-      </v-card>
+          <block-question-variant
+            :key="variant.id"
+            :variant="variant"
+            :selected="isSelected(variant.id)"
+            :readonly="editMode || answerGiven"
+            :answerCorrect="isCorrect"
+            :answerGiven="answerGiven"
+            @click="() => selectVariant(variant.id)"
+          >
+          </block-question-variant>
+        </v-col>
+      </v-row>
     </v-card-text>
     <v-card-actions v-if="!editMode">
       <v-btn
         v-if="!answerGiven"
         :loading="isAnswerLoading"
-        :disabled="!hasText"
+        :disabled="!answerData.variants.length"
         color="success"
         variant="tonal"
         block
@@ -109,3 +124,5 @@ const hasText = computed(() => {
     </v-card-actions>
   </BlockCardBase>
 </template>
+
+<style lang="scss"></style>

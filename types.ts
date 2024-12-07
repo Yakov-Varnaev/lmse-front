@@ -47,11 +47,16 @@ export type Answer = {
 	meta: any,
 }
 
-export type Block = {
+export type QuestionBlockMeta = {
+	text: string,
+	variants: any[],
+}
+
+export type Block<Meta extends Object> = {
 	id: string,
 	answerData: Answer | null,
 	kind: string,
 	order: Number,
 	template: string,
-	meta: any,
+	meta: Meta,
 }
