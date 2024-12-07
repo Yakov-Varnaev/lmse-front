@@ -15,7 +15,7 @@ const { courseId, chapterId, lessonId, editMode, blocks } = defineProps<{
   chapterId: string;
   lessonId: string;
   editMode: boolean;
-  blocks: Block[];
+  blocks: Block<any>[];
 }>();
 
 provide("courseId", courseId);
@@ -39,7 +39,7 @@ const appendBlock = () => {
   emit("refetch");
 };
 
-async function updateBlockContent(block: Block, newMeta: any) {
+async function updateBlockContent(block: Block<any>, newMeta: any) {
   block.meta = newMeta;
   const { data } = await updateBlock(
     courseId,
