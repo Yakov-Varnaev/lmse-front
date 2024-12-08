@@ -1,5 +1,5 @@
-<script setup>
-const props = defineProps({
+<script setup lang="ts">
+defineProps({
   absolute: { type: Boolean, default: false },
 });
 
@@ -28,24 +28,4 @@ const context = useCourseContext();
   </div>
 </template>
 
-<style lang="scss">
-#mode-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  background-color: blue;
-  width: 20%;
-  display: flex;
-  height: 100%;
-  pointer-events: none;
-}
-
-.mode-toggler {
-  position: sticky;
-  bottom: 90px;
-  left: 50px;
-  margin: 15px 15px;
-  z-index: 10000;
-  pointer-events: all;
-}
-</style>
+<style lang="scss"></style>

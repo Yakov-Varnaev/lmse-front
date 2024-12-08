@@ -1,11 +1,20 @@
 <script setup lang="ts">
 import { useTheme } from "vuetify";
-import type { Block } from "~/types";
+import type { Block, ConnectionBlockMeta } from "~/types";
 const theme = useTheme();
+
+const emits = defineEmits(["edit", "delete", "up", "down"]);
+const { block, editMode, isLast, isFirst } = defineProps<{
+  block: Block<ConnectionBlockMeta>;
+  editMode: boolean;
+  isLast: boolean;
+  isFirst: boolean;
+}>();
 
 type Item = {
   id: number;
   text: string;
+  image?: { id: string; src: string };
 };
 
 interface ItemMap {
@@ -19,13 +28,6 @@ function shuffleArray<T>(array: T[]): T[] {
   }
   return array;
 }
-const emits = defineEmits(["edit", "delete", "up", "down"]);
-const props = defineProps<{
-  block: Block;
-  editMode: boolean;
-  isLast: boolean;
-  isFirst: boolean;
-}>();
 
 const {
   answerGiven,
@@ -35,7 +37,7 @@ const {
   answerData,
   reset,
 } = useBlockCard<{ pairs: ItemMap }, Object>({
-  block: props.block,
+  block: block,
   initialAnswerData: () => ({ pairs: {} }),
 });
 
@@ -43,8 +45,6 @@ const resetAll = () => {
   reset();
   lines.value = [];
 };
-
-const block = props.block;
 
 const lockLeft = ref(false);
 const lockRight = ref(false);
@@ -76,12 +76,15 @@ const lines = ref<
 const leftColumn = ref<Item[]>([
   ...shuffleArray<Item>(block.meta.variants.map((v: any): Item => v.left)),
 ]);
-
 const rightColumn = ref<Item[]>([
-  ...shuffleArray<Item>(
-    props.block.meta.variants.map((v: any): Item => v.right),
-  ),
+  ...shuffleArray<Item>(block.meta.variants.map((v: any): Item => v.right)),
 ]);
+
+const variants: { left: Item; right: Item }[] = [];
+
+for (let i = 0; i < leftColumn.value.length; i++) {
+  variants.push({ left: leftColumn.value[i], right: rightColumn.value[i] });
+}
 
 const isInLeft = (id: number): boolean => {
   return `${id}` in answerData.pairs;
@@ -91,9 +94,7 @@ const isInRight = (id: number): boolean => {
 };
 
 const updateTempLine = (e: MouseEvent): void => {
-  const card = document.getElementById(
-    `connection-puzzle-id-${props.block.id}`,
-  )!;
+  const card = document.getElementById(`connection-puzzle-id-${block.id}`)!;
   const cardRect = card.getBoundingClientRect();
 
   if (
@@ -249,7 +250,7 @@ const getCardColor = (side: string, id: number): string => {
 };
 
 const isBtnDisabled = (side: string, id: number): boolean => {
-  if (props.editMode) return true;
+  if (editMode) return true;
   if (currentSelect.value === null) return false;
   if (side == "left") {
     return (lockLeft.value && id !== currentSelect.value) || isInLeft(id);
@@ -273,7 +274,6 @@ const hasText = computed((): boolean => {
 });
 
 const hasAnswer = computed((): boolean => {
-  console.log(leftColumn.value.length === Object.keys(answerData.pairs).length);
   return leftColumn.value.length === Object.keys(answerData.pairs).length;
 });
 </script>
@@ -333,63 +333,49 @@ const hasAnswer = computed((): boolean => {
       <v-row>
         <v-col>
           <!-- LEFT SIDE -->
-          <v-card
-            v-for="item in leftColumn"
-            :variant="answerGiven || isInLeft(item.id) ? 'tonal' : 'elevated'"
-            :color="getCardColor('left', item.id)"
-            class="pa-2 ma-2 d-flex align-center justify-space-between"
-          >
-            {{ item.text }}
-            <v-btn
-              class="bg-background"
-              :disabled="isBtnDisabled('left', item.id)"
-              :readonly="answerGiven"
-              exactn
-              icon
-              variant="flat"
-              :id="`left-${item.id}-${block.id}`"
-              @click="(e: MouseEvent) => selectElement(item, 'left', e)"
-            >
-              <v-icon
-                :color="getBtnColor('left', item.id)"
+          <v-row v-for="variant in variants">
+            <v-col>
+              <block-connection-image-variant
+                side="left"
+                :variant="variant.left"
+                :block="block"
+                :color="getBtnColor('left', variant.left.id)"
+                :readonly="answerGiven"
+                :disabled="isBtnDisabled('left', variant.right.id)"
+                :answerGiven="answerGiven"
+                :answerCorrect="isCorrect"
+                :selected="isInLeft(variant.left.id)"
                 :icon="
-                  item.id in answerData.pairs ||
-                  (currentSelect === item.id && lockLeft)
+                  variant.left.id in answerData.pairs ||
+                  (currentSelect === variant.left.id && lockLeft)
                     ? 'mdi-record'
                     : 'mdi-radiobox-blank'
                 "
+                @selectElement="selectElement"
               />
-            </v-btn>
-          </v-card>
-        </v-col>
-        <v-col cols="1"></v-col>
-        <v-col>
-          <v-card
-            v-for="item in rightColumn"
-            :variant="answerGiven || isInRight(item.id) ? 'tonal' : 'elevated'"
-            :color="getCardColor('right', item.id)"
-            class="pa-2 ma-2 d-flex align-center justify-space-between"
-          >
-            <v-btn
-              icon
-              class="bg-background"
-              variant="flat"
-              :id="`right-${item.id}-${block.id}`"
-              :disabled="isBtnDisabled('right', item.id)"
-              :readonly="answerGiven"
-              @click="(e: MouseEvent) => selectElement(item, 'right', e)"
-            >
-              <v-icon
-                :color="getBtnColor('right', item.id)"
+            </v-col>
+            <v-col cols="1"></v-col>
+            <v-col>
+              <block-connection-image-variant
+                :side="'right'"
+                :variant="variant.right"
+                :block="block"
+                :color="getBtnColor('right', variant.right.id)"
+                :disabled="isBtnDisabled('right', variant.right.id)"
+                :readonly="answerGiven"
+                :answerGiven="answerGiven"
+                :answerCorrect="isCorrect"
+                :selected="isInRight(variant.right.id)"
                 :icon="
-                  isInRight(item.id) || (currentSelect === item.id && lockRight)
+                  isInRight(variant.right.id) ||
+                  (currentSelect === variant.right.id && lockRight)
                     ? 'mdi-record'
                     : 'mdi-radiobox-blank'
                 "
+                @selectElement="selectElement"
               />
-            </v-btn>
-            {{ item.text }}
-          </v-card>
+            </v-col>
+          </v-row>
         </v-col>
       </v-row>
       <!-- connection card -->

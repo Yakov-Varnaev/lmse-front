@@ -11,8 +11,10 @@ const props = defineProps({
 });
 const emit = defineEmits(["update", "delete", "up", "down"]);
 
-const { blockEditMode, blockData, toggleEditMode, update, deleteBlock } =
-  useBlock(emit, props);
+const { blockEditMode, toggleEditMode, update, deleteBlock } = useBlock(
+  emit,
+  props,
+);
 const { editMode } = props;
 </script>
 
@@ -20,7 +22,7 @@ const { editMode } = props;
   <div>
     <BlockConnectionEditor
       v-if="blockEditMode"
-      :block="blockData"
+      :block="block"
       @cancel="toggleEditMode"
       @update="update"
     />

@@ -47,10 +47,6 @@ export type Answer = {
 	meta: any,
 }
 
-export type QuestionBlockMeta = {
-	text: string,
-	variants: any[],
-}
 
 export type Block<Meta extends Object> = {
 	id: string,
@@ -59,4 +55,17 @@ export type Block<Meta extends Object> = {
 	order: Number,
 	template: string,
 	meta: Meta,
+}
+
+export type QuestionBlockMeta = {
+	text: string,
+	variants: any[],
+}
+
+export type ConnectionBlockMeta = {
+	text: string,
+	variants: {
+		left: { id: number, text: string, image?: { src: string, id: string } },
+		right: { id: number, text: string, image?: { src: string, id: string } },
+	}[]
 }
