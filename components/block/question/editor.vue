@@ -22,8 +22,6 @@ const addVariant = () => {
 const deleteVariant = (idx: number) => {
   data.meta.variants.splice(idx, 1);
   data.meta.variants.map((v: { id: number }, i: number): number => (v.id = i));
-  //TODO: delete media if any
-  console.log("TODO: delete media if any");
 };
 
 const getImageId = (id: number): string => {
