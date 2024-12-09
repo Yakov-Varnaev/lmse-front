@@ -1,4 +1,4 @@
-import type { Chapter, Course, Lesson } from "~/types";
+import type { Block, Chapter, Course, Lesson } from "~/types";
 
 export const createCourse = async (data: Course) => {
 	const { $apiv1: apiv1 } = useNuxtApp();
@@ -150,18 +150,31 @@ export const deleteBlock = async (courseId, chapterId, lessonId, blockId) => {
 };
 
 export const uploadBlockMedia = async (
-	courseId,
-	chapterId,
-	lessonId,
-	blockId,
-	data,
-) => {
+	courseId: string,
+	chapterId: string,
+	lessonId: string,
+	blockId: string,
+	data: any,
+): Promise<any> => {
 	const { $apiv1: apiv1 } = useNuxtApp();
 	return await apiv1.post(
 		`courses/${courseId}/chapters/${chapterId}/lessons/${lessonId}/blocks/${blockId}/media/`,
 		data,
 	);
 };
+
+export const deleteBlockMedia = async (
+	courseId: string,
+	chapterId: string,
+	lessonId: string,
+	blockId: string,
+	mediaId: string,
+): Promise<any> => {
+	const { $apiv1: apiv1 } = useNuxtApp();
+	return await apiv1.delete(
+		`courses/${courseId}/chapters/${chapterId}/lessons/${lessonId}/blocks/${blockId}/media/${mediaId}/`,
+	);
+}
 
 /* Templates */
 

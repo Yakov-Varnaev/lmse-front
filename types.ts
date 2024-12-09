@@ -62,6 +62,12 @@ export type QuestionBlockMeta = {
 	variants: any[],
 }
 
+export type TextImageVariant = {
+	id: number,
+	text: string,
+	image?: { src: string, id: string },
+}
+
 export type ConnectionBlockMeta = {
 	text: string,
 	variants: {

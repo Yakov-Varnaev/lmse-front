@@ -1,12 +1,7 @@
 <script setup lang="ts">
-import { uploadBlockMedia } from "~/api/courses";
 import type { Block } from "~/types";
 
 const alert = useAlert();
-const courseId = inject("courseId");
-const chapterId = inject("chapterId");
-const lessonId = inject("lessonId");
-
 const emit = defineEmits(["update", "cancel"]);
 const props = defineProps<{ block: Block<any> }>();
 const data = reactive({ ...props.block });
@@ -23,6 +18,7 @@ const addVariant = () => {
   let id = data.meta.variants.length;
   data.meta.variants.push({ id, text: "", correct: false });
 };
+
 const deleteVariant = (idx: number) => {
   data.meta.variants.splice(idx, 1);
   data.meta.variants.map((v: { id: number }, i: number): number => (v.id = i));
@@ -32,24 +28,6 @@ const deleteVariant = (idx: number) => {
 
 const getImageId = (id: number): string => {
   return `${props.block.id}-${id}-image`;
-};
-
-const updateFile = async (id: number, e: Event) => {
-  const target = e.target as HTMLInputElement;
-  if (!target.files) return;
-  const newfile = target.files[0];
-
-  const fd = new FormData();
-  fd.append("file", newfile);
-  const { data: fileData } = await uploadBlockMedia(
-    courseId,
-    chapterId,
-    lessonId,
-    props.block.id,
-    fd,
-  );
-
-  data.meta.variants[id].image = { src: fileData.file, id: fileData.id };
 };
 </script>
 
@@ -76,38 +54,11 @@ const updateFile = async (id: number, e: Event) => {
           </v-col>
 
           <v-col>
-            <v-text-field
-              v-if="!variant.image"
-              hide-details
-              density="compact"
-              v-model="variant.text"
-              :key="variant.id"
-            >
-              <template #append>
-                <div>
-                  <v-btn icon flat @click.stop>
-                    <label :for="getImageId(variant.id)">
-                      <v-icon icon="mdi-image" />
-                    </label>
-                  </v-btn>
-                  <input
-                    type="file"
-                    @change="
-                      async (e: Event) => await updateFile(variant.id, e)
-                    "
-                    :id="getImageId(variant.id)"
-                    class="image-input"
-                    accept="image/*"
-                  />
-                </div>
-              </template>
-            </v-text-field>
-            <v-card v-else variant="flat" class="d-flex justify-center">
-              <img
-                :src="`http://localhost:8000/${variant.image.src}`"
-                width="45%"
-              />
-            </v-card>
+            <BlockEditorTextImageField
+              :id="getImageId(variant.id)"
+              :variant="variant"
+              :block="block"
+            />
           </v-col>
           <v-col class="d-flex" cols="1">
             <v-btn

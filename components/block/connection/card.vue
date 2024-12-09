@@ -340,13 +340,17 @@ const hasAnswer = computed((): boolean => {
                 :variant="variant.left"
                 :block="block"
                 :color="getBtnColor('left', variant.left.id)"
-                :readonly="answerGiven"
-                :disabled="isBtnDisabled('left', variant.right.id)"
+                :readonly="
+                  answerGiven || isBtnDisabled('left', variant.left.id)
+                "
                 :answerGiven="answerGiven"
                 :answerCorrect="isCorrect"
-                :selected="isInLeft(variant.left.id)"
+                :selected="
+                  isInLeft(variant.left.id) ||
+                  (currentSelect == variant.left.id && lockLeft)
+                "
                 :icon="
-                  variant.left.id in answerData.pairs ||
+                  isInLeft(variant.left.id) ||
                   (currentSelect === variant.left.id && lockLeft)
                     ? 'mdi-record'
                     : 'mdi-radiobox-blank'
@@ -357,15 +361,19 @@ const hasAnswer = computed((): boolean => {
             <v-col cols="1"></v-col>
             <v-col>
               <block-connection-image-variant
-                :side="'right'"
+                side="right"
                 :variant="variant.right"
                 :block="block"
                 :color="getBtnColor('right', variant.right.id)"
-                :disabled="isBtnDisabled('right', variant.right.id)"
-                :readonly="answerGiven"
+                :readonly="
+                  answerGiven || isBtnDisabled('right', variant.right.id)
+                "
                 :answerGiven="answerGiven"
                 :answerCorrect="isCorrect"
-                :selected="isInRight(variant.right.id)"
+                :selected="
+                  isInRight(variant.right.id) ||
+                  (currentSelect == variant.right.id && lockRight)
+                "
                 :icon="
                   isInRight(variant.right.id) ||
                   (currentSelect === variant.right.id && lockRight)

@@ -30,6 +30,7 @@ const variantBorder = (): string => {
     height="100%"
     :variant="answerGiven || selected ? 'tonal' : 'elevated'"
     :color="selected ? 'primary' : 'grey'"
+    :class="{ 'readonly-variant': readonly, 'd-flex': true }"
     @click="(e: MouseEvent) => $emit('selectElement', variant, side, e)"
   >
     <v-sheet
@@ -48,7 +49,7 @@ const variantBorder = (): string => {
         :color="answerCorrect ? 'success' : 'error'"
       />
     </v-sheet>
-    <v-img v-if="image" :src="`http://localhost:8000/${image?.src}`">
+    <v-img v-if="image" :src="`http://localhost:8000/${image?.src}`" cover>
       <div class="d-flex fill-height">
         <v-btn
           :class="{
