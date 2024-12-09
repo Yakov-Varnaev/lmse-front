@@ -49,7 +49,7 @@ const variantBorder = (): string => {
         :color="answerCorrect ? 'success' : 'error'"
       />
     </v-sheet>
-    <v-img v-if="image" :src="`http://localhost:8000/${image?.src}`" cover>
+    <v-img v-if="image" :src="`http://localhost:8000${image?.src}`" cover>
       <div class="d-flex fill-height">
         <v-btn
           :class="{
