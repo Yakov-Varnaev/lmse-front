@@ -176,11 +176,11 @@ export default {
       <v-row justify="center">
         <v-col lg="9" xl="9" v-if="errors !== null">
           <CourseCheckTree v-if="!errors.valid" :data="errors" />
-          <v-card variant="outlined" color="success">
+          <v-card v-else variant="outlined" color="success">
             <v-card-title>All good!</v-card-title>
             <v-card
               class="ma-2"
-              v-if="mode.edit"
+              v-if="mode.edit && errors.valid"
               @click="publishCourse"
               variant="tonal"
               color="success"
