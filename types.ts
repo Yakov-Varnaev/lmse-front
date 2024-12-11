@@ -22,6 +22,16 @@ export type Course = {
 	state: string,
 }
 
+export type CourseTree = {
+	id: string;
+	title: string;
+	chapters: {
+		id: string,
+		title: string,
+		lessons: { id: string, title: string }[]
+	}[]
+}
+
 export type Chapter = {
 	id: string,
 	order: number,
