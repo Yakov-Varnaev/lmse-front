@@ -19,7 +19,7 @@ export function useBlock(emit: EmitFn, props: any) {
 		emit("delete", props.block.id);
 	}
 
-	async function processAnswer(courseId: string, chapterId: string, lessonId: string, data: Object) {
+	async function processAnswer(courseId: string, chapterId: string, lessonId: string, data: any) {
 		const loader = useLoader();
 		loader.startKeyLoading(`${props.block.id}-answer`);
 		const { data: respData } = await createAnswer(
@@ -43,9 +43,9 @@ export function useBlock(emit: EmitFn, props: any) {
 	};
 }
 
-export function useAnswer(courseId: string, chapterId: string, lessonId: string, block: Block) {
+export function useAnswer(courseId: string, chapterId: string, lessonId: string, block: Block<any>) {
 	const loader = useLoader();
-	async function create(data: Object) {
+	async function create(data: any) {
 		loader.startKeyLoading(`${block.id}-answer`);
 		const { data: respData } = await createAnswer(
 			courseId,
@@ -67,7 +67,7 @@ export function useBlockCard<T extends Object, AnswerExtra extends Object>(
 		initialAnswerData,
 
 	}: {
-		block: Block,
+		block: Block<any>,
 		initialAnswerData: () => T,
 
 	},
@@ -85,9 +85,9 @@ export function useBlockCard<T extends Object, AnswerExtra extends Object>(
 ) {
 	const context = useCourseContext();
 	const loader = useLoader();
-	const courseId = inject("courseId");
-	const chapterId = inject("chapterId");
-	const lessonId = inject("lessonId");
+	const courseId = inject<string>("courseId")!;
+	const chapterId = inject<string>("chapterId")!;
+	const lessonId = inject<string>("lessonId")!;
 
 	const answerGiven = ref(block.answerData !== null);
 	const isCorrect = ref(false)

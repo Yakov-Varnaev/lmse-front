@@ -195,8 +195,8 @@ export const createAnswer = async (
 	lessonId: string,
 	blockId: string,
 	data: Answer<any>,
-	fake = null,
-): Promise<{ data: Answer<any> }> => {
+	fake: boolean = false,
+): Promise<{ data: { answer: Answer<any>, result: any } }> => {
 	const { $apiv1: apiv1 } = useNuxtApp();
 	const params: { fake?: boolean } = {};
 	if (fake) {

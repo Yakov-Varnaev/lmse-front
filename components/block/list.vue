@@ -58,7 +58,7 @@ async function onBlockDelete(id: string) {
   toggleDeleteDialog();
 }
 const performBlockDelete = async () => {
-  await deleteBlock(courseId, chapterId, lessonId, blockToDelete.value);
+  await deleteBlock(courseId, chapterId, lessonId, blockToDelete.value!);
   emit("delete", blockToDelete.value);
   toggleDeleteDialog();
 };

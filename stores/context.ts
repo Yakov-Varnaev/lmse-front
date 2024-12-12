@@ -25,19 +25,19 @@ export const useCourseContext = defineStore("store/course-context", {
 			this.lesson = lesson;
 		},
 		async load() {
-			let courseId = useRoute().params.id;
+			let courseId = useRoute().params.id as string;
 			if (!this.course) {
 				const { data: courseData } = await retrieveCourse(courseId);
 				this.setCourse(courseData);
 			}
 
-			let chapterId = useRoute().params.chapterId;
+			let chapterId = useRoute().params.chapterId as string;
 			if (chapterId && !this.chapter) {
 				const { data: chapterData } = await retrieveChapter(courseId, chapterId);
 				this.setChapter(chapterData);
 			}
 
-			let lessonId = useRoute().params.lessonId;
+			let lessonId = useRoute().params.lessonId as string;
 			if (lessonId && !this.lesson) {
 				const { data: lessonData } = await retrieveLesson(
 					courseId,
