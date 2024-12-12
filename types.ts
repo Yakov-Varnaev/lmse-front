@@ -49,18 +49,18 @@ export type Lesson = {
 	chapter: string
 }
 
-export type Answer = {
+export type Answer<Meta extends Object> = {
 	id: string,
 	student: string,
 	block: string,
 	isCorrect: boolean,
-	meta: any,
+	meta: Meta,
 }
 
 
 export type Block<Meta extends Object> = {
 	id: string,
-	answerData: Answer | null,
+	answerData: Answer<any> | null,
 	kind: string,
 	order: Number,
 	template: string,
