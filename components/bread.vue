@@ -11,7 +11,12 @@ const goTo = (to: any) => {
 const route = useRoute();
 
 const isSmartPath = computed<boolean>(() => {
-  return !!route.params.id;
+  return [
+    "course-detail",
+    "course-editor",
+    "chapter-detail",
+    "lesson-detail",
+  ].includes(route.name?.toString() ?? "");
 });
 
 const isCurrentPath = (to: any): boolean => {

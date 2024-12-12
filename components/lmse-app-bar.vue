@@ -65,6 +65,12 @@ export default {
 <template>
   <v-app-bar :elevation="0" class="pr-2 bg-background">
     <div class="mr-auto pa-2 d-flex ml-4">
+      <v-btn
+        v-if="$vuetify.display.mdAndDown"
+        icon="mdi-menu"
+        class="mx-2"
+        @click="themeStore.toggleDrawerMenu()"
+      />
       <div class="link-pointer my-auto" @click="pushToHome">
         LMSE [{{ display.name.value }}]
       </div>
