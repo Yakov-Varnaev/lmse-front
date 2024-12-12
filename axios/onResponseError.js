@@ -12,10 +12,12 @@ export default (error) => {
     return Promise.reject(error);
   }
 
-  let errs = error.response?.data || [];
-  errs.forEach((msg) => {
-    alert.reportError(msg);
-  });
+  let errs = error.response?.data || {};
+  for (const [k, v] of Object.entries(errs)) {
+    v.forEach((msg) => {
+      alert.reportError(msg);
+    });
+  }
 
   // if (error) {
   //   if (error.response?.data) {
