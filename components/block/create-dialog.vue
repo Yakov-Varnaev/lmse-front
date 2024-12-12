@@ -91,7 +91,7 @@ export default {
           <ButtonBlock
             @cancel="toggle"
             @submit="createBlock"
-            :is-submit-active="!!template"
+            :submit-porps="{ active: !!template }"
           />
         </v-card-actions>
       </v-card>

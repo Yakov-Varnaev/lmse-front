@@ -1,6 +1,6 @@
 <script setup lang="ts">
-const { isSubmitActive = true } = defineProps<{
-  isSubmitActive?: boolean;
+const { submitPorps } = defineProps<{
+  submitPorps?: { active: boolean; text: string };
 }>();
 </script>
 
@@ -8,16 +8,17 @@ const { isSubmitActive = true } = defineProps<{
   <v-row>
     <v-col>
       <v-btn
-        :disabled="!isSubmitActive"
+        :disabled="submitPorps ? !submitPorps.active : false"
         block
         color="primary"
         @click="$emit('submit')"
       >
-        Submit
+        {{ submitPorps?.text || "Submit" }}
       </v-btn>
     </v-col>
     <v-col>
       <v-btn block color="red" @click="$emit('cancel')">Cancel</v-btn>
     </v-col>
+    <v-input type="hidden" class="position-absolute" />
   </v-row>
 </template>

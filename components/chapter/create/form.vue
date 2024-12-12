@@ -35,10 +35,18 @@ export default {
   <v-card>
     <v-card-title>Create Chapter</v-card-title>
     <v-card-text>
-      <v-text-field label="Title" v-model.trim="chapterData.title" />
+      <v-text-field
+        label="Title"
+        v-model.trim="chapterData.title"
+        @keyup.enter="create"
+      />
     </v-card-text>
     <v-card-actions>
-      <ButtonBlock @cancel="$emit('cancel')" @submit="create" />
+      <ButtonBlock
+        @cancel="$emit('cancel')"
+        @submit="create"
+        :submit-porps="{ active: !!chapterData.title.length }"
+      />
     </v-card-actions>
   </v-card>
 </template>

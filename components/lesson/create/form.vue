@@ -43,7 +43,11 @@ export default {
       <v-text-field label="Title" v-model.trim="lessonData.title" />
     </v-card-text>
     <v-card-actions>
-      <ButtonBlock @cancel="$emit('cancel')" @submit="create" />
+      <ButtonBlock
+        @cancel="$emit('cancel')"
+        @submit="create"
+        :submit-porps="{ active: !!lessonData.title.length }"
+      />
     </v-card-actions>
   </v-card>
 </template>
