@@ -112,6 +112,7 @@ export default {
       :edit-mode="mode.edit"
       @updated="updateChapterOrder"
       :onDelete="deleteChapterFromList"
+      :showActionButton="courseContext.isOwner"
     >
       <template v-slot:actionButton>
         <ChapterCreateDialog @created="appendChapter" :course-id="courseId">

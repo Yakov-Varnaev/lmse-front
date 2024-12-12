@@ -8,6 +8,7 @@ const emit = defineEmits(["updated", "openCreate", "delete"]);
 const props = defineProps<{
   title: string;
   editMode: boolean;
+  showActionButton: boolean;
   items: Object[];
   onDelete: (item: any) => Promise<void>;
 }>();
@@ -66,7 +67,7 @@ onBeforeUnmount(() => {
       <v-list-item class="pa-3 bg-primary border rounded-e-lg">
         <div class="d-flex align-center">
           <h1>{{ $props.title }}</h1>
-          <slot name="actionButton">
+          <slot name="actionButton" v-if="showActionButton">
             <v-btn
               icon
               color="primary"

@@ -109,6 +109,7 @@ export default {
       @updated="updateLessonOrder"
       :onDelete="deleteLessonItem"
       :items="drawerItems"
+      :showActionButton="courseContext.isOwner"
       @openCreate="toggleCreateDialog"
     />
     <LessonCreateDialog
