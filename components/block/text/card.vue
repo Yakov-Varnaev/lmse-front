@@ -15,6 +15,7 @@ export default {
     :edit-mode="editMode"
     :isFirst="isFirst"
     :isLast="isLast"
+    :hide-bottom="true"
     @up="$emit('up')"
     @down="$emit('down')"
     @edit="$emit('edit')"

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 const { submitPorps } = defineProps<{
-  submitPorps?: { active: boolean; text: string };
+  submitPorps?: { active?: boolean; text?: string };
+  cancelPorps?: { active?: boolean; text?: string };
 }>();
 </script>
 
@@ -8,7 +9,7 @@ const { submitPorps } = defineProps<{
   <v-row>
     <v-col>
       <v-btn
-        :disabled="submitPorps ? !submitPorps.active : false"
+        :disabled="submitPorps?.active ? !submitPorps.active : false"
         block
         color="primary"
         @click="$emit('submit')"
@@ -17,7 +18,9 @@ const { submitPorps } = defineProps<{
       </v-btn>
     </v-col>
     <v-col>
-      <v-btn block color="red" @click="$emit('cancel')">Cancel</v-btn>
+      <v-btn block color="red" @click="$emit('cancel')">
+        {{ cancelPorps?.text || "Cancel" }}
+      </v-btn>
     </v-col>
     <v-input type="hidden" class="position-absolute" />
   </v-row>

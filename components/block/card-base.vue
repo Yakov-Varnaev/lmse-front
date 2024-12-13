@@ -1,13 +1,16 @@
-<script>
-export default {
-  emits: ["edit", "delete", "up", "down"],
-  props: {
-    id: { type: String, required: false },
-    isLast: { type: Boolean, required: true },
-    isFirst: { type: Boolean, required: true },
-    editMode: { type: Boolean, required: true },
-  },
-};
+<script setup lang="ts">
+const emit = defineEmits(["edit", "delete", "up", "down", "reset", "answer"]);
+defineProps({
+  id: { type: String, required: false },
+  isLast: { type: Boolean, required: true },
+  isFirst: { type: Boolean, required: true },
+  editMode: { type: Boolean, required: true },
+  hideBottom: { type: Boolean, requred: false, default: false },
+  answerGiven: { type: Boolean, required: false },
+  isCorrect: { type: Boolean, required: false },
+  isAnswerLoading: { type: Boolean, required: false },
+  hasAnswer: { type: Boolean, required: false },
+});
 </script>
 
 <template>
@@ -56,6 +59,42 @@ export default {
           />
         </div>
         <slot />
+        <slot name="bottom" v-if="!hideBottom">
+          <v-card-actions v-if="!editMode">
+            <v-btn
+              v-if="!answerGiven"
+              :disabled="!hasAnswer"
+              :loading="isAnswerLoading"
+              color="success"
+              variant="tonal"
+              block
+              @click="emit('answer')"
+            >
+              Answer
+            </v-btn>
+            <v-row no-gutters justify="center">
+              <div class="d-flex align-center">
+                <span
+                  :class="{
+                    'text-h5': true,
+                    'text-success': isCorrect,
+                    'text-error': !isCorrect,
+                  }"
+                >
+                  {{ isCorrect ? "Correct!" : "Wrong!" }}
+                </span>
+                <v-btn
+                  class="ml-2"
+                  plain
+                  prepend-icon="mdi-reload"
+                  @click="emit('reset')"
+                >
+                  Try Again
+                </v-btn>
+              </div>
+            </v-row>
+          </v-card-actions>
+        </slot>
       </v-card>
     </template>
   </v-hover>

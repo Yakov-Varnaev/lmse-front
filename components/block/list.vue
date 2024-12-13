@@ -111,6 +111,8 @@ onMounted(() => {
             <v-card-text>Are you sure?</v-card-text>
             <v-card-actions>
               <ButtonBlock
+                :submit-porps="{ text: 'Yes' }"
+                :cancel-porps="{ text: 'No' }"
                 @cancel="toggleDeleteDialog"
                 @submit="performBlockDelete"
               />

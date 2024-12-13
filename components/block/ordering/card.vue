@@ -3,7 +3,7 @@ import type { Block } from "~/types";
 
 const emits = defineEmits(["edit", "delete", "up", "down"]);
 const props = defineProps<{
-  block: Block;
+  block: Block<any>;
   editMode: boolean;
   isLast: boolean;
   isFirst: boolean;
@@ -100,6 +100,12 @@ const hasText = computed((): boolean => {
     :edit-mode="editMode"
     :isFirst="isFirst"
     :isLast="isLast"
+    :is-answer-loading="isAnswerLoading"
+    :answer-given="answerGiven"
+    :is-correct="isCorrect"
+    :has-answer="!!answerData.order.length"
+    @answer="processAnswer"
+    @reset="reset"
     @up="$emit('up')"
     @down="$emit('down')"
     @edit="$emit('edit')"
@@ -186,35 +192,5 @@ const hasText = computed((): boolean => {
         </draggable>
       </v-card>
     </v-card-text>
-    <v-card-actions v-if="!editMode">
-      <v-btn
-        v-if="!answerGiven"
-        :disabled="options.length > 0"
-        :loading="isAnswerLoading"
-        color="success"
-        variant="tonal"
-        block
-        @click="giveAnswer"
-      >
-        Answer
-      </v-btn>
-
-      <v-row no-gutters justify="center">
-        <div class="d-flex align-center">
-          <span
-            :class="{
-              'text-h5': true,
-              'text-success': isCorrect,
-              'text-error': !isCorrect,
-            }"
-          >
-            {{ isCorrect ? "Correct!" : "Wrong!" }}
-          </span>
-          <v-btn class="ml-2" plain prepend-icon="mdi-reload" @click="reset">
-            Try Again
-          </v-btn>
-        </div>
-      </v-row>
-    </v-card-actions>
   </BlockCardBase>
 </template>

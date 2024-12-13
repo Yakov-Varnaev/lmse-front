@@ -284,6 +284,12 @@ const hasAnswer = computed((): boolean => {
     :isFirst="isFirst"
     :isLast="isLast"
     :id="`connection-puzzle-id-${block.id}`"
+    :is-answer-loading="isAnswerLoading"
+    :answer-given="answerGiven"
+    :is-correct="isCorrect"
+    :has-answer="hasAnswer"
+    @answer="processAnswer"
+    @reset="resetAll"
     @up="$emit('up')"
     @down="$emit('down')"
     @edit="$emit('edit')"
@@ -388,35 +394,6 @@ const hasAnswer = computed((): boolean => {
       </v-row>
       <!-- connection card -->
     </v-card-text>
-    <v-card-actions v-if="!editMode">
-      <v-btn
-        v-if="!answerGiven"
-        :disabled="!hasAnswer"
-        :loading="isAnswerLoading"
-        color="success"
-        variant="tonal"
-        block
-        @click="processAnswer"
-      >
-        Answer
-      </v-btn>
-      <v-row no-gutters justify="center">
-        <div class="d-flex align-center">
-          <span
-            :class="{
-              'text-h5': true,
-              'text-success': isCorrect,
-              'text-error': !isCorrect,
-            }"
-          >
-            {{ isCorrect ? "Correct!" : "Wrong!" }}
-          </span>
-          <v-btn class="ml-2" plain prepend-icon="mdi-reload" @click="resetAll">
-            Try Again
-          </v-btn>
-        </div>
-      </v-row>
-    </v-card-actions>
   </BlockCardBase>
 </template>
 
