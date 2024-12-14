@@ -85,3 +85,13 @@ export type ConnectionBlockMeta = {
 		right: { id: number, text: string, image?: { src: string, id: string } },
 	}[]
 }
+
+export type TrueFalseBlockMeta = {
+	text: string,
+	allowUnknown: boolean,
+	statements: {
+		id: number,
+		text: string,
+		value: 'true' | 'false' | 'unknown',
+	}[],
+}

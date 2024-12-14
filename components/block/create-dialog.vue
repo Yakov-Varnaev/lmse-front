@@ -24,8 +24,12 @@ export default {
           subtitle: "Question where student have to type answer",
         },
         ordering: {
-          title: "Ordering puzzle",
+          title: "Ordering Puzzle",
           subtitle: "Put blocks in correct order",
+        },
+        "true-false": {
+          title: "True/False Block",
+          subtitle: "Set True/False/Unknown to the given statements",
         },
       },
       isOpen: false,

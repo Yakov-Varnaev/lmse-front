@@ -6,6 +6,7 @@ import {
   BlockOrdering,
   BlockQuestion,
   BlockText,
+  BlockTrueFalse,
 } from "#components";
 import type { Block } from "~/types";
 
@@ -30,6 +31,7 @@ const componentMap: { [key: string]: Component } = {
   connection: BlockConnection,
   "open-question": BlockOpenQuestion,
   ordering: BlockOrdering,
+  "true-false": BlockTrueFalse,
 };
 const deleteDialog = ref(false);
 const blockToDelete = ref<string | null>(null);

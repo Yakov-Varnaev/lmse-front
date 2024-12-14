@@ -17,8 +17,6 @@ const props = defineProps<{
   isFirst: boolean;
 }>();
 
-const courseContext = useCourseContext();
-
 const {
   answerGiven,
   isCorrect,
