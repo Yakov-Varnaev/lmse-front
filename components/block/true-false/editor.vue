@@ -25,6 +25,21 @@ const deleteStatement = (idx: number) => {
     (v: { id: number }, i: number): number => (v.id = i),
   );
 };
+
+const allowUnknown = computed({
+  get: () => {
+    return data.meta.allowUnknown;
+  },
+  set: (v: boolean) => {
+    data.meta.allowUnknown = v;
+    if (v) return;
+    data.meta.statements.map((s) => {
+      if (s.value === "unknown") {
+        s.value = "false";
+      }
+    });
+  },
+});
 </script>
 
 <template>
@@ -39,6 +54,12 @@ const deleteStatement = (idx: number) => {
       <v-divider class="mt-4"></v-divider>
 
       <v-sheet class="rounded pa-2">
+        <v-row>
+          <v-col>
+            <v-checkbox v-model="allowUnknown" label="Allow Unknown">
+            </v-checkbox>
+          </v-col>
+        </v-row>
         <v-row
           v-for="(statement, idx) in data.meta.statements"
           align="center"
@@ -53,7 +74,10 @@ const deleteStatement = (idx: number) => {
             />
           </v-col>
           <v-col cols="3">
-            <BlockTrueFalseSelector v-model="statement.value" />
+            <BlockTrueFalseSelector
+              v-model="statement.value"
+              :allow-unknown="data.meta.allowUnknown"
+            />
           </v-col>
           <v-col class="d-flex" cols="1">
             <v-btn

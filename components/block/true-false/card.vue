@@ -79,6 +79,7 @@ const hasText = computed(() => {
                 answerData.statements[idx].value = v;
               }
             "
+            :allow-unknown="block.meta.allowUnknown"
             :bg-color="getColor(idx)"
             :model-value="
               editMode
