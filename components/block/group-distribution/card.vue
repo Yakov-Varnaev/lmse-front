@@ -172,7 +172,7 @@ onMounted(() => {
         class="bg-background"
       />
       <v-row justify="center">
-        <v-col style="min-height: 200px">
+        <v-col style="min-height: 200px" v-if="block.meta.groups.length">
           <draggable
             v-if="!answerGiven && (currentItem.length || allItems.length)"
             item-key="id"
