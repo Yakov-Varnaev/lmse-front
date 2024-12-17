@@ -67,7 +67,9 @@ const {
 
 const allItems = ref<GroupDistributionItem[]>([]);
 const collectBlockItems = () => {
-  allItems.value = props.block.meta.groups.flatMap((g) => g.items);
+  allItems.value = shuffleArray(
+    props.block.meta.groups.flatMap((g) => g.items),
+  );
 };
 
 const currentItem = ref<GroupDistributionItem[]>([]);
@@ -170,7 +172,7 @@ onMounted(() => {
         class="bg-background"
       />
       <v-row justify="center">
-        <v-col cols="4" style="min-height: 200px">
+        <v-col style="min-height: 200px">
           <draggable
             v-if="!answerGiven && (currentItem.length || allItems.length)"
             item-key="id"
@@ -185,9 +187,16 @@ onMounted(() => {
           >
             <template v-slot:item="{ element: item, index }">
               <v-card
-                class="d-flex flex-column align-center justify-center fill-height"
+                class="d-flex flex-column align-center justify-center fill-height mx-auto"
+                max-width="300"
               >
-                <span>{{ item.text }}</span>
+                <v-img
+                  v-if="item.image"
+                  :src="$media(item.image.src)"
+                  cover
+                  width="100%"
+                />
+                <span v-else>{{ item.text }}</span>
               </v-card>
             </template>
           </draggable>
@@ -195,7 +204,8 @@ onMounted(() => {
             v-else
             variant="tonal"
             :color="answerGiven ? (isCorrect ? 'success' : 'error') : ''"
-            class="d-flex fill-height align-center justify-center"
+            class="d-flex fill-height align-center justify-center mx-auto"
+            max-width="300"
           >
             No items left
           </v-card>
@@ -221,10 +231,13 @@ onMounted(() => {
                 <template v-slot:item="{ element: item, index }">
                   <v-card
                     variant="tonal"
-                    class="pa-3 my-1"
+                    class="my-1"
                     :color="getColor(group.id, item.id)"
                   >
-                    {{ item.text }}
+                    <v-img v-if="item.image" :src="$media(item.image.src)" />
+                    <div v-else class="ma-3">
+                      {{ item.text }}
+                    </div>
                   </v-card>
                 </template>
               </draggable>
