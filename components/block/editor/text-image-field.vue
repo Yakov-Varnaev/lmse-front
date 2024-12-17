@@ -36,6 +36,7 @@ const updateFile = async (e: Event) => {
 <template>
   <div class="d-flex align-center">
     <v-text-field
+      v-bind="$attrs"
       v-if="!variant.image"
       hide-details
       density="compact"
@@ -49,7 +50,7 @@ const updateFile = async (e: Event) => {
     </v-card>
 
     <div>
-      <v-btn icon flat @click.stop>
+      <v-btn icon flat @click.stop :readonly="$attrs.readonly">
         <label :for="id">
           <v-icon icon="mdi-image" />
         </label>

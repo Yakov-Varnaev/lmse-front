@@ -1,3 +1,13 @@
+export type ImageData = {
+	id: string,
+	file: string,
+}
+
+export type TextImageData = {
+	text: string,
+	image?: ImageData
+}
+
 export type User = {
 	id: string,
 	email: string,
@@ -84,6 +94,26 @@ export type ConnectionBlockMeta = {
 		left: { id: number, text: string, image?: { src: string, id: string } },
 		right: { id: number, text: string, image?: { src: string, id: string } },
 	}[]
+}
+
+export type GroupDistributionItem = TextImageData & {
+	id: string
+	groupId: string
+}
+export type GroupDistributionGroup = {
+	id: string,
+	title: string,
+	items: GroupDistributionItem[]
+}
+
+export type GroupDistributionMeta = {
+	text: string,
+	groups: GroupDistributionGroup[],
+
+}
+
+export type GroupDistributionAnswer = {
+	groups: { [key: string]: GroupDistributionItem[] }
 }
 
 export type TrueFalseBlockMeta = {

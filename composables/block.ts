@@ -1,8 +1,8 @@
-import type { EmitFn, Reactive } from "vue";
+import type { Reactive } from "vue";
 import { createAnswer } from "~/api/courses";
 import type { Block } from "~/types";
 
-export function useBlock(emit: EmitFn, props: any) {
+export function useBlock(emit: any, props: any) {
 	const blockEditMode = ref(false);
 	const blockData = ref({ ...props.block.meta });
 
@@ -61,25 +61,25 @@ export function useAnswer(courseId: string, chapterId: string, lessonId: string,
 	return { create };
 }
 
-export function useBlockCard<T extends Object, AnswerExtra extends Object>(
+export function useBlockCard<AnswerType extends Object, AnswerExtra extends Object>(
 	{
 		block,
 		initialAnswerData,
 
 	}: {
 		block: Block<any>,
-		initialAnswerData: () => T,
+		initialAnswerData: () => AnswerType,
 
 	},
 	{
 		answerProcessor = {
-			to: (answer: Reactive<T>) => answer,
-			from: (answer: any): T => answer,
+			to: (answer: Reactive<AnswerType>) => answer,
+			from: (answer: any): AnswerType => answer,
 		}
 	}: Partial<{
 		answerProcessor: {
-			to: (answer: Reactive<T>) => any,
-			from: (answer: any) => T,
+			to: (answer: Reactive<AnswerType>) => any,
+			from: (answer: any) => AnswerType,
 		}
 	}> = {},
 ) {
@@ -99,7 +99,7 @@ export function useBlockCard<T extends Object, AnswerExtra extends Object>(
 		isCorrect.value = block.answerData.isCorrect;
 	}
 
-	const answerData = reactive<T>(_data)
+	const answerData = reactive<AnswerType>(_data)
 
 	async function processAnswer() {
 		loader.startKeyLoading(`${block.id}-answer`);

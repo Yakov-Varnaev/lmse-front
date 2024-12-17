@@ -2,6 +2,7 @@
 import { deleteBlock, updateBlock } from "~/api/courses";
 import {
   BlockConnection,
+  BlockGroupDistribution,
   BlockOpenQuestion,
   BlockOrdering,
   BlockQuestion,
@@ -32,6 +33,7 @@ const componentMap: { [key: string]: Component } = {
   "open-question": BlockOpenQuestion,
   ordering: BlockOrdering,
   "true-false": BlockTrueFalse,
+  "group-distribution": BlockGroupDistribution,
 };
 const deleteDialog = ref(false);
 const blockToDelete = ref<string | null>(null);

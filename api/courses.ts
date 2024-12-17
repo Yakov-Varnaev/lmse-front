@@ -205,7 +205,7 @@ export const createAnswer = async (
 	return await apiv1.post(
 		`courses/${courseId}/chapters/${chapterId}/lessons/${lessonId}/blocks/${blockId}/answers/`,
 		data,
-		{ params },
+		{ params, headers: { 'Content-Type': 'application/json' } },
 	);
 };
 

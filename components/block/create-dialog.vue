@@ -31,6 +31,10 @@ export default {
           title: "True/False Block",
           subtitle: "Set True/False/Unknown to the given statements",
         },
+        "group-distribution": {
+          title: "Group Distribution Block",
+          subtitle: "Distribute items into the appropriate groups",
+        },
       },
       isOpen: false,
       options: [],

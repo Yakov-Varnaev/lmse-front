@@ -9,4 +9,5 @@ export const useMode = defineStore("store/mode", {
       this.edit = !this.edit;
     },
   },
+  persist: true,
 });
