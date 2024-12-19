@@ -50,7 +50,7 @@ const updateFile = async (e: Event) => {
     </v-card>
 
     <div>
-      <v-btn icon flat @click.stop :readonly="$attrs.readonly">
+      <v-btn icon flat @click.stop :readonly="!!$attrs.readonly">
         <label :for="id">
           <v-icon icon="mdi-image" />
         </label>
