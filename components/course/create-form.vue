@@ -28,7 +28,7 @@ const create = async () => {
       </v-form>
     </v-card-text>
     <v-card-actions>
-      <ButtonBlock @submit="create" , @cancel="cancel" />
+      <ButtonBlock @submit="create" @cancel="cancel" />
     </v-card-actions>
   </v-card>
 </template>

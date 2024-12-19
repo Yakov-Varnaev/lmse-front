@@ -19,6 +19,7 @@ export default {
   },
 };
 </script>
+
 <template>
   <v-dialog v-model="courseOverlay">
     <template v-slot:activator="{ props }">
@@ -28,9 +29,11 @@ export default {
     </template>
 
     <v-container>
-      <v-col md="4" offset-md="4">
-        <CourseCreateForm @cancel="closeOverlay" @created="created" />
-      </v-col>
+      <v-row>
+        <v-col md="4" offset-md="4">
+          <CourseCreateForm @cancel="closeOverlay" @created="created" />
+        </v-col>
+      </v-row>
     </v-container>
   </v-dialog>
 </template>

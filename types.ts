@@ -1,3 +1,8 @@
+export type Page<T> = {
+	count: number
+	results: T[]
+}
+
 export type ImageData = {
 	id: string,
 	file: string,

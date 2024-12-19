@@ -1,20 +1,19 @@
-import type { Answer, Block, Chapter, Course, CourseTree, Lesson } from "~/types";
+import type { Answer, Block, Chapter, Course, CourseTree, Lesson, Page } from "~/types";
 
-export const createCourse = async (data: Course): Promise<{ data: Course }> => {
+
+export const getCategories = async (): Promise<{ data: { id: string, name: string }[] }> => {
+	const { $apiv1: apiv1 } = useNuxtApp();
+	return await apiv1.get("categories/");
+}
+
+export const createCourse = async (data: Partial<Course>): Promise<{ data: Course }> => {
 	const { $apiv1: apiv1 } = useNuxtApp();
 	return await apiv1.post("courses/", data);
 };
 
-export const getCourses = async (params = { my: null, author: null }): Promise<{ data: Course[] }> => {
+export const getCourses = async (params: { my?: boolean, author?: string, page?: number, pageSize?: number, search?: string } = {}): Promise<{ data: Page<Course> }> => {
 	const { $apiv1: apiv1 } = useNuxtApp();
-	let parsedParams: { my?: boolean, owner?: string } = {};
-	if (params.my === true) {
-		parsedParams.my = true;
-	}
-	if (params.author) {
-		parsedParams.owner = params.author;
-	}
-	return await apiv1.get("courses/", { params: parsedParams });
+	return await apiv1.get("courses/", { params, paramsSerializer: { indexes: null } });
 };
 
 export const retrieveCourse = async (id: string): Promise<{ data: Course }> => {

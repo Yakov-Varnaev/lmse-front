@@ -17,6 +17,7 @@ export default (request) => {
 
   if (!(request.data instanceof FormData)) {
     request.data = requestCaseMiddleware(request.data);
+    request.params = requestCaseMiddleware(request.params);
   }
 
   return request;
