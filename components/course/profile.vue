@@ -22,7 +22,12 @@ export default {
     },
     async deleteCourse(course) {
       await deleteCourse(course.id);
-      this.courses = this.courses.filter((c) => c.id !== course.id);
+      if (course.state == "published") {
+        // TODO: well, this is no good tbh
+        course.state = "archived";
+      } else {
+        this.courses = this.courses.filter((c) => c.id !== course.id);
+      }
     },
     async fetchCourses() {
       const { data } = await getCourses({ author: this.userId });
@@ -42,7 +47,7 @@ export default {
 
 <template>
   <div>
-    <div class="d-flex justify-space-between mb-2 pa-2 bg-primary rounded">
+    <div class="d-flex justify-space-between mb-2 bg-primary rounded-pill pa-2">
       <h1>Courses</h1>
       <CourseCreateOverlay @append="appendNewCourse" v-if="isAuthor" />
     </div>

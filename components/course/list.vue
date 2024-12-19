@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { Course } from "~/types";
 
-const props = defineProps<{
+defineProps<{
   isAuthor: boolean;
   courses: Course[];
 }>();
@@ -9,14 +9,20 @@ const props = defineProps<{
 const emit = defineEmits(["delete"]);
 
 const deleteConfirmationDialog = ref(false);
+const courseToDelete = ref<Course | null>(null);
+
+const openCoursedeleteConfirmationDialog = (course: Course) => {
+  courseToDelete.value = course;
+  toggleDeleteConfirmationDialog();
+};
 
 const toggleDeleteConfirmationDialog = () => {
   deleteConfirmationDialog.value = !deleteConfirmationDialog.value;
 };
 
-const performDelete = (course: Course) => {
+const performDelete = () => {
   toggleDeleteConfirmationDialog();
-  emit("delete", course);
+  emit("delete", courseToDelete.value);
 };
 
 const redirectToCourse = (courseId: string) => {
@@ -27,6 +33,23 @@ const redirectToCourse = (courseId: string) => {
 
 <template>
   <div>
+    <v-dialog v-model="deleteConfirmationDialog">
+      <v-row align="center" justify="center">
+        <v-col cols="4">
+          <v-card>
+            <v-card-title> Are you sure? </v-card-title>
+            <v-card-text> Delete {{ courseToDelete!.title }} </v-card-text>
+            <v-card-actions>
+              <ButtonBlock
+                @cancel="deleteConfirmationDialog = false"
+                @submit="() => performDelete()"
+              />
+            </v-card-actions>
+          </v-card>
+        </v-col>
+      </v-row>
+    </v-dialog>
+    <!-- list -->
     <v-list>
       <v-list-item
         v-for="course in courses"
@@ -45,35 +68,19 @@ const redirectToCourse = (courseId: string) => {
         </v-list-item-title>
         <v-spacer></v-spacer>
         <template v-slot:append>
-          <v-dialog v-model="deleteConfirmationDialog">
-            <template v-slot:activator="{ props: activatorProps }">
-              <v-hover v-if="isAuthor">
-                <template #default="{ isHovering, props }">
-                  <v-btn
-                    v-bind="{ ...props, ...activatorProps }"
-                    icon
-                    flat
-                    :class="{ 'text-red': isHovering }"
-                  >
-                    <v-icon icon="mdi-delete-outline" />
-                  </v-btn>
-                </template>
-              </v-hover>
+          <v-hover v-if="isAuthor">
+            <template #default="{ isHovering, props }">
+              <v-btn
+                v-bind="{ ...props }"
+                icon
+                flat
+                :class="{ 'text-red': isHovering }"
+                @click.stop="() => openCoursedeleteConfirmationDialog(course)"
+              >
+                <v-icon icon="mdi-delete-outline" />
+              </v-btn>
             </template>
-            <v-row align="center" justify="center">
-              <v-col cols="4">
-                <v-card>
-                  <v-card-text> Are you sure? </v-card-text>
-                  <v-card-actions>
-                    <ButtonBlock
-                      @cancel="deleteConfirmationDialog = false"
-                      @submit="() => performDelete(course)"
-                    />
-                  </v-card-actions>
-                </v-card>
-              </v-col>
-            </v-row>
-          </v-dialog>
+          </v-hover>
         </template>
       </v-list-item>
     </v-list>

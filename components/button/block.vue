@@ -9,7 +9,7 @@ const { submitPorps } = defineProps<{
   <v-row>
     <v-col>
       <v-btn
-        :disabled="submitPorps?.active ? !submitPorps.active : false"
+        :disabled="!(submitPorps?.active ?? true)"
         block
         color="primary"
         @click="$emit('submit')"

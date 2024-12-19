@@ -23,7 +23,7 @@ export default {
 <template>
   <v-dialog v-model="courseOverlay">
     <template v-slot:activator="{ props }">
-      <v-btn variant="plain" icon v-bind="props">
+      <v-btn variant="tonal" icon v-bind="props">
         <v-icon>mdi-plus</v-icon>
       </v-btn>
     </template>

@@ -66,17 +66,19 @@ export default {
     <v-row>
       <!-- side -->
       <v-col lg="3" md="12" cols="12">
-        <v-card
-          variant="tonal"
-          color="primary"
-          :loading="loader.loaderMap[key]"
-        >
+        <v-card variant="text" color="primary" :loading="loader.loaderMap[key]">
           <v-card-title>
             {{ course.title }}
           </v-card-title>
           <v-card-subtitle>
             by
-            <v-chip prepend-icon="mdi-at">
+            <v-chip
+              prepend-icon="mdi-at"
+              :to="{ name: 'profile', params: { id: course?.owner?.id } }"
+              variant="tonal"
+              color="info"
+              class="text-primary"
+            >
               {{ course.owner?.firstName }} {{ course.owner?.lastName }}
             </v-chip>
           </v-card-subtitle>
