@@ -288,6 +288,7 @@ const hasAnswer = computed((): boolean => {
     :answer-given="answerGiven"
     :is-correct="isCorrect"
     :has-answer="hasAnswer"
+    :block="block"
     @answer="processAnswer"
     @reset="resetAll"
     @up="$emit('up')"

@@ -52,6 +52,7 @@ const hasAnaswer = computed(() => {
     :answer-given="answerGiven"
     :is-correct="isCorrect"
     :has-answer="hasAnaswer"
+    :block="block"
     @answer="processAnswer"
     @reset="reset"
     @up="$emit('up')"

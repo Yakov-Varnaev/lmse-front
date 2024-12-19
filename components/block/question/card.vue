@@ -58,6 +58,7 @@ const hasText = computed(() => {
     :answer-given="answerGiven"
     :is-correct="isCorrect"
     :has-answer="!!answerData.variants.length"
+    :block="block"
     @answer="processAnswer"
     @reset="reset"
     @up="$emit('up')"

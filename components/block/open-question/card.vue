@@ -36,6 +36,7 @@ const hasText = computed((): boolean => {
     :answer-given="answerGiven"
     :is-correct="isCorrect"
     :has-answer="!!answerData.text.length"
+    :block="block"
     @answer="processAnswer"
     @reset="reset"
     @up="$emit('up')"

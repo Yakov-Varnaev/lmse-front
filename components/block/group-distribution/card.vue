@@ -67,9 +67,8 @@ const {
 
 const allItems = ref<GroupDistributionItem[]>([]);
 const collectBlockItems = () => {
-  allItems.value = shuffleArray(
-    props.block.meta.groups.flatMap((g) => g.items),
-  );
+  let items = props.block.meta.groups.flatMap((g) => g.items);
+  allItems.value = props.editMode ? items : shuffleArray(items);
 };
 
 const currentItem = ref<GroupDistributionItem[]>([]);
@@ -154,6 +153,7 @@ onMounted(() => {
     :answer-given="answerGiven"
     :is-correct="isCorrect"
     :has-answer="!allItems.length && !currentItem.length"
+    :block="block"
     @answer="processAnswer"
     @reset="reset"
     @up="$emit('up')"

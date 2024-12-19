@@ -1,16 +1,19 @@
 <script setup lang="ts">
+import type { Block } from "~/types";
+
 const emit = defineEmits(["edit", "delete", "up", "down", "reset", "answer"]);
-defineProps({
-  id: { type: String, required: false },
-  isLast: { type: Boolean, required: true },
-  isFirst: { type: Boolean, required: true },
-  editMode: { type: Boolean, required: true },
-  hideBottom: { type: Boolean, requred: false, default: false },
-  answerGiven: { type: Boolean, required: false },
-  isCorrect: { type: Boolean, required: false },
-  isAnswerLoading: { type: Boolean, required: false },
-  hasAnswer: { type: Boolean, required: false },
-});
+const { hideBottom = false } = defineProps<{
+  id?: string;
+  isLast: boolean;
+  isFirst: boolean;
+  editMode: boolean;
+  hideBottom?: boolean;
+  answerGiven?: boolean;
+  isCorrect?: boolean;
+  isAnswerLoading?: boolean;
+  hasAnswer?: boolean;
+  block: Block<any>;
+}>();
 </script>
 
 <template>
@@ -19,10 +22,22 @@ defineProps({
       <v-card
         v-bind="props"
         :variant="editMode ? 'outlined' : 'text'"
-        class="border-dashed"
+        class="border-dashed overflow-visible"
         elevation="0"
         :id="id"
       >
+        <v-tooltip :text="templateTitleMap[block.kind].subtitle">
+          <template v-slot:activator="{ props }">
+            <v-chip
+              v-bind="props"
+              size="xs"
+              class="px-2 kind-hint opacity-100"
+              variant="flat"
+            >
+              {{ templateTitleMap[block.kind].title }}
+            </v-chip>
+          </template>
+        </v-tooltip>
         <div
           v-if="isHovering && editMode"
           class="position-absolute right-0 mt-2 mr-2"
@@ -99,3 +114,12 @@ defineProps({
     </template>
   </v-hover>
 </template>
+
+<style lang="scss">
+.kind-hint {
+  position: absolute;
+  top: -5px;
+  left: 10px;
+  font-size: 9px;
+}
+</style>

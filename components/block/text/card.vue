@@ -16,6 +16,7 @@ export default {
     :isFirst="isFirst"
     :isLast="isLast"
     :hide-bottom="true"
+    :block="block"
     @up="$emit('up')"
     @down="$emit('down')"
     @edit="$emit('edit')"
