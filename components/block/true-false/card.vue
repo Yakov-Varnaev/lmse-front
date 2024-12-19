@@ -37,6 +37,10 @@ const getColor = (idx: number): string => {
 const hasText = computed(() => {
   return block.meta.text.length > 0 && block.meta.text !== "<p></p>";
 });
+
+const hasAnaswer = computed(() => {
+  return answerData.statements.every((s) => s.value !== undefined);
+});
 </script>
 
 <template>
@@ -47,7 +51,7 @@ const hasText = computed(() => {
     :is-answer-loading="isAnswerLoading"
     :answer-given="answerGiven"
     :is-correct="isCorrect"
-    :has-answer="!!answerData.statements.length"
+    :has-answer="hasAnaswer"
     @answer="processAnswer"
     @reset="reset"
     @up="$emit('up')"
