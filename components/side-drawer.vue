@@ -64,13 +64,13 @@ onBeforeUnmount(() => {
         </v-row>
       </v-dialog>
 
-      <v-list-item class="pa-3 bg-primary border rounded-e-lg">
+      <v-list-item class="pa-3 bg-primary border rounded-e-pill">
         <div class="d-flex align-center">
           <h1>{{ $props.title }}</h1>
           <slot name="actionButton" v-if="showActionButton">
             <v-btn
               icon
-              color="primary"
+              variant="tonal"
               class="ml-auto"
               elevation="0"
               @click="emit('openCreate')"

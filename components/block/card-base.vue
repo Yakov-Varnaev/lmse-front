@@ -30,6 +30,7 @@ const { hideBottom = false } = defineProps<{
           <template v-slot:activator="{ props }">
             <v-chip
               v-bind="props"
+              v-if="editMode"
               size="xs"
               class="px-2 kind-hint opacity-100"
               variant="flat"
@@ -38,42 +39,46 @@ const { hideBottom = false } = defineProps<{
             </v-chip>
           </template>
         </v-tooltip>
-        <div
-          v-if="isHovering && editMode"
-          class="position-absolute right-0 mt-2 mr-2"
-        >
-          <v-btn
-            @click.stop="$emit('edit')"
-            icon="mdi-pencil"
-            variant="flat"
-            size="small"
-            class="ml-1"
-          />
-          <v-btn
-            @click.stop="$emit('delete')"
-            icon="mdi-delete-outline"
-            variant="flat"
-            size="small"
-            class="ml-1"
-          />
-          <v-btn
-            @click.stop="$emit('up')"
-            :disabled="isFirst"
-            icon="mdi-arrow-up"
-            variant="flat"
-            size="small"
-            class="ml-1"
-          />
-          <v-btn
-            @click.stop="$emit('down')"
-            :disabled="isLast"
-            icon="mdi-arrow-down"
-            variant="flat"
-            size="small"
-            class="ml-1"
-          />
+        <div>
+          <slot name="title" />
+          <div v-if="editMode" class="btn-block right-0 mt-2 mr-2">
+            <v-btn
+              @click.stop="$emit('edit')"
+              icon="mdi-pencil"
+              variant="flat"
+              size="small"
+              class="ml-1"
+            />
+            <v-btn
+              @click.stop="$emit('delete')"
+              icon="mdi-delete-outline"
+              variant="flat"
+              size="small"
+              class="ml-1"
+            />
+            <v-btn
+              @click.stop="$emit('up')"
+              :disabled="isFirst"
+              icon="mdi-arrow-up"
+              variant="flat"
+              size="small"
+              class="ml-1"
+            />
+            <v-btn
+              @click.stop="$emit('down')"
+              :disabled="isLast"
+              icon="mdi-arrow-down"
+              variant="flat"
+              size="small"
+              class="ml-1"
+            />
+          </div>
         </div>
+        <!-- body -->
+
         <slot />
+
+        <!-- body -->
         <slot name="bottom" v-if="!hideBottom">
           <v-card-actions v-if="!editMode">
             <v-btn
@@ -87,7 +92,7 @@ const { hideBottom = false } = defineProps<{
             >
               Answer
             </v-btn>
-            <v-row no-gutters justify="center">
+            <v-row v-else no-gutters justify="center">
               <div class="d-flex align-center">
                 <span
                   :class="{
@@ -116,6 +121,10 @@ const { hideBottom = false } = defineProps<{
 </template>
 
 <style lang="scss">
+.btn-block {
+  float: right;
+}
+
 .kind-hint {
   position: absolute;
   top: -5px;

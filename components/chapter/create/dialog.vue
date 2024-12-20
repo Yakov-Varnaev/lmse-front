@@ -1,35 +1,24 @@
-<script>
-export default {
-  props: {
-    courseId: {
-      type: String,
-      required: true,
-    },
-  },
-  data() {
-    return {
-      isOpen: false,
-    };
-  },
-  methods: {
-    toggle() {
-      this.isOpen = !this.isOpen;
-    },
-    created(newChapter) {
-      this.$emit("created", newChapter);
-      this.toggle();
-    },
-  },
+<script setup lang="ts">
+defineProps<{
+  courseId: string;
+}>();
+
+const emit = defineEmits(["created", "close"]);
+
+const created = (newChapter: { title: string }): void => {
+  emit("created", newChapter);
+  emit("close");
 };
 </script>
+
 <template>
-  <v-dialog v-model="isOpen" max-width="500">
+  <v-dialog max-width="500">
     <template v-slot:activator="{ props: activatorProps }">
       <slot name="activator" :props="activatorProps" />
     </template>
     <template v-slot:default="{ isActive }">
       <ChapterCreateForm
-        @cancel="toggle"
+        @cancel="$emit('close')"
         @created="created"
         :course-id="courseId"
       />

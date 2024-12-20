@@ -26,6 +26,7 @@ export default {
   },
   data() {
     return {
+      createDialog: false,
       course: {},
       chapters: [],
       drawerItems: [],
@@ -41,6 +42,9 @@ export default {
           params: { id: chapter.course.id, chapterId: chapter.id },
         },
       }));
+    },
+    toggleCreateDialog() {
+      this.createDialog = !this.createDialog;
     },
     async courseUpdated(updData) {
       const { data } = await updateCourse(this.courseId, updData);
@@ -106,6 +110,13 @@ export default {
 
 <template>
   <div class="fill-height">
+    <ChapterCreateDialog
+      @created="appendChapter"
+      :course-id="courseId"
+      v-model="createDialog"
+      @close="toggleCreateDialog"
+    />
+
     <SideDrawer
       title="Chapters"
       :items="drawerItems"
@@ -113,23 +124,8 @@ export default {
       @updated="updateChapterOrder"
       :onDelete="deleteChapterFromList"
       :showActionButton="courseContext.isOwner"
-    >
-      <template v-slot:actionButton>
-        <ChapterCreateDialog @created="appendChapter" :course-id="courseId">
-          <template v-slot:activator="{ props: activatorProps }">
-            <v-btn
-              v-bind="activatorProps"
-              icon
-              color="primary"
-              class="ml-auto"
-              elevation="0"
-            >
-              <v-icon>mdi-plus</v-icon>
-            </v-btn>
-          </template>
-        </ChapterCreateDialog>
-      </template>
-    </SideDrawer>
+      @openCreate="toggleCreateDialog"
+    />
     <!-- content -->
     <v-container v-if="!isLoading" class="align-start content-container">
       <v-row dense class="content-container" justify="center">

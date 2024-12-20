@@ -166,11 +166,15 @@ onMounted(() => {
     </v-card-title>
 
     <v-card-text>
-      <VuetifyViewer
-        v-if="hasText"
-        :value="block.meta.text"
-        class="bg-background"
-      />
+      <v-row>
+        <v-col>
+          <VuetifyViewer
+            v-if="hasText"
+            :value="block.meta.text"
+            class="bg-background"
+          />
+        </v-col>
+      </v-row>
       <v-row justify="center">
         <v-col style="min-height: 200px" v-if="block.meta.groups.length">
           <draggable
