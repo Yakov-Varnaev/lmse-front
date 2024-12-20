@@ -31,6 +31,10 @@ const updateFile = async (e: Event) => {
 
   variant.image = { src: fileData.file, id: fileData.id };
 };
+
+const removeImage = () => {
+  delete variant.image;
+};
 </script>
 
 <template>
@@ -46,16 +50,30 @@ const updateFile = async (e: Event) => {
     </v-text-field>
 
     <v-card v-else variant="flat" class="d-flex" width="100%" max-height="200">
-      <v-img :src="$media(variant.image.src)" />
+      <v-img :src="$media(variant.image.src)">
+        <v-btn
+          variant="tonal"
+          color="red"
+          size="small"
+          class="ma-1 img-delete-icon"
+          icon="mdi-delete-outline"
+          @click="removeImage"
+        ></v-btn>
+      </v-img>
     </v-card>
     <div>
-      <v-btn icon flat @click.stop :readonly="!!$attrs.readonly">
-        <label :for="id">
-          <v-icon icon="mdi-image" />
-        </label>
+      <v-btn
+        icon
+        flat
+        size="small"
+        class="ma-1"
+        @click="$refs.uploader.click()"
+      >
+        <v-icon icon="mdi-image" />
       </v-btn>
       <input
         type="file"
+        ref="uploader"
         @change="updateFile"
         :id="id"
         class="image-input"
@@ -64,3 +82,11 @@ const updateFile = async (e: Event) => {
     </div>
   </div>
 </template>
+
+<style lang="scss" scoped>
+.img-delete-icon {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+</style>
