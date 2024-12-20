@@ -1,26 +1,25 @@
-<script>
-export default {
-  emits: ["update"],
-  props: {
-    title: { type: String, required: true },
-  },
-  data() {
-    return {
-      isEdit: false,
-      newTitle: this.title,
-    };
-  },
-  methods: {
-    toggleEdit() {
-      this.isEdit = !this.isEdit;
-    },
-    update() {
-      this.$emit("update", { title: this.newTitle });
-      this.toggleEdit();
-    },
-  },
+<script setup lang="ts">
+const emit = defineEmits(["update"]);
+const { title } = defineProps<{ title: string }>();
+
+const isEdit = ref(false);
+const newTitle = ref(title);
+
+const toggleEdit = () => {
+  isEdit.value = !isEdit.value;
+};
+
+const update = () => {
+  emit("update", { title: newTitle.value });
+  toggleEdit();
+};
+
+const cancel = () => {
+  newTitle.value = title;
+  toggleEdit();
 };
 </script>
+
 <template>
   <v-row>
     <v-col>
@@ -51,7 +50,7 @@ export default {
         color="red"
         size="small"
         variant="tonal"
-        @click="toggleEdit"
+        @click="cancel"
       />
     </v-col>
     <v-col cols="1" v-else>

@@ -1,115 +1,89 @@
-<script>
-import {
-  getAnswers,
-  getBlocks,
-  retrieveLesson,
-  updateLesson,
-} from "~/api/courses";
-import { useMode } from "~/stores/mode";
+<script setup lang="ts">
+import { getBlocks, retrieveLesson, updateLesson } from "~/api/courses";
+import type { Block, Lesson } from "~/types";
 
-export default {
-  props: {
-    courseId: { type: String, required: true },
-    chapterId: { type: String, required: true },
-    lessonId: { type: String, required: true },
-  },
-  setup() {
-    return {
-      loader: useLoader(),
-      bread: useBreadcrumbs(),
-      mode: useMode(),
-      courseContext: useCourseContext(),
-    };
-  },
-  data() {
-    return {
-      lesson: { title: "" },
-      blocks: [],
-    };
-  },
-  methods: {
-    toggleEditMode() {
-      this.mode.toggle_edit();
-    },
-    async updateLessonTitle(updatedData) {
-      const { data } = await updateLesson(
-        this.courseId,
-        this.chapterId,
-        this.lessonId,
-        updatedData,
-      );
-      this.lesson = data;
-    },
-    async loadLesson() {
-      const { data } = await retrieveLesson(
-        this.courseId,
-        this.chapterId,
-        this.lessonId,
-      );
-      this.lesson = data;
-    },
-    async loadBlocks() {
-      const { data } = await getBlocks(
-        this.courseId,
-        this.chapterId,
-        this.lessonId,
-      );
-      this.blocks = data;
-    },
-    async loadAnswers() {
-      const { data } = await getAnswers(
-        this.courseId,
-        this.chapterId,
-        this.lessonId,
-      );
-      this.answers = data;
-    },
-    blockUpdated(block) {
-      this.blocks = this.blocks.map((b) => (b.id === block.id ? block : b));
-    },
-    blockDeleted(id) {
-      this.blocks = this.blocks.filter((b) => b.id !== id);
-    },
-  },
-  async mounted() {
-    this.loader.startLoading();
-    await this.loadLesson();
-    this.courseContext.setLesson(this.lesson);
-    this.bread.loadFromContext();
-    await this.loadBlocks();
-    this.loader.stopLoading();
-  },
+const { courseId, chapterId, lessonId } = defineProps<{
+  courseId: string;
+  chapterId: string;
+  lessonId: string;
+}>();
+
+const loader = useLoader();
+const mode = useMode();
+const bread = useBreadcrumbs();
+const courseContext = useCourseContext();
+const lesson = ref<Lesson | null>(null);
+const blocks = ref<Block<any>[]>([]);
+
+const updateLessonTitle = async (updatedData: Partial<Lesson>) => {
+  const { data } = await updateLesson(
+    courseId,
+    chapterId,
+    lessonId,
+    updatedData,
+  );
+  lesson.value = data;
 };
+
+const loadLesson = async () => {
+  const { data } = await retrieveLesson(courseId, chapterId, lessonId);
+  lesson.value = data;
+};
+
+const loadBlocks = async () => {
+  const { data } = await getBlocks(courseId, chapterId, lessonId);
+  blocks.value = data;
+};
+
+const blockUpdated = (block: Block<any>) => {
+  blocks.value = blocks.value.map((b) => (b.id === block.id ? block : b));
+};
+
+const blockDeleted = (id: string) => {
+  blocks.value = blocks.value.filter((b) => b.id !== id);
+};
+
+onMounted(async () => {
+  await loader.withKeyLoader("lesson-page", async () => {
+    await loadLesson();
+    courseContext.setLesson(lesson.value!);
+    bread.loadFromContext();
+    await loadBlocks();
+  });
+});
 </script>
 
 <template>
-  <v-container>
-    <v-row justify="center">
-      <v-col lg="8">
-        <v-card v-if="!mode.edit" variant="text">
-          <v-card-title> {{ lesson.title }} </v-card-title>
-        </v-card>
-        <TitleEditor
-          v-if="mode.edit"
-          @update="updateLessonTitle"
-          :title="lesson.title"
-        />
-      </v-col>
-    </v-row>
-    <v-row justify="center">
-      <v-col md="8">
-        <BlockList
-          :editMode="mode.edit"
-          :blocks="blocks"
-          :course-id="courseId"
-          :chapter-id="chapterId"
-          :lesson-id="lessonId"
-          @update="blockUpdated"
-          @delete="blockDeleted"
-          @refetch="loadBlocks"
-        />
-      </v-col>
-    </v-row>
-    <EditToggler absolute />
-  </v-container>
+  <div>
+    <v-progress-circular indeterminate v-if="loader.loaderMap['lesson-page']" />
+    <v-container v-else>
+      <v-row justify="center">
+        <v-col lg="8">
+          <v-card v-if="!mode.edit" variant="text">
+            <v-card-title> {{ lesson?.title }} </v-card-title>
+          </v-card>
+          <TitleEditor
+            v-if="mode.edit"
+            @update="updateLessonTitle"
+            :title="lesson?.title || ''"
+          />
+        </v-col>
+      </v-row>
+      <v-row justify="center">
+        <v-col md="8">
+          <BlockList
+            :editMode="mode.edit"
+            :blocks="blocks"
+            :course-id="courseId"
+            :chapter-id="chapterId"
+            :lesson-id="lessonId"
+            @update="blockUpdated"
+            @delete="blockDeleted"
+            @refetch="loadBlocks"
+          />
+        </v-col>
+      </v-row>
+      <EditToggler absolute />
+    </v-container>
+  </div>
 </template>

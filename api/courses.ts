@@ -100,7 +100,7 @@ export const retrieveLesson = async (courseId: string, chapterId: string, lesson
 	);
 };
 
-export const updateLesson = async (courseId: string, chapterId: string, lessonId: string, data: Lesson): Promise<{ data: Lesson }> => {
+export const updateLesson = async (courseId: string, chapterId: string, lessonId: string, data: Partial<Lesson>): Promise<{ data: Lesson }> => {
 	const { $apiv1: apiv1 } = useNuxtApp();
 	return await apiv1.put(
 		`courses/${courseId}/chapters/${chapterId}/lessons/${lessonId}/`,
@@ -125,7 +125,7 @@ export const createBlock = async (courseId: string, chapterId: string, lessonId:
 	);
 };
 
-export const getBlocks = async (courseId: string, chapterId: string, lessonId: string): Promise<{ data: Block<any> }> => {
+export const getBlocks = async (courseId: string, chapterId: string, lessonId: string): Promise<{ data: Block<any>[] }> => {
 	const { $apiv1: apiv1 } = useNuxtApp();
 	return await apiv1.get(
 		`courses/${courseId}/chapters/${chapterId}/lessons/${lessonId}/blocks/`,
