@@ -46,9 +46,8 @@ const updateFile = async (e: Event) => {
     </v-text-field>
 
     <v-card v-else variant="flat" class="d-flex" width="100%" max-height="200">
-      <v-img :src="`http://localhost:8000${variant.image.src}`" />
+      <v-img :src="$media(variant.image.src)" />
     </v-card>
-
     <div>
       <v-btn icon flat @click.stop :readonly="!!$attrs.readonly">
         <label :for="id">

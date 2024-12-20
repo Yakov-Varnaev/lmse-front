@@ -40,7 +40,7 @@ const variantBorder = (): string => {
         :color="answerCorrect ? 'success' : 'error'"
       />
     </v-sheet>
-    <v-img v-if="image" :src="`http://localhost:8000${image?.src}`" cover />
+    <v-img v-if="image" :src="$media(image.src)" cover />
     <v-card-text v-else class="d-flex align-center">
       <v-icon
         class="mr-3"
