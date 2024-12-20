@@ -56,9 +56,9 @@ const getCorrectnessArr = (): boolean[] => {
   });
 };
 
-const correctnessArr = ref<boolean[]>(
-  answerGiven.value ? getCorrectnessArr() : [],
-);
+const correctnessArr = computed<boolean[]>(() => {
+  return answerGiven.value ? getCorrectnessArr() : [];
+});
 
 const drag = ref(false);
 const options = ref(
@@ -83,11 +83,6 @@ watch(drag, () => {
 
 const groupName = crypto.randomUUID();
 
-const giveAnswer = async () => {
-  await processAnswer();
-  correctnessArr.value = getCorrectnessArr();
-};
-
 const hasText = computed((): boolean => {
   return (
     props.block.meta.text.length > 0 && props.block.meta.text !== "<p></p>"
@@ -103,7 +98,7 @@ const hasText = computed((): boolean => {
     :is-answer-loading="isAnswerLoading"
     :answer-given="answerGiven"
     :is-correct="isCorrect"
-    :has-answer="!!answerData.order.length"
+    :has-answer="answerData.order.length === block.meta.options.length"
     :block="block"
     @answer="processAnswer"
     @reset="reset"
