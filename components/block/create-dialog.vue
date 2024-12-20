@@ -1,55 +1,56 @@
-<script>
+<script setup lang="ts">
 import { createBlock, getTemplates } from "~/api/courses";
+import type { Block, TemplateData } from "~/types";
 
-export default {
-  props: {
-    courseId: { type: String, required: true },
-    chapterId: { type: String, required: true },
-    lessonId: { type: String, required: true },
-  },
-  data() {
-    return {
-      templateMap: templateTitleMap,
-      isOpen: false,
-      options: [],
-      template: null,
-    };
-  },
-  methods: {
-    toggle() {
-      this.template = null;
-      this.isOpen = !this.isOpen;
-    },
-    async loadTemplates() {
-      const { data } = await getTemplates();
-      let processedData = data.map((t) => {
-        return {
-          ...t,
-          title: this.templateMap[t.kind].title,
-          subtitle: this.templateMap[t.kind].subtitle,
-        };
-      });
-      this.options = processedData;
-    },
-    async createBlock() {
-      const { data } = await createBlock(
-        this.courseId,
-        this.chapterId,
-        this.lessonId,
-        { template: this.template.id },
-      );
-      this.created(data);
-    },
-    created(newChapter) {
-      this.$emit("created", newChapter);
-      this.toggle();
-    },
-  },
-  async mounted() {
-    this.loadTemplates();
-  },
-  unmounted() {},
+const emit = defineEmits(["created"]);
+
+const { courseId, chapterId, lessonId, order } = defineProps<{
+  courseId: string;
+  chapterId: string;
+  lessonId: string;
+  order?: number;
+}>();
+
+const templateMap = templateTitleMap;
+const isOpen = ref(false);
+const options = ref<TemplateData[]>([]);
+const template = ref<TemplateData | null>(null);
+const toggle = () => {
+  template.value = null;
+  isOpen.value = !isOpen.value;
 };
+
+const loadTemplates = async () => {
+  const { data } = await getTemplates();
+  let processedData = data.map((t) => {
+    return {
+      ...t,
+      title: templateMap[t.kind].title,
+      subtitle: templateMap[t.kind].subtitle,
+    };
+  });
+  options.value = processedData;
+};
+const performCreateBlock = async () => {
+  let ordData: { order?: number } = {};
+  if (order) {
+    ordData.order = order;
+  }
+  const { data } = await createBlock(courseId, chapterId, lessonId, {
+    template: template.value!.id,
+    ...ordData,
+  });
+  created(data);
+};
+
+const created = (newBlock: Block<any>) => {
+  emit("created", newBlock);
+  toggle();
+};
+
+onMounted(async () => {
+  await loadTemplates();
+});
 </script>
 
 <template>
@@ -59,20 +60,21 @@ export default {
     </template>
     <template v-slot:default>
       <v-card>
-        <v-card-title>Add Block</v-card-title>
+        <v-card-title>
+          {{ $props.order ? "Insert Block" : "Add Block" }}
+        </v-card-title>
         <v-card-text>
           <v-combobox
             :items="options"
             v-model="template"
-            item-props
             return-object
-          >
-          </v-combobox>
+            item-props
+          />
         </v-card-text>
         <v-card-actions>
           <ButtonBlock
             @cancel="toggle"
-            @submit="createBlock"
+            @submit="performCreateBlock"
             :submit-porps="{ active: !!template }"
           />
         </v-card-actions>

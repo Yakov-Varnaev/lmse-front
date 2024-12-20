@@ -20,7 +20,7 @@ const { editMode } = props;
   <div>
     <BlockTextEditor
       v-if="blockEditMode"
-      :block="blockData"
+      :block="block"
       @cancel="toggleEditMode"
       @update="update"
     />
@@ -28,7 +28,7 @@ const { editMode } = props;
       v-else
       :isFirst="isFirst"
       :isLast="isLast"
-      :block="blockData"
+      :block="block"
       :editMode="editMode"
       @up="$emit('up')"
       @down="$emit('down')"

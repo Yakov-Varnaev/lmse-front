@@ -1,4 +1,4 @@
-import type { Answer, Block, Chapter, Course, CourseTree, Lesson, Page } from "~/types";
+import type { Answer, Block, Chapter, Course, CourseTree, Lesson, Page, TemplateData } from "~/types";
 
 
 export const getCategories = async (): Promise<{ data: { id: string, name: string }[] }> => {
@@ -117,7 +117,7 @@ export const deleteLesson = async (courseId: string, chapterId: string, lessonId
 
 // Blocks
 
-export const createBlock = async (courseId: string, chapterId: string, lessonId: string, data: Block<any>): Promise<{ data: Block<any> }> => {
+export const createBlock = async (courseId: string, chapterId: string, lessonId: string, data: { template: string, order?: number }): Promise<{ data: Block<any> }> => {
 	const { $apiv1: apiv1 } = useNuxtApp();
 	return await apiv1.post(
 		`courses/${courseId}/chapters/${chapterId}/lessons/${lessonId}/blocks/`,
@@ -182,7 +182,7 @@ export const deleteBlockMedia = async (
 
 /* Templates */
 
-export const getTemplates = async () => {
+export const getTemplates = async (): Promise<{ data: TemplateData[] }> => {
 	const { $apiv1: apiv1 } = useNuxtApp();
 	return await apiv1.get("templates/");
 };

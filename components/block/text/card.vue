@@ -1,13 +1,13 @@
-<script>
-export default {
-  emits: ["edit", "delete", "up", "down"],
-  props: {
-    block: { type: Object, required: true },
-    editMode: { type: Boolean, required: true },
-    isLast: { type: Boolean, required: true },
-    isFirst: { type: Boolean, required: true },
-  },
-};
+<script setup lang="ts">
+import type { Block } from "~/types";
+
+const emit = defineEmits(["edit", "delete", "up", "down"]);
+const props = defineProps<{
+  block: Block<{ content: string }>;
+  editMode: boolean;
+  isLast: boolean;
+  isFirst: boolean;
+}>();
 </script>
 
 <template>
@@ -22,8 +22,8 @@ export default {
     @edit="$emit('edit')"
     @delete="$emit('delete')"
   >
-    <v-card-text v-if="block.content && block.content !== '<p></p>'">
-      <VuetifyViewer :value="block.content" class="bg-background" />
+    <v-card-text v-if="block.meta.content && block.meta.content !== '<p></p>'">
+      <VuetifyViewer :value="block.meta.content" class="bg-background" />
     </v-card-text>
     <v-card-title v-else class="text-grey text-h4 font-weight-black">
       Text

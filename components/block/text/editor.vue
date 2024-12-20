@@ -5,7 +5,7 @@ export default {
     block: { type: Object, required: true },
   },
   data() {
-    return { data: { ...this.block } };
+    return { data: { ...this.block.meta } };
   },
   methods: {
     submit() {

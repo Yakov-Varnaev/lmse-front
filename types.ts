@@ -72,12 +72,18 @@ export type Answer<Meta extends Object> = {
 	meta: Meta,
 }
 
+export type TemplateData = {
+	id: string,
+	kind: string,
+	version: string,
+}
+
 
 export type Block<Meta extends Object> = {
 	id: string,
 	answerData: Answer<any> | null,
 	kind: string,
-	order: Number,
+	order: number,
 	template: string,
 	meta: Meta,
 }

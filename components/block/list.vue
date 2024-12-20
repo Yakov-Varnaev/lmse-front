@@ -126,21 +126,56 @@ onMounted(() => {
       </v-row>
     </v-dialog>
     <div class="mt-2">
-      <component
-        :id="block.id"
-        :key="block.id"
-        v-for="(block, idx) in blocks"
-        class="fill-width mt-2"
-        :is="{ ...componentMap[block.kind] }"
-        :block="block"
-        :editMode="editMode"
-        :isFirst="idx === 0"
-        :isLast="idx === blocks.length - 1"
-        @update="updateBlockContent"
-        @delete="onBlockDelete"
-        @up="async () => await moveUp(idx)"
-        @down="async () => await moveDown(idx)"
-      />
+      <div v-for="(block, idx) in blocks" :key="block.id">
+        <v-hover v-if="editMode">
+          <template #default="{ isHovering, props }">
+            <div v-bind="props" class="py-3">
+              <v-divider>
+                <BlockCreateDialog
+                  :course-id="courseId"
+                  :chapter-id="chapterId"
+                  :lesson-id="lessonId"
+                  :order="block.order"
+                  @created="appendBlock"
+                  v-if="editMode"
+                >
+                  <template #activator="{ props }">
+                    <v-btn
+                      v-bind="props"
+                      :prepend-icon="
+                        idx === 0
+                          ? 'mdi-arrow-expand-down'
+                          : 'mdi-arrow-split-horizontal'
+                      "
+                      size="s"
+                      :class="{
+                        'small-btn-text': true,
+                        'pa-1': true,
+                      }"
+                    >
+                      <span v-if="isHovering" class="ml-1">Insert</span>
+                    </v-btn>
+                  </template>
+                </BlockCreateDialog>
+              </v-divider>
+            </div>
+          </template>
+        </v-hover>
+
+        <component
+          :id="block.id"
+          class="fill-width"
+          :is="{ ...componentMap[block.kind] }"
+          :block="block"
+          :editMode="editMode"
+          :isFirst="idx === 0"
+          :isLast="idx === blocks.length - 1"
+          @update="updateBlockContent"
+          @delete="onBlockDelete"
+          @up="async () => await moveUp(idx)"
+          @down="async () => await moveDown(idx)"
+        />
+      </div>
     </div>
 
     <BlockCreateDialog
@@ -166,3 +201,9 @@ onMounted(() => {
     </BlockCreateDialog>
   </div>
 </template>
+
+<style scoped lang="scss">
+.small-btn-text {
+  font-size: 9px;
+}
+</style>
