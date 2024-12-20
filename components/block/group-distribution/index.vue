@@ -1,20 +1,18 @@
 <script setup lang="ts">
-const props = defineProps({
-  editMode: { type: Boolean, required: true },
-  isLast: { type: Boolean, required: true },
-  isFirst: { type: Boolean, required: true },
-  block: {
-    type: Object,
-    required: true,
-  },
-});
+import type { Block, GroupDistributionMeta } from "~/types";
+
+const props = defineProps<{
+  editMode: boolean;
+  isLast: boolean;
+  isFirst: boolean;
+  block: Block<GroupDistributionMeta>;
+}>();
 const emit = defineEmits(["update", "up", "down", "delete"]);
 
 const { blockEditMode, toggleEditMode, update, deleteBlock } = useBlock(
   emit,
   props,
 );
-const { editMode } = props;
 </script>
 
 <template>
@@ -28,7 +26,7 @@ const { editMode } = props;
     />
     <BlockGroupDistributionCard
       v-else
-      :block="block"
+      :block="deepCopy(block)"
       :editMode="editMode"
       :isFirst="isFirst"
       :isLast="isLast"

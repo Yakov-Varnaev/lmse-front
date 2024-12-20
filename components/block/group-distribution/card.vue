@@ -14,11 +14,13 @@ const props = defineProps<{
   isFirst: boolean;
 }>();
 
+const { editMode } = props;
+
 const drag = ref(false);
 
 let ans: { [key: string]: GroupDistributionItem[] } = {};
 for (const g of props.block.meta.groups) {
-  ans[g.id] = [];
+  ans[g.id] = editMode ? g.items : [];
 }
 
 const {
@@ -175,7 +177,7 @@ onMounted(() => {
           />
         </v-col>
       </v-row>
-      <v-row justify="center">
+      <v-row justify="center" v-if="!editMode">
         <v-col style="min-height: 200px" v-if="block.meta.groups.length">
           <draggable
             v-if="!answerGiven && (currentItem.length || allItems.length)"
@@ -189,7 +191,7 @@ onMounted(() => {
             :group="`block-${block.id}`"
             @change="onDragged"
           >
-            <template v-slot:item="{ element: item, index }">
+            <template v-slot:item="{ element: item }">
               <v-card
                 class="d-flex flex-column align-center justify-center fill-height mx-auto"
                 max-width="300"
@@ -216,7 +218,7 @@ onMounted(() => {
         </v-col>
       </v-row>
       <v-row justify="center">
-        <v-col v-for="(group, groupIdx) in block.meta.groups" cols="6">
+        <v-col v-for="group in block.meta.groups" cols="6">
           <v-card
             min-height="200"
             class="fill-height d-flex flex-column"
@@ -229,10 +231,10 @@ onMounted(() => {
                 v-model="answerData.groups[group.id]"
                 item-key="id"
                 class="fill-height"
-                :disabled="answerGiven"
+                :disabled="answerGiven || editMode"
                 :group="`block-${block.id}`"
               >
-                <template v-slot:item="{ element: item, index }">
+                <template v-slot:item="{ element: item }">
                   <v-card
                     variant="tonal"
                     class="my-1"
