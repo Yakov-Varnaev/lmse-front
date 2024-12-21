@@ -58,6 +58,14 @@ watch([levelQuery, categoryQuery], loadCoursesWithPageDrop);
 onMounted(() => {
   loader.withLoader(loadCourses);
 });
+
+const getLevelColor = (level: string): string => {
+  return {
+    beginner: "success",
+    medium: "warning",
+    advanced: "purple",
+  }[level]!;
+};
 </script>
 
 <template>
@@ -139,37 +147,90 @@ onMounted(() => {
         </v-col>
       </v-row>
 
-      <v-row v-else>
-        <v-col cols="4" cols-md="3" v-for="course in courses" :key="course.id">
+      <v-row v-else v-for="course in courses" :key="course.id">
+        <v-col>
           <v-card
             variant="flat"
             :to="{ name: 'course-detail', params: { id: course.id } }"
-            class="fill-height d-flex flex-column"
+            class="rounded-xl"
           >
-            <div>
-              <v-card-text>
-                <v-img src="https://cdn.vuetifyjs.com/images/cards/house.jpg">
-                </v-img>
-              </v-card-text>
-              <v-card-title>
-                {{ course.title }}
-              </v-card-title>
-              <v-card-text class="short-description">
-                {{ course.shortDescription }}
-              </v-card-text>
-            </div>
-
-            <v-card-actions class="mt-auto">
-              <v-chip
-                class="mt-auto"
-                pill
-                color="primary"
-                :to="{ name: 'profile', params: { id: course.owner.id } }"
-              >
-                <v-icon class="mr-2">mdi-account-circle</v-icon>
-                {{ course.owner.firstName + " " + course.owner.lastName }}
-              </v-chip>
-            </v-card-actions>
+            <v-row class="">
+              <v-col cols="3" class="">
+                <div class="fill-height overflow-hidden">
+                  <v-img
+                    v-if="course.image"
+                    class="rounded-xl"
+                    src="https://cdn.vuetifyjs.com/images/cards/house.jpg"
+                    cover
+                    height="100%"
+                  />
+                  <v-card
+                    variant="tonal"
+                    class="fill-height rounded-xl d-flex"
+                    color="primary"
+                  >
+                    <v-icon
+                      icon="mdi-image-off-outline"
+                      class="ma-auto"
+                      size="150"
+                    />
+                  </v-card>
+                </div>
+              </v-col>
+              <v-col>
+                <div class="fill-width">
+                  <v-card-title class="">
+                    <v-chip
+                      variant="outlined"
+                      :color="getLevelColor(course.level)"
+                      class="ma-1 text-capitalize float-right"
+                    >
+                      {{ course.level }}
+                    </v-chip>
+                    <v-chip
+                      variant="outlined"
+                      color="primary"
+                      class="ma-1 float-right"
+                      v-if="course.category"
+                    >
+                      {{ course.category.name }}
+                    </v-chip>
+                    <div>{{ course.title }}</div>
+                  </v-card-title>
+                  <div>
+                    <v-chip
+                      v-for="tag in course.tags"
+                      class="ma-1"
+                      :color="
+                        getRandom([
+                          'primary',
+                          'warning',
+                          'error',
+                          'info',
+                          'yellow',
+                        ])
+                      "
+                    >
+                      {{ tag }}
+                    </v-chip>
+                  </div>
+                  <v-card-text class="short-description">
+                    {{ course.shortDescription }}
+                  </v-card-text>
+                  <v-card-actions class="mt-5">
+                    <v-chip
+                      class="mt-auto"
+                      pill
+                      color="primary"
+                      :to="{ name: 'profile', params: { id: course.owner.id } }"
+                    >
+                      <v-icon class="mr-2">mdi-account-circle</v-icon>
+                      {{ course.owner.firstName + " " + course.owner.lastName }}
+                    </v-chip>
+                  </v-card-actions>
+                </div>
+              </v-col>
+            </v-row>
           </v-card>
         </v-col>
       </v-row>
@@ -185,3 +246,9 @@ onMounted(() => {
     </v-container>
   </div>
 </template>
+
+<style lang="scss" scoped>
+.short-description {
+  height: 5rem;
+}
+</style>
