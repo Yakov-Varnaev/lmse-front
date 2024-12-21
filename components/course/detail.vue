@@ -59,6 +59,7 @@ export default {
   },
 };
 </script>
+
 <template>
   <v-container>
     <v-row>
@@ -143,12 +144,29 @@ export default {
         </v-row>
         <v-row>
           <v-col>
-            <v-treeview
-              :items="chapters"
-              item-children="lessons"
-              open-all
-              item-value="id"
-            />
+            <v-timeline truncate-line="start" align="start">
+              <v-timeline-item></v-timeline-item>
+              <v-timeline-item v-for="chapter in chapters" dot-color="primary">
+                <template v-slot:opposite>
+                  <h2 class="font-weight-light">
+                    {{ chapter.title }}
+                  </h2>
+                </template>
+                <div>
+                  <v-card variant="tonal" color="primary">
+                    <v-card-text>
+                      <v-list density="compact">
+                        <v-list-item
+                          v-for="lesson in chapter.lessons"
+                          :title="lesson.title"
+                        >
+                        </v-list-item>
+                      </v-list>
+                    </v-card-text>
+                  </v-card>
+                </div>
+              </v-timeline-item>
+            </v-timeline>
           </v-col>
         </v-row>
       </v-col>

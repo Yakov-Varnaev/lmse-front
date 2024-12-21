@@ -171,7 +171,7 @@ export default {
           </v-card>
         </v-col>
       </v-row>
-      <v-row justify="center">
+      <v-row justify="center" v-if="mode.edit">
         <v-col lg="9" xl="9" v-if="errors !== null">
           <CourseCheckTree v-if="!errors.valid" :data="errors" />
           <v-card v-else variant="outlined" color="success">
