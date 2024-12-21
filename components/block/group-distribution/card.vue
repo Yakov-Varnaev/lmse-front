@@ -193,7 +193,11 @@ onMounted(() => {
           >
             <template v-slot:item="{ element: item }">
               <v-card
-                class="d-flex flex-column align-center justify-center fill-height mx-auto"
+                :class="{
+                  'd-flex flex-column align-center justify-center fill-height mx-auto': true,
+                  'cursor-grab': !drag,
+                  'cursor-grabbing': drag,
+                }"
                 max-width="300"
               >
                 <v-img
@@ -231,13 +235,19 @@ onMounted(() => {
                 v-model="answerData.groups[group.id]"
                 item-key="id"
                 class="fill-height"
+                @start="drag = true"
+                @end="drag = false"
                 :disabled="answerGiven || editMode"
                 :group="`block-${block.id}`"
               >
                 <template v-slot:item="{ element: item }">
                   <v-card
                     variant="tonal"
-                    class="my-1"
+                    :class="{
+                      'my-1': true,
+                      'cursor-grab': !drag,
+                      'cursor-grabbing': drag,
+                    }"
                     :color="getColor(group.id, item.id)"
                   >
                     <v-img v-if="item.image" :src="$media(item.image.src)" />

@@ -71,6 +71,7 @@ export default {
     },
     async deleteLessonItem(lesson) {
       await deleteLesson(this.courseId, this.chapterId, lesson.id);
+      this.bread.removeLesson(lesson);
       this.lessons = this.lessons.filter((i) => i.id !== lesson.id);
       this.processDrawerItems();
     },
@@ -84,6 +85,7 @@ export default {
     },
     lessonCreated(newLesson) {
       this.lessons = [...this.lessons, newLesson];
+      this.bread.setLesson(newLesson);
       this.processDrawerItems();
       this.toggleCreateDialog();
     },
@@ -93,7 +95,7 @@ export default {
     await this.loadChapter();
     this.courseContext.setChapter(this.chapter);
     await this.courseContext.load();
-    await this.bread.loadFromContext();
+    // await this.bread.loadFromContext();
     await this.loadLessons();
     this.processDrawerItems();
     this.loader.stopLoading();

@@ -36,6 +36,7 @@ export default {
   bottom: 0;
   right: 0;
   pointer-events: none;
+  z-index: 1e6;
 }
 
 #alert-container {

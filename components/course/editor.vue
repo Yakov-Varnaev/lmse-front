@@ -75,10 +75,12 @@ export default {
     async deleteChapterFromList(chapter) {
       await deleteChapter(this.courseId, chapter.id);
       this.chapters = this.chapters.filter((v) => v.id !== chapter.id);
+      this.bread.removeChapter(chapter);
       this.processDrawerItems();
     },
     appendChapter(newChapter) {
       this.chapters = [...this.chapters, newChapter];
+      this.bread.setChapter(newChapter);
       this.processDrawerItems();
     },
     toggleEditMode() {
@@ -92,7 +94,6 @@ export default {
     var { data } = await retrieveCourse(this.courseId);
     this.course = data;
     this.courseContext.setCourse(this.course);
-    this.bread.loadFromContext();
     try {
       var { data } = await getChapters(this.courseId);
       this.chapters = data;

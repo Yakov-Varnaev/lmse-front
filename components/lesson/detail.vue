@@ -47,7 +47,7 @@ onMounted(async () => {
   await loader.withKeyLoader("lesson-page", async () => {
     await loadLesson();
     courseContext.setLesson(lesson.value!);
-    bread.loadFromContext();
+    // bread.loadFromContext();
     await loadBlocks();
   });
 });

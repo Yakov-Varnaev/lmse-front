@@ -1,13 +1,20 @@
 <script setup lang="ts">
 import { retrieveCourseTree } from "~/api/courses";
 import type { CourseTree } from "~/types";
+
 const overlay = ref<boolean>(false);
+const alert = useAlert();
 
 const goTo = (to: any) => {
+  if (isCurrentPath(to)) {
+    alert.reportWarning("You are already here!");
+    return;
+  }
   useRouter().push(to);
   overlay.value = false;
 };
 
+const bread = useBreadcrumbs();
 const route = useRoute();
 
 const isSmartPath = computed<boolean>(() => {
@@ -34,8 +41,9 @@ const loadData = async (): Promise<void> => {
   data.value = courseTree;
 };
 
-watch(courseId, loadData);
-
+watch([courseId, bread.chapterQueue, bread.lessonQueue], async () => {
+  await loadData();
+});
 onMounted(loadData);
 </script>
 
@@ -65,14 +73,22 @@ onMounted(loadData);
           <v-card
             :text="chapter.title"
             variant="tonal"
-            color="primary"
-            density="compact"
-            :disabled="
+            :color="
               isCurrentPath({
                 name: 'chapter-detail',
                 params: { id: courseId, chapterId: chapter.id },
               })
+                ? 'warning'
+                : 'primary'
             "
+            :class="{
+              'cursor-not-allowed': isCurrentPath({
+                name: 'chapter-detail',
+                params: { id: courseId, chapterId: chapter.id },
+              }),
+            }"
+            aria-readonly="true"
+            density="compact"
             @click="
               goTo({
                 name: 'chapter-detail',

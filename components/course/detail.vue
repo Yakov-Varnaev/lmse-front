@@ -8,7 +8,6 @@ export default {
   setup() {
     return {
       loader: useLoader(),
-      bread: useBreadcrumbs(),
       auth: useAuth(),
       context: useCourseContext(),
     };
@@ -55,7 +54,6 @@ export default {
     this.loader.startKeyLoading(this.key);
     await this.loadCourse();
     this.context.setCourse(this.course);
-    await this.bread.loadFromContext();
     await this.loadChapters();
     this.loader.stopKeyLoading(this.key);
   },

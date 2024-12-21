@@ -1,58 +1,28 @@
 import { defineStore } from "pinia";
+import type { Chapter, Lesson } from "~/types";
 
-export interface Crumb {
-	title: string,
-	to?: Object,
-}
-
-interface HasId {
-	id: number,
-	title: string,
-}
-
-interface OStorage {
-	[key: string]: HasId
-}
 
 export const useBreadcrumbs = defineStore("bread", {
 	state: (): {
-		crumbs: Crumb[],
-		objectMap: OStorage,
+		chapterQueue: Chapter[],
+		lessonQueue: Lesson[],
 	} => ({
-		crumbs: [],
-		objectMap: {}
+		chapterQueue: [],
+		lessonQueue: [],
 	}),
 	actions: {
-		push(crumb: Crumb) {
-			this.crumbs = [...this.crumbs, crumb];
+		setChapter(c: Chapter) {
+			this.chapterQueue.push(c)
 		},
-		set(crumbs: Crumb[]) {
-			this.crumbs = crumbs;
+		removeChapter(chapter: Chapter) {
+			this.chapterQueue.push(chapter)
 		},
-		async loadFromContext() {
-			const loader = useLoader()
-
-			loader.withKeyLoader('bread', async () => {
-				const ctx = useCourseContext()
-				this.crumbs = [];
-				await ctx.load()
-				if (ctx.course === null) {
-					return;
-				}
-				this.crumbs.push({ title: ctx.course.title, to: { name: 'course-detail', params: { id: ctx.course.id } } })
-				if (!ctx.chapter) {
-					return;
-				}
-				this.crumbs.push({ title: ctx.chapter.title, to: { name: 'chapter-detail', params: { id: ctx.course.id, chapterId: ctx.chapter.id } } })
-				if (ctx.lesson === null) {
-					return;
-				}
-				this.crumbs.push({
-					title: ctx.lesson.title,
-					to: { name: 'lesson-detail', params: { id: ctx.course.id, chapterId: ctx.chapter.id, lessonId: ctx.lesson.id } }
-				})
-			})
-		}
+		setLesson(l: Lesson) {
+			this.lessonQueue.push(l)
+		},
+		removeLesson(lesson: Lesson) {
+			this.lessonQueue.push(lesson)
+		},
 	},
 	persist: true,
 });
