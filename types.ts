@@ -13,6 +13,12 @@ export type TextImageData = {
 	image?: ImageData
 }
 
+export type Category = {
+	id: string,
+	name: string,
+	parent?: Category
+}
+
 export type User = {
 	id: string,
 	email: string,
@@ -26,6 +32,8 @@ export type Course = {
 	title: string,
 	shortDescription: string,
 	description: string,
+	category?: Category,
+	tags: string[],
 	owner: {
 		id: string,
 		email: string,
@@ -52,7 +60,7 @@ export type Chapter = {
 	order: number,
 	title: string,
 	description: string,
-	course: string
+	course: Course,
 	lessons: Lesson[],
 }
 

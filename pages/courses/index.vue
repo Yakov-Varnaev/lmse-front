@@ -73,19 +73,11 @@ const getLevelColor = (level: string): string => {
     <v-navigation-drawer border="0" class="mt-4">
       <v-list-item> <h1>Filters</h1></v-list-item>
       <v-list-item>
-        <v-select
+        <CategorySelector
           class="ma-2"
-          label="Category"
           density="compact"
-          variant="plain"
           multiple
-          @click="loadCategories"
-          :items="categories"
-          item-title="name"
-          item-value="id"
-          :loading="loader.loaderMap['category']"
           v-model="categoryQuery"
-          elevation="0"
         />
       </v-list-item>
       <v-list-item>
