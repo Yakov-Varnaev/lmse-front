@@ -50,7 +50,7 @@ onMounted(loadData);
 <template>
   <v-overlay
     class="justify-center bread-menu"
-    content-class="bg-red"
+    content-class=""
     v-model="overlay"
     v-if="isSmartPath"
   >
@@ -59,7 +59,7 @@ onMounted(loadData);
         Menu
       </v-chip>
     </template>
-    <v-card class="mx-auto" min-width="20vw">
+    <v-card class="mx-auto overflow-y-auto" min-width="20vw" max-height="80vh">
       <v-card-text v-if="data !== null">
         <v-card
           class="my-2"
