@@ -4,23 +4,9 @@
       <v-col cols="3">
         <v-responsive
           aspect-ratio="1/1"
-          class="overflow-hidden course-card-top"
+          class="overflow-hidden course-card-top rounded-xl"
         >
-          <v-img
-            v-if="false"
-            class="rounded-xl"
-            src="https://cdn.vuetifyjs.com/images/cards/house.jpg"
-            cover
-            width="100%"
-            aspect-ratio="1/1"
-          />
-          <v-card
-            variant="tonal"
-            class="fill-height rounded-xl d-flex"
-            color="primary"
-          >
-            <v-icon icon="mdi-image-off-outline" class="ma-auto" size="150" />
-          </v-card>
+          <slot name="top-left" />
         </v-responsive>
       </v-col>
       <v-col cols="6">

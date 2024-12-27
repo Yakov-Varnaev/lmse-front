@@ -50,7 +50,7 @@ const removeImage = () => {
     </v-text-field>
 
     <v-card v-else variant="flat" class="d-flex" width="100%" max-height="200">
-      <v-img :src="$media(variant.image.src)">
+      <v-img :src="variant.image.src" cover class="rounded-xl">
         <v-btn
           variant="tonal"
           color="red"

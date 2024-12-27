@@ -51,6 +51,12 @@ onMounted(async () => {
     await loadBlocks();
   });
 });
+
+const colSizes = {
+  md: "12",
+  lg: "8",
+  xl: "6",
+};
 </script>
 
 <template>
@@ -58,7 +64,7 @@ onMounted(async () => {
     <v-progress-circular indeterminate v-if="loader.loaderMap['lesson-page']" />
     <v-container v-else>
       <v-row justify="center">
-        <v-col lg="8">
+        <v-col v-bind="colSizes">
           <v-card v-if="!mode.edit" variant="text">
             <v-card-title> {{ lesson?.title }} </v-card-title>
           </v-card>
@@ -70,7 +76,7 @@ onMounted(async () => {
         </v-col>
       </v-row>
       <v-row justify="center">
-        <v-col md="8">
+        <v-col v-bind="colSizes">
           <BlockList
             :editMode="mode.edit"
             :blocks="blocks"

@@ -8,6 +8,11 @@ export type ImageData = {
 	file: string,
 }
 
+export type VideoData = {
+	id: string,
+	src: string,
+}
+
 export type TextImageData = {
 	text: string,
 	image?: ImageData
@@ -29,10 +34,12 @@ export type User = {
 
 export type Course = {
 	id: string,
+	image: string,
 	title: string,
 	shortDescription: string,
 	description: string,
 	category?: Category,
+	level: 'beginner' | 'medium' | 'advanced',
 	tags: string[],
 	owner: {
 		id: string,
@@ -94,6 +101,11 @@ export type Block<Meta extends Object> = {
 	order: number,
 	template: string,
 	meta: Meta,
+}
+
+export type VideoBlockMeta = {
+	title: string,
+	video?: VideoData,
 }
 
 export type QuestionBlockMeta = {

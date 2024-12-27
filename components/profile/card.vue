@@ -193,7 +193,7 @@ export default {
   </v-row>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 #avatar-input {
   position: absolute;
   visibility: hidden;

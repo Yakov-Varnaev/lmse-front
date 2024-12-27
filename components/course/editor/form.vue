@@ -1,10 +1,13 @@
 <script setup lang="ts">
-import { updateCourse } from "~/api/courses";
+import { patchCourse, updateCourse } from "~/api/courses";
 import type { Course } from "~/types";
 
 const { course } = defineProps<{ course: Course }>();
-const emit = defineEmits(["updated"]);
+const emit = defineEmits(["updated", "cancel"]);
+const alert = useAlert();
+
 const courseCopy = deepCopy(course);
+delete courseCopy.image;
 courseCopy.category = course.category?.id ?? null;
 const courseData = reactive<Course>(courseCopy);
 
@@ -29,21 +32,99 @@ watch(courseTagsInput, (newTag: string) => {
   }
 });
 
+const file = ref<File | null>(null);
+const fileUrl = ref("");
+
+const updateFile = async (e: Event) => {
+  const target = e.target as HTMLInputElement;
+  if (!target.files) return;
+  const newFile = target.files[0];
+  file.value = newFile;
+
+  fileUrl.value = URL.createObjectURL(newFile);
+};
+
 const performCourseUpdate = async () => {
+  if (file.value !== null) {
+    console.log("file update");
+    const fd = new FormData();
+    fd.append("image", file.value!);
+    await patchCourse(course.id, fd);
+  }
+
   const { data } = await updateCourse(course.id, courseData);
+  console.log(data);
+  alert.reportInfo("Updated!");
   emit("updated", data);
 };
 </script>
 
 <template>
   <CourseEditorLayout>
+    <template #top-left>
+      <div class="fill-height">
+        <v-hover>
+          <template #default="{ isHovering, props }">
+            <div v-bind="props" class="d-flex flex-column fill-height">
+              <v-overlay
+                contained
+                :model-value="!!isHovering"
+                class="align-center justify-center"
+              >
+                <label for="avatar-input" class="ma-auto">
+                  <v-btn
+                    @click="$refs.imgInput.click()"
+                    icon
+                    size="150"
+                    variant="tonal"
+                    color="white"
+                    class=""
+                  >
+                    <v-icon icon="mdi-camera" size="100" />
+                  </v-btn>
+                </label>
+                <input
+                  ref="imgInput"
+                  type="file"
+                  @change="updateFile"
+                  id="avatar-input"
+                  accept="image/*"
+                />
+              </v-overlay>
+              <div class="fill-height overflow-hidden">
+                <v-img
+                  :src="fileUrl ? fileUrl : course?.image"
+                  v-if="course?.image || fileUrl"
+                  cover
+                  height="100%"
+                />
+                <v-icon
+                  size="200"
+                  v-else
+                  icon="mdi-image-outline"
+                  class="ma-auto"
+                  color="primary"
+                />
+              </div>
+            </div>
+          </template>
+        </v-hover>
+      </div>
+    </template>
     <template #top-right>
       <v-text-field label="Title" v-model="course.title"></v-text-field>
-      <CategorySelector
-        variant="filled"
-        hide-details
-        v-model="courseData.category"
-      />
+      <v-row>
+        <v-col>
+          <CategorySelector
+            variant="filled"
+            hide-details
+            v-model="courseData.category"
+          />
+        </v-col>
+        <v-col>
+          <LevelSelector v-model="courseData.level" label="Level" />
+        </v-col>
+      </v-row>
       <div class="my-3">
         <v-chip disabled v-if="!courseData.tags.length">No tags</v-chip>
 
@@ -86,6 +167,7 @@ const performCourseUpdate = async () => {
       <ButtonBlock
         :submit-porps="{ text: 'Save' }"
         @submit="performCourseUpdate"
+        @cancel="emit('cancel')"
         class="mt-2"
       />
     </template>
@@ -103,5 +185,12 @@ const performCourseUpdate = async () => {
 
 .tag-chip-icon {
   pointer-events: all;
+}
+
+#avatar-input {
+  position: absolute;
+  visibility: hidden;
+  width: 200;
+  height: 200;
 }
 </style>

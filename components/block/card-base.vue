@@ -25,6 +25,7 @@ const { hideBottom = false } = defineProps<{
         class="border-dashed overflow-visible"
         elevation="0"
         :id="id"
+        min-height="75"
       >
         <v-tooltip :text="templateTitleMap[block.kind].subtitle">
           <template v-slot:activator="{ props }">
@@ -39,9 +40,11 @@ const { hideBottom = false } = defineProps<{
             </v-chip>
           </template>
         </v-tooltip>
-        <div>
-          <slot name="title" />
-          <div v-if="editMode" class="btn-block right-0 mt-2 mr-2">
+        <div class="overflow-hidden btn-block" v-if="isHovering">
+          <div
+            v-if="editMode"
+            class="position-absolute right-0 pa-2 bg-background rounded-te rounded-bs-xl"
+          >
             <v-btn
               @click.stop="$emit('edit')"
               icon="mdi-pencil"
@@ -74,9 +77,11 @@ const { hideBottom = false } = defineProps<{
             />
           </div>
         </div>
-        <!-- body -->
 
-        <slot />
+        <!-- body -->
+        <div class="card-body">
+          <slot />
+        </div>
 
         <!-- body -->
         <slot name="bottom" v-if="!hideBottom">
@@ -122,9 +127,11 @@ const { hideBottom = false } = defineProps<{
 
 <style lang="scss">
 .btn-block {
-  float: right;
 }
-
+.card-body {
+  position: relative;
+  z-index: -1;
+}
 .kind-hint {
   position: absolute;
   top: -5px;

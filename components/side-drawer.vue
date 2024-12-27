@@ -47,6 +47,7 @@ onBeforeUnmount(() => {
     <v-navigation-drawer
       :border="0"
       :model-value="theme.drawerMenu || $vuetify.display.lgAndUp"
+      class="rounded-te-xl"
     >
       <v-dialog id="deleteDialog" v-model="deleteConfirmationDialog">
         <v-row justify="center">
@@ -64,7 +65,7 @@ onBeforeUnmount(() => {
         </v-row>
       </v-dialog>
 
-      <v-list-item class="pa-3 bg-primary border rounded-e-pill">
+      <v-list-item class="pa-3 bg-primary border rounded-e-xl">
         <div class="d-flex align-center">
           <h1>{{ $props.title }}</h1>
           <slot name="actionButton" v-if="showActionButton">

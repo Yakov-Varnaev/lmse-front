@@ -25,6 +25,7 @@ const drawerItems = ref<any>([]);
 
 const courseUpdated = (updatedCourse: Course) => {
   course.value = updatedCourse;
+  mode.toggle_edit();
 };
 
 const processDrawerItems = () => {
@@ -110,6 +111,7 @@ onMounted(async () => {
       v-if="mode.edit && course"
       :course="course"
       @updated="courseUpdated"
+      @cancel="mode.toggle_edit"
     />
     <CourseEditorPreview v-if="!mode.edit && course" :course="course" />
   </div>

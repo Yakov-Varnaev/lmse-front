@@ -31,6 +31,11 @@ export const updateCourse = async (id: string, data: Course): Promise<{ data: Co
 	return await apiv1.put(`courses/${id}/`, data);
 };
 
+export const patchCourse = async (id: string, data: Course | FormData): Promise<{ data: Course }> => {
+	const { $apiv1: apiv1 } = useNuxtApp();
+	return await apiv1.patch(`courses/${id}/`, data);
+};
+
 export const publishCourse = async (id: string): Promise<any> => {
 	const { $apiv1: apiv1 } = useNuxtApp();
 	return await apiv1.put(`courses/${id}/publish/`);
@@ -159,7 +164,7 @@ export const uploadBlockMedia = async (
 	lessonId: string,
 	blockId: string,
 	data: any,
-): Promise<any> => {
+): Promise<{ data: { id: string, file: string } }> => {
 	const { $apiv1: apiv1 } = useNuxtApp();
 	return await apiv1.post(
 		`courses/${courseId}/chapters/${chapterId}/lessons/${lessonId}/blocks/${blockId}/media/`,

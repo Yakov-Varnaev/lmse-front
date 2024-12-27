@@ -11,7 +11,6 @@ const { courseId, chapterId, lessonId, order } = defineProps<{
   order?: number;
 }>();
 
-const templateMap = templateTitleMap;
 const isOpen = ref(false);
 const options = ref<TemplateData[]>([]);
 const template = ref<TemplateData | null>(null);
@@ -25,8 +24,8 @@ const loadTemplates = async () => {
   let processedData = data.map((t) => {
     return {
       ...t,
-      title: templateMap[t.kind].title,
-      subtitle: templateMap[t.kind].subtitle,
+      title: templateTitleMap[t.kind]?.title ?? `unknown ${t.kind}`,
+      subtitle: templateTitleMap[t.kind]?.subtitle ?? `unknown ${t.kind}`,
     };
   });
   options.value = processedData;

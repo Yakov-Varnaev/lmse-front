@@ -128,7 +128,7 @@ const getLevelColor = (level: string): string => {
       </v-row>
       <v-row
         v-if="loader.loaderMap['coursePage']"
-        class="fill-height"
+        class="fill-width"
         justify="center"
         align="center"
       >
@@ -146,19 +146,20 @@ const getLevelColor = (level: string): string => {
             :to="{ name: 'course-detail', params: { id: course.id } }"
             class="rounded-xl"
           >
-            <v-row class="">
-              <v-col cols="3" class="">
-                <div class="fill-height overflow-hidden">
+            <v-row>
+              <v-col xl="3" lg="3" cols="3" md="4">
+                <div class="fill-width">
                   <v-img
                     v-if="course.image"
                     class="rounded-xl"
-                    src="https://cdn.vuetifyjs.com/images/cards/house.jpg"
+                    :src="course.image"
                     cover
-                    height="100%"
+                    width="100%"
                   />
                   <v-card
+                    v-else
                     variant="tonal"
-                    class="fill-height rounded-xl d-flex"
+                    class="fill-height rounded-xl d-flex image-container"
                     color="primary"
                   >
                     <v-icon
@@ -209,7 +210,7 @@ const getLevelColor = (level: string): string => {
                   <v-card-text class="short-description">
                     {{ course.shortDescription }}
                   </v-card-text>
-                  <v-card-actions class="mt-5">
+                  <v-card-actions>
                     <v-chip
                       class="mt-auto"
                       pill
@@ -240,7 +241,12 @@ const getLevelColor = (level: string): string => {
 </template>
 
 <style lang="scss" scoped>
+.image-container {
+  aspect-ratio: 1 / 1;
+}
 .short-description {
-  height: 5rem;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
 }
 </style>

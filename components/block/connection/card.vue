@@ -398,7 +398,7 @@ const hasAnswer = computed((): boolean => {
   </BlockCardBase>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .line-container {
   top: 0;
   left: 0;

@@ -24,4 +24,8 @@ export const templateTitleMap: { [key: string]: { title: string, subtitle: strin
 		title: "Group Distribution Block",
 		subtitle: "Distribute items into the appropriate groups",
 	},
+	video: {
+		title: "Video Block",
+		subtitle: "Video content block"
+	}
 }
