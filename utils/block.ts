@@ -27,5 +27,10 @@ export const templateTitleMap: { [key: string]: { title: string, subtitle: strin
 	video: {
 		title: "Video Block",
 		subtitle: "Video content block"
+	},
+	'multi-block': {
+		title: "Multi Block",
+		subtitle: "Block which can contain other blocks"
 	}
+
 }

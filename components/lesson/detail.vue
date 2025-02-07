@@ -8,9 +8,12 @@ const { courseId, chapterId, lessonId } = defineProps<{
   lessonId: string;
 }>();
 
+provide("courseId", courseId);
+provide("chapterId", chapterId);
+provide("lessonId", lessonId);
+
 const loader = useLoader();
 const mode = useMode();
-const bread = useBreadcrumbs();
 const courseContext = useCourseContext();
 const lesson = ref<Lesson | null>(null);
 const blocks = ref<Block<any>[]>([]);
@@ -47,7 +50,6 @@ onMounted(async () => {
   await loader.withKeyLoader("lesson-page", async () => {
     await loadLesson();
     courseContext.setLesson(lesson.value!);
-    // bread.loadFromContext();
     await loadBlocks();
   });
 });

@@ -1,17 +1,15 @@
-<script>
-export default {
-  setup() {
-    definePageMeta({
-      layout: "centered",
-    });
-    return {};
-  },
-};
+<script setup lang="ts">
+definePageMeta({
+  layout: "centered",
+});
+
+const cnt = ref(0);
 </script>
 
 <template>
   <div>
     <h1>LMSE</h1>
-    the only LMS engine you need.
+    <p>the only LMS engine you need.</p>
+    <v-btn @click="cnt++">count: {{ cnt }}</v-btn>
   </div>
 </template>

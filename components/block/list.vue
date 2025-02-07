@@ -13,17 +13,14 @@ import {
 import type { Block } from "~/types";
 
 const emit = defineEmits(["update", "refetch", "delete"]);
-const { courseId, chapterId, lessonId, editMode, blocks } = defineProps<{
-  courseId: string;
-  chapterId: string;
-  lessonId: string;
+const { editMode, blocks } = defineProps<{
   editMode: boolean;
   blocks: Block<any>[];
 }>();
 
-provide("courseId", courseId);
-provide("chapterId", chapterId);
-provide("lessonId", lessonId);
+const courseId = inject("courseId") as string;
+const chapterId = inject("chapterId") as string;
+const lessonId = inject("lessonId") as string;
 
 const drag = ref(false);
 

@@ -40,50 +40,43 @@ const submit = async () => {
   emit("update", data.meta);
 };
 </script>
+
 <template>
   <v-card>
     <v-card-text>
-      <VideoPlayer :src="data.meta.video?.src || fileUrl">
-        <template #no-video>
-          <v-hover>
-            <template #default="{ props, isHovering }">
-              <v-card
-                v-bind="props"
-                class="fill-height fill-width cursor-pointer d-flex align-center justify-center"
-                variant="tonal"
-              >
-                <v-overlay
-                  contained
-                  :model-value="!!isHovering"
-                  class="align-center justify-center"
+      <v-hover v-slot="{ isHovering, props }">
+        <v-card v-bind="props" tile>
+          <v-overlay
+            contained
+            :model-value="!!isHovering"
+            class="justify-center align-center"
+          >
+            <div class="">
+              <label for="vidio-input" class="ma-auto">
+                <v-btn
+                  @click="$refs.videoInput.click()"
+                  icon
+                  size="150"
+                  variant="tonal"
+                  color="white"
                 >
-                  <div class="fill-width fill-height d-flex">
-                    <label for="vidio-input" class="ma-auto">
-                      <v-btn
-                        @click="$refs.videoInput.click()"
-                        icon
-                        size="150"
-                        variant="tonal"
-                        color="white"
-                      >
-                        <v-icon icon="mdi-upload" size="100" />
-                      </v-btn>
-                    </label>
-                    <input
-                      ref="videoInput"
-                      type="file"
-                      @change="updateFile"
-                      id="video-input"
-                      accept="video/mp4"
-                    />
-                  </div>
-                </v-overlay>
-                <v-icon icon="mdi-video-off-outline" size="150" />
-              </v-card>
-            </template>
-          </v-hover>
-        </template>
-      </VideoPlayer>
+                  <v-icon icon="mdi-upload" size="100" />
+                </v-btn>
+              </label>
+              <input
+                ref="videoInput"
+                type="file"
+                @change="updateFile"
+                id="video-input"
+                accept="video/mp4"
+              />
+            </div>
+          </v-overlay>
+          <VideoPlayer :src="data.meta.video?.src || fileUrl" />
+        </v-card>
+      </v-hover>
+    </v-card-text>
+    <v-card-text>
       <v-text-field
         v-model="data.meta.title"
         label="Video Title"

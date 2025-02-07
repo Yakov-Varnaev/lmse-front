@@ -100,6 +100,7 @@ export type Block<Meta extends Object> = {
 	kind: string,
 	order: number,
 	template: string,
+	children: Block<any>[],
 	meta: Meta,
 }
 

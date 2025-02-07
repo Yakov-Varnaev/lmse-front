@@ -33,10 +33,7 @@ defineProps<{
 
 <style lang="scss" scoped>
 .player {
-  max-width: 100vw;
   width: 100%;
-  padding: 0;
-  margin: 0;
 }
 
 .empty-video {
