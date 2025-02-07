@@ -51,7 +51,7 @@ const submit = async () => {
             :model-value="!!isHovering"
             class="justify-center align-center"
           >
-            <div class="">
+            <div>
               <label for="vidio-input" class="ma-auto">
                 <v-btn
                   @click="$refs.videoInput.click()"
