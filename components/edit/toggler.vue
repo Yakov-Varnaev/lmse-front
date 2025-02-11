@@ -5,10 +5,16 @@ defineProps({
 
 const mode = useMode();
 const context = useCourseContext();
+
+const isOwner = ref(false);
+
+onMounted(async () => {
+  isOwner.value = await context.isOwner();
+});
 </script>
 
 <template>
-  <div v-if="context.isOwner">
+  <div v-if="isOwner">
     <v-btn v-if="!absolute" v-bind="$attrs" @click="mode.toggle_edit">
       {{ mode.edit ? "Normal Mode" : "Edit Mode" }}
     </v-btn>
@@ -27,5 +33,3 @@ const context = useCourseContext();
     </v-fab>
   </div>
 </template>
-
-<style lang="scss"></style>

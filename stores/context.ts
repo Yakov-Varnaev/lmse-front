@@ -47,13 +47,15 @@ export const useCourseContext = defineStore("store/course-context", {
 				this.setLesson(lessonData);
 			}
 		},
-	},
-	getters: {
-		isOwner(): boolean {
+		async isOwner(): Promise<boolean> {
 			const auth = useAuth();
+			await this.load()
 			if (!auth.loggedIn) return false;
-			if (this.course === null) return false;
+			if (this.course === null) {
+				return false;
+			};
 			return this.course.owner.id == auth.user!.id;
-		},
+		}
 	},
+	getters: {},
 });
