@@ -34,14 +34,6 @@ async function performLogin() {
 const isFormValid = computed(() => {
   return Object.keys(formData).every((key) => formData[key]) && !v$.$errors;
 });
-
-// function collectErrors(field) {
-//   const vuiledateErrors = [];
-//   if (v$[field]) {
-//     vuelidateErrors.push(...this.v$[field].$errors.map((e) => e.$message));
-//   }
-//   return [...vuelidateErrors, ...this.errors[field]];
-// }
 </script>
 
 <template>

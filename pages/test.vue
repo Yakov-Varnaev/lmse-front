@@ -6,5 +6,7 @@ definePageMeta({
 </script>
 
 <template>
-  <v-col cols="6"> </v-col>
+  <v-col cols="6">
+    <div>asdlfjaslkdfsdjfklasdjfklasdjfk</div>
+  </v-col>
 </template>
