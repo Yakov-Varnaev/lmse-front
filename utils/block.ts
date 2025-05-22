@@ -31,6 +31,9 @@ export const templateTitleMap: { [key: string]: { title: string, subtitle: strin
 	'multi-block': {
 		title: "Multi Block",
 		subtitle: "Block which can contain other blocks"
-	}
-
+	},
+	'correct-order-dialog': {
+		title: "Correct Order Dialog",
+		subtitle: "Put messages in the correct order"
+	},
 }

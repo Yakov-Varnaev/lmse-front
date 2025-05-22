@@ -157,3 +157,19 @@ export type TrueFalseBlockMeta = {
 		value: 'true' | 'false' | 'unknown',
 	}[],
 }
+
+export type CorrectOrderDialogOption = TextImageData & {
+	id: string;
+	sender: string;
+	right: boolean;
+}
+
+export type CorrectOrderDialogBlockMeta = {
+	text: string;
+	failOnFirst: boolean;
+	options: CorrectOrderDialogOption[];
+}
+
+export type CorrectOrderDialogAnswer = {
+	order: number[];
+}

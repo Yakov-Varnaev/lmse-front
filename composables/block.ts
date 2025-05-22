@@ -102,21 +102,27 @@ export function useBlockCard<AnswerType extends Object, AnswerExtra extends Obje
 	const answerData = reactive<AnswerType>(_data)
 
 	async function processAnswer() {
-		loader.startKeyLoading(`${block.id}-answer`);
-		const { data: respData } = await createAnswer(
-			courseId,
-			chapterId,
-			lessonId,
-			block.id,
-			answerProcessor.to(answerData),
-			context.isOwner,
-		);
-		const { answer, result } = respData
-		answerExtra.value = result
-		loader.stopKeyLoading(`${block.id}-answer`);
-		answerGiven.value = true;
-		isCorrect.value = answer.isCorrect;
-		return answer;
+		try {
+			loader.startKeyLoading(`${block.id}-answer`);
+			const { data: respData } = await createAnswer(
+				courseId,
+				chapterId,
+				lessonId,
+				block.id,
+				answerProcessor.to(answerData),
+				await context.isOwner(),
+			);
+			const { answer, result } = respData
+			answerExtra.value = result
+			answerGiven.value = true;
+			isCorrect.value = answer.isCorrect;
+			return answer;
+		} catch (e) {
+			console.log(e)
+			return {}
+		} finally {
+			loader.stopKeyLoading(`${block.id}-answer`);
+		}
 	}
 
 	const isAnswerLoading = computed(() => {
