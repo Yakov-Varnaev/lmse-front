@@ -115,7 +115,8 @@ export type QuestionBlockMeta = {
 }
 
 export type TextImageVariant = {
-	id: number,
+	// TODO: use uuids only!
+	id: string,
 	text: string,
 	image?: { src: string, id: string },
 }
@@ -158,8 +159,7 @@ export type TrueFalseBlockMeta = {
 	}[],
 }
 
-export type CorrectOrderDialogOption = TextImageData & {
-	id: string;
+export type CorrectOrderDialogOption = TextImageVariant & {
 	sender: string;
 	right: boolean;
 }

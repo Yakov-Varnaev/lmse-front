@@ -73,7 +73,7 @@ const removeMessage = (id: string) => {
         animation="200"
         :group="`block-correct-order-dialog-${block.id}`"
       >
-        <template v-slot:item="{ element: opt }">
+        <template v-slot:item="{ element: opt, index }">
           <v-card
             variant="tonal"
             :color="opt.right ? 'primary' : 'secondary'"
@@ -91,9 +91,11 @@ const removeMessage = (id: string) => {
                   v-model.trim="editMessages[opt.id].sender"
                   label="Sender Name"
                 />
-                <v-textarea
-                  v-model.trim="editMessages[opt.id].text"
-                  label="Message Text"
+                <BlockEditorTextareaImageField
+                  :block="data"
+                  :id="`block-${block.id}-${opt.id}`"
+                  :variant="editMessages[opt.id]"
+                  :readonly="readonly"
                 />
                 <v-select
                   v-model="editMessages[opt.id].right"

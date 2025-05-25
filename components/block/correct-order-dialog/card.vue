@@ -6,6 +6,8 @@ import type {
   CorrectOrderDialogOption,
 } from "~/types";
 
+const groupName = crypto.randomUUID();
+
 const emits = defineEmits(["edit", "delete", "up", "down"]);
 const { editMode, block } = defineProps<{
   block: Block<CorrectOrderDialogBlockMeta>;
@@ -22,7 +24,6 @@ const {
   isAnswerLoading,
   processAnswer,
   answerData,
-  answerExtra,
   reset: blockReset,
 } = useBlockCard<{ order: CorrectOrderDialogOption[] }, any>(
   {
@@ -72,7 +73,32 @@ const hasAnswer = computed<boolean>(() => {
   return answerData.order.length === block.meta.options.length;
 });
 
-const groupName = crypto.randomUUID();
+const getCorrectnessArr = (): boolean[] => {
+  var failed = false;
+  return block.meta.options.map((opt: CorrectOrderDialogOption, i: number) => {
+    let correct = opt.text == answerData.order[i].text;
+    if (!correct) {
+      failed = true;
+    } else {
+      if (failed && block.meta.failOnFirst) {
+        return false;
+      }
+    }
+    return correct;
+  });
+};
+
+const correctnessArr = computed<boolean[]>(() => {
+  return answerGiven.value ? getCorrectnessArr() : [];
+});
+
+const getMessageColor = (idx: number): string => {
+  return answerGiven.value
+    ? correctnessArr.value[idx]
+      ? "success"
+      : "error"
+    : "";
+};
 </script>
 
 <template>
@@ -112,7 +138,7 @@ const groupName = crypto.randomUUID();
             item-key="id"
             :disabled="editMode"
           >
-            <template v-slot:item="{ element: message }">
+            <template v-slot:item="{ element: message, index }">
               <v-card
                 fluid
                 :class="{
@@ -121,7 +147,7 @@ const groupName = crypto.randomUUID();
                 }"
                 border
                 variant="tonal"
-                color="primary"
+                :color="getMessageColor(index)"
                 max-width="70%"
               >
                 <div>
