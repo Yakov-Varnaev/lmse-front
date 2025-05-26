@@ -153,6 +153,12 @@ const getMessageColor = (idx: number): string => {
                 <div>
                   {{ message.sender }}
                 </div>
+
+                <v-img
+                  v-if="message.image"
+                  :src="message.image.src"
+                  max-width="200px"
+                />
                 <p>{{ message.text }}</p>
               </v-card>
             </template>
@@ -182,6 +188,11 @@ const getMessageColor = (idx: number): string => {
                 <div>
                   {{ message.sender }}
                 </div>
+                <v-img
+                  v-if="message.image"
+                  :src="message.image.src"
+                  max-width="200px"
+                />
                 <p>{{ message.text }}</p>
               </v-sheet>
             </template>

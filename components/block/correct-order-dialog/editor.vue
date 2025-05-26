@@ -73,7 +73,7 @@ const removeMessage = (id: string) => {
         animation="200"
         :group="`block-correct-order-dialog-${block.id}`"
       >
-        <template v-slot:item="{ element: opt, index }">
+        <template v-slot:item="{ element: opt }">
           <v-card
             variant="tonal"
             :color="opt.right ? 'primary' : 'secondary'"
@@ -117,6 +117,7 @@ const removeMessage = (id: string) => {
             <div v-else>
               <v-card-text>
                 <span>{{ opt.sender || "Empty Sender" }}</span>
+                <v-img v-if="opt.image" :src="opt.image.src" />
                 <p>
                   {{ opt.text || "Empty Text" }}
                 </p>
