@@ -2,7 +2,7 @@
 import type { Block, OpenQuestionBlockMeta } from "~/types";
 
 const emit = defineEmits(["edit", "delete", "up", "down"]);
-const { block, ...props } = defineProps<{
+const { block } = defineProps<{
   block: Block<OpenQuestionBlockMeta>;
   editMode: boolean;
   isLast: boolean;
