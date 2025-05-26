@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Block, ConnectionBlockMeta } from "~/types";
+import type { Block, ConnectionBlockMeta, TextImageVariant } from "~/types";
 
 const { variant, answerGiven, answerCorrect, selected } = defineProps<{
   side: string;
@@ -10,11 +10,7 @@ const { variant, answerGiven, answerCorrect, selected } = defineProps<{
   answerCorrect: boolean;
   answerGiven: boolean;
   block: Block<ConnectionBlockMeta>;
-  variant: {
-    id: number;
-    text?: string;
-    image?: { src: string; id: string };
-  };
+  variant: TextImageVariant;
 }>();
 
 const { text, image } = variant;

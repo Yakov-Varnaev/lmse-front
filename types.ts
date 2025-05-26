@@ -124,8 +124,8 @@ export type TextImageVariant = {
 export type ConnectionBlockMeta = {
 	text: string,
 	variants: {
-		left: { id: number, text: string, image?: { src: string, id: string } },
-		right: { id: number, text: string, image?: { src: string, id: string } },
+		left: TextImageVariant,
+		right: TextImageVariant,
 	}[]
 }
 

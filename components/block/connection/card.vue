@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useTheme } from "vuetify";
-import type { Block, ConnectionBlockMeta } from "~/types";
+import type { Block, ConnectionBlockMeta, TextImageVariant } from "~/types";
 const theme = useTheme();
 
 const emits = defineEmits(["edit", "delete", "up", "down"]);
@@ -11,22 +11,8 @@ const { block, editMode, isLast, isFirst } = defineProps<{
   isFirst: boolean;
 }>();
 
-type Item = {
-  id: number;
-  text: string;
-  image?: { id: string; src: string };
-};
-
 interface ItemMap {
-  [key: string]: number;
-}
-
-function shuffleArray<T>(array: T[]): T[] {
-  for (let i = array.length - 1; i >= 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-  return array;
+  [key: string]: string;
 }
 
 const {
@@ -48,8 +34,8 @@ const resetAll = () => {
 
 const lockLeft = ref(false);
 const lockRight = ref(false);
-const selectedElements = ref<Item[]>([]);
-const currentSelect = ref<number | null>(null);
+const selectedElements = ref<TextImageVariant[]>([]);
+const currentSelect = ref<string | null>(null);
 const lineCoordinates = reactive<{
   x1: number;
   y1: number;
@@ -68,28 +54,38 @@ const lines = ref<
     y1: number;
     x2: number;
     y2: number;
-    left: number | string;
-    right: number;
+    left: string;
+    right: string;
   }[]
 >([]);
 
-const leftColumn = ref<Item[]>([
-  ...shuffleArray<Item>(block.meta.variants.map((v: any): Item => v.left)),
+const leftColumn = ref<TextImageVariant[]>([
+  ...shuffleArray<TextImageVariant>(
+    block.meta.variants.map((v: any): TextImageVariant => v.left),
+  ),
 ]);
-const rightColumn = ref<Item[]>([
-  ...shuffleArray<Item>(block.meta.variants.map((v: any): Item => v.right)),
+const rightColumn = ref<TextImageVariant[]>([
+  ...shuffleArray<TextImageVariant>(
+    block.meta.variants.map((v: any): TextImageVariant => v.right),
+  ),
 ]);
 
-const variants: { left: Item; right: Item }[] = [];
+const correctMap: { [key: string]: string } = {};
+block.meta.variants.forEach(({ left, right }) => {
+  correctMap[left.id] = right.id;
+  correctMap[right.id] = left.id;
+});
+
+const variants: { left: TextImageVariant; right: TextImageVariant }[] = [];
 
 for (let i = 0; i < leftColumn.value.length; i++) {
   variants.push({ left: leftColumn.value[i], right: rightColumn.value[i] });
 }
 
-const isInLeft = (id: number): boolean => {
-  return `${id}` in answerData.pairs;
+const isInLeft = (id: string): boolean => {
+  return id in answerData.pairs;
 };
-const isInRight = (id: number): boolean => {
+const isInRight = (id: string): boolean => {
   return Object.values(answerData.pairs).includes(id);
 };
 
@@ -113,7 +109,7 @@ const updateTempLine = (e: MouseEvent): void => {
   lineCoordinates.y2 = e.clientY - cardRect.top;
 };
 
-const selectElement = (item: Item, side: string, e: MouseEvent) => {
+const selectElement = (item: TextImageVariant, side: string, e: MouseEvent) => {
   // Add the selected element to the list
   currentSelect.value = item.id;
 
@@ -229,9 +225,12 @@ const handleResize = (): void => {
   }
 };
 
-const getBtnColor = (side: string, id: number): string => {
+const getBtnColor = (side: string, id: string): string => {
   if (answerGiven.value) {
-    return answerData.pairs[id] == id ? "success" : "red";
+    if (side === "right") {
+      return answerData.pairs[correctMap[id]] == id ? "success" : "error";
+    }
+    return answerData.pairs[id] == correctMap[id] ? "success" : "error";
   }
   if (side === "left") {
     return isInLeft(id) || (currentSelect.value === id && lockLeft.value)
@@ -244,12 +243,7 @@ const getBtnColor = (side: string, id: number): string => {
   }
 };
 
-const getCardColor = (side: string, id: number): string => {
-  let res = getBtnColor(side, id);
-  return res === "red" ? "error" : res;
-};
-
-const isBtnDisabled = (side: string, id: number): boolean => {
+const isBtnDisabled = (side: string, id: string): boolean => {
   if (editMode) return true;
   if (currentSelect.value === null) return false;
   if (side == "left") {
@@ -318,9 +312,9 @@ const hasAnswer = computed((): boolean => {
         :stroke="
           !answerGiven
             ? theme.current.value.colors.primary
-            : line.right == line.left
+            : correctMap[line.left] == line.right
               ? theme.current.value.colors.success
-              : '#F44336'
+              : theme.current.value.colors.error
         "
         stroke-width="2"
       ></line>

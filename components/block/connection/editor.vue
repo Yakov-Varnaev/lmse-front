@@ -4,7 +4,7 @@ import type { Block, ConnectionBlockMeta } from "~/types";
 const props = defineProps<{ block: Block<ConnectionBlockMeta> }>();
 const alert = useAlert();
 
-const getImageId = (id: number, side: string): string => {
+const getImageId = (id: string, side: string): string => {
   return `${props.block.id}-${id}-${side}-image`;
 };
 
@@ -20,19 +20,14 @@ const addVariant = (): void => {
     alert.reportError("Maximum amount of variants achived!");
     return;
   }
-  let id = data.meta.variants.length;
   data.meta.variants.push({
-    left: { id, text: "" },
-    right: { id, text: "" },
+    left: { id: crypto.randomUUID(), text: "" },
+    right: { id: crypto.randomUUID(), text: "" },
   });
 };
 
 const deleteVariant = (idx: number): void => {
   data.meta.variants.splice(idx, 1);
-  data.meta.variants.map((v, i) => {
-    v.left.id = i;
-    v.right.id = i;
-  });
 };
 </script>
 

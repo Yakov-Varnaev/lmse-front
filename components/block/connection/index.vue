@@ -4,7 +4,7 @@ const props = defineProps({
   isLast: { type: Boolean, required: true },
   isFirst: { type: Boolean, required: true },
   block: {
-    type: Object,
+    type: Block,
     required: true,
   },
   data() {},
