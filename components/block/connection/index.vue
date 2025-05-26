@@ -1,14 +1,12 @@
-<script setup>
-const props = defineProps({
-  editMode: { type: Boolean, required: true },
-  isLast: { type: Boolean, required: true },
-  isFirst: { type: Boolean, required: true },
-  block: {
-    type: Block,
-    required: true,
-  },
-  data() {},
-});
+<script setup lang="ts">
+import type { Block, ConnectionBlockMeta } from "~/types";
+
+const props = defineProps<{
+  editMode: boolean;
+  isLast: boolean;
+  isFirst: boolean;
+  block: Block<ConnectionBlockMeta>;
+}>();
 const emit = defineEmits(["update", "delete", "up", "down"]);
 
 const { blockEditMode, toggleEditMode, update, deleteBlock } = useBlock(
