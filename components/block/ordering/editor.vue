@@ -1,97 +1,108 @@
-<script>
-export default {
-  emits: ["update", "cancel"],
-  props: {
-    block: { type: Object, required: true },
-  },
-  setup() {
-    return { alert: useAlert() };
-  },
-  data() {
-    return {
-      data: { ...this.block },
-      newOptionText: "",
-      optionText: "",
-      allowPop: false,
-      drag: false,
-      selectedOption: null,
-    };
-  },
-  methods: {
-    submit() {
-      this.$emit("update", this.data);
-    },
-    addVariant() {
-      if (this.newOptionText.trim().length === 0) {
-        this.alert.reportInfo("Item cannot be blank!");
-        return;
-      }
-      if (this.data.options.length >= 30) {
-        this.alert.reportError("Maximum amount of items achived!");
-        return;
-      }
-      let id = this.data.options.length;
-      this.data.options.push({ id, text: this.newOptionText });
-      this.newOptionText = "";
-    },
-    popLast() {
-      if (this.optionText.length !== 0) {
-        return;
-      } else if (!this.allowPop) {
-        this.allowPop = true;
-        setTimeout(() => {
-          this.allowPop = false;
-        }, 350);
-        return;
-      }
-      if (!this.allowPop) return;
-      let last = this.data.options.pop();
-      this.newOptionText = last.text;
-    },
-    deleteVariant(idx) {
-      this.data.options.splice(idx, 1);
-      this.data.options.map((v, i) => (v.id = i));
-    },
-    editOption(idx) {
-      if (this.selectedOption === idx) {
-        this.selectedOption = null;
-        this.optionText = "";
-        return;
-      }
-      this.optionText = this.data.options[idx].text;
-      this.selectedOption = idx;
-    },
-    saveOption() {
-      if (this.optionText.trim().length === 0) {
-        this.alert.reportInfo("Item cannot be blank!");
-        return;
-      }
+<script setup lang="ts">
+import { ref, watch } from "vue";
+import type { Block, OrderingBlockMeta } from "~/types";
 
-      this.data.options[this.selectedOption].text = this.optionText;
-      this.selectedOption = null;
-      this.optionText = "";
-    },
-  },
-  watch: {
-    newOption() {
-      if (this.optionText.length < 2) return;
-      let l = this.optionText.length;
-      if (
-        this.optionText.charAt(l - 1) === " " &&
-        this.optionText.charAt(l - 2) === " "
-      ) {
-        this.optionText = this.optionText.trim();
-        this.addVariant();
-      }
-    },
-  },
-};
+// Props
+const { block } = defineProps<{
+  block: Block<OrderingBlockMeta>;
+}>();
+
+// Emits
+const emit = defineEmits<{
+  (e: "update", data: OrderingBlockMeta): void;
+  (e: "cancel"): void;
+}>();
+
+// Setup
+const alert = useAlert();
+
+// Reactive state
+const data = ref({ ...block });
+const newOptionText = ref("");
+const optionText = ref("");
+const allowPop = ref(false);
+const drag = ref(false);
+const selectedOption = ref<number | null>(null);
+
+// Methods
+
+function submit() {
+  emit("update", data.value.meta);
+}
+
+function addVariant() {
+  if (newOptionText.value.trim().length === 0) {
+    alert.reportInfo("Item cannot be blank!");
+    return;
+  }
+  if (data.value.meta.options.length >= 30) {
+    alert.reportError("Maximum amount of items achieved!");
+    return;
+  }
+  const id = data.value.meta.options.length;
+  data.value.meta.options.push({ id, text: newOptionText.value });
+  newOptionText.value = "";
+}
+
+function popLast() {
+  if (optionText.value.length !== 0) {
+    return;
+  } else if (!allowPop.value) {
+    allowPop.value = true;
+    setTimeout(() => {
+      allowPop.value = false;
+    }, 350);
+    return;
+  }
+  if (!allowPop.value) return;
+  const last = data.value.meta.options.pop();
+  if (last) newOptionText.value = last.text;
+}
+
+function deleteVariant(idx: number) {
+  data.value.meta.options.splice(idx, 1);
+  data.value.meta.options.forEach((v, i) => (v.id = i));
+}
+
+function editOption(idx: number) {
+  if (selectedOption.value === idx) {
+    selectedOption.value = null;
+    optionText.value = "";
+    return;
+  }
+  optionText.value = data.value.meta.options[idx].text;
+  selectedOption.value = idx;
+}
+
+function saveOption() {
+  if (optionText.value.trim().length === 0) {
+    alert.reportInfo("Item cannot be blank!");
+    return;
+  }
+  if (selectedOption.value !== null) {
+    data.value.meta.options[selectedOption.value].text = optionText.value;
+    selectedOption.value = null;
+    optionText.value = "";
+  }
+}
+
+// Watchers
+
+watch(optionText, (newVal) => {
+  if (newVal.length < 2) return;
+  const l = newVal.length;
+  if (newVal.charAt(l - 1) === " " && newVal.charAt(l - 2) === " ") {
+    optionText.value = optionText.value.trim();
+    addVariant();
+  }
+});
 </script>
+
 <template>
   <v-card variant="outlined">
     <v-card-text>
       <VuetifyTiptap
-        v-model.trim="data.text"
+        v-model.trim="data.meta.text"
         class="editor bg-background"
         markdown-theme="github"
       />
@@ -100,14 +111,14 @@ export default {
 
       <v-sheet class="rounded pa-2">
         <v-row no-gutters>
-          <v-checkbox v-model="data.failOnFirst" label="Fail on first" />
+          <v-checkbox v-model="data.meta.failOnFirst" label="Fail on first" />
         </v-row>
         <v-row no-gutters>
           <v-card min-height="50" width="100%" color="primary" variant="tonal">
-            <div v-if="data.options.length">
+            <div v-if="data.meta.options.length">
               <draggable
                 animation="200"
-                v-model="data.options"
+                v-model="data.meta.options"
                 item-key="id"
                 @start="drag = true"
                 @end="drag = false"
@@ -145,7 +156,7 @@ export default {
         <v-row no-gutters align="center" class="mt-3">
           <v-text-field
             v-if="selectedOption === null"
-            hide-details="true"
+            :hide-details="true"
             density="compact"
             v-on:keyup.enter="addVariant"
             v-on:keyup.backspace="popLast"
@@ -153,7 +164,7 @@ export default {
           />
           <v-text-field
             v-else
-            hide-details="true"
+            :hide-details="true"
             density="compact"
             v-on:keyup.enter="saveOption"
             v-model="optionText"

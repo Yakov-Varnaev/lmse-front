@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import type { Block } from "~/types";
+import type { Block, OrderingBlockMeta } from "~/types";
 
 const emits = defineEmits(["edit", "delete", "up", "down"]);
 const props = defineProps<{
-  block: Block<any>;
+  block: Block<OrderingBlockMeta>;
   editMode: boolean;
   isLast: boolean;
   isFirst: boolean;

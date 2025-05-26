@@ -1,17 +1,18 @@
-<script setup>
-const props = defineProps({
-  editMode: { type: Boolean, required: true },
-  isLast: { type: Boolean, required: true },
-  isFirst: { type: Boolean, required: true },
-  block: {
-    type: Object,
-    required: true,
-  },
-});
+<script setup lang="ts">
+import type { Block, OrderingBlockMeta } from "~/types";
+
+const props = defineProps<{
+  editMode: boolean;
+  isLast: boolean;
+  isFirst: boolean;
+  block: Block<OrderingBlockMeta>;
+}>();
 const emit = defineEmits(["update", "up", "down", "delete"]);
 
-const { blockEditMode, blockData, toggleEditMode, update, deleteBlock } =
-  useBlock(emit, props);
+const { blockEditMode, toggleEditMode, update, deleteBlock } = useBlock(
+  emit,
+  props,
+);
 const { editMode } = props;
 </script>
 
@@ -19,7 +20,7 @@ const { editMode } = props;
   <div>
     <BlockOrderingEditor
       v-if="blockEditMode"
-      :block="blockData"
+      :block="block"
       @cancel="toggleEditMode"
       @update="update"
     />
