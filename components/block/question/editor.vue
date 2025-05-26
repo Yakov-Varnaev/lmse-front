@@ -1,9 +1,13 @@
 <script setup lang="ts">
-import type { Block } from "~/types";
+import type { Block, QuestionBlockMeta } from "~/types";
 
 const alert = useAlert();
-const emit = defineEmits(["update", "cancel"]);
-const props = defineProps<{ block: Block<any> }>();
+const emit = defineEmits<{
+  (e: "update", data: QuestionBlockMeta): void;
+  (e: "cancel"): void;
+}>();
+
+const props = defineProps<{ block: Block<QuestionBlockMeta> }>();
 const data = reactive({ ...props.block });
 
 const submit = () => {
@@ -15,16 +19,18 @@ const addVariant = () => {
     alert.reportError("Maximum amount of variants achived!");
     return;
   }
-  let id = data.meta.variants.length;
-  data.meta.variants.push({ id, text: "", correct: false });
+  data.meta.variants.push({
+    id: crypto.randomUUID(),
+    text: "",
+    correct: false,
+  });
 };
 
 const deleteVariant = (idx: number) => {
   data.meta.variants.splice(idx, 1);
-  data.meta.variants.map((v: { id: number }, i: number): number => (v.id = i));
 };
 
-const getImageId = (id: number): string => {
+const getImageId = (id: string): string => {
   return `${props.block.id}-${id}-image`;
 };
 </script>

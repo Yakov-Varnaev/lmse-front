@@ -1,17 +1,9 @@
 <script setup lang="ts">
-import type { Block } from "~/types";
+import type { Block, QuestionBlockMeta } from "~/types";
 
 const emits = defineEmits(["edit", "delete", "up", "down"]);
 const props = defineProps<{
-  block: Block<{
-    text: string;
-    variants: {
-      id: number;
-      correct: boolean;
-      text?: string;
-      image?: { src: string; id: string };
-    }[];
-  }>;
+  block: Block<QuestionBlockMeta>;
   editMode: boolean;
   isLast: boolean;
   isFirst: boolean;
@@ -24,12 +16,12 @@ const {
   processAnswer,
   answerData,
   reset,
-} = useBlockCard<{ variants: number[] }, Object>({
+} = useBlockCard<{ variants: string[] }, Object>({
   block: props.block,
   initialAnswerData: () => ({ variants: [] }),
 });
 
-const selectVariant = (id: number): void => {
+const selectVariant = (id: string): void => {
   if (answerData.variants.includes(id)) {
     const idx = answerData.variants.indexOf(id);
     answerData.variants.splice(idx, 1);
@@ -38,7 +30,7 @@ const selectVariant = (id: number): void => {
   }
 };
 
-const isSelected = (id: number): boolean => {
+const isSelected = (id: string): boolean => {
   return answerData.variants.includes(id);
 };
 

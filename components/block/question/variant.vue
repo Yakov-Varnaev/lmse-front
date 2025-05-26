@@ -1,15 +1,12 @@
 <script setup lang="ts">
+import type { TextImageVariant } from "~/types";
+
 const { variant, answerGiven, answerCorrect, selected } = defineProps<{
   selected: boolean;
   readonly: boolean;
   answerCorrect: boolean;
   answerGiven: boolean;
-  variant: {
-    id: number;
-    correct: boolean;
-    text?: string;
-    image?: { src: string; id: string };
-  };
+  variant: TextImageVariant;
 }>();
 
 const { text, image } = variant;
