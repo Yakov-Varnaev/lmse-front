@@ -115,7 +115,6 @@ export type QuestionBlockMeta = {
 }
 
 export type TextImageVariant = {
-	// TODO: use uuids only!
 	id: string,
 	text: string,
 	image?: { src: string, id: string },
@@ -127,6 +126,13 @@ export type ConnectionBlockMeta = {
 		left: TextImageVariant,
 		right: TextImageVariant,
 	}[]
+}
+
+export type OpenQuestionBlockMeta = {
+	text: string,
+	answer: { text: string },
+	caseSensitive: boolean,
+	isNumeric: boolean,
 }
 
 export type GroupDistributionItem = TextImageData & {

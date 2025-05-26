@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import type { Block } from "~/types";
+import type { Block, OpenQuestionBlockMeta } from "~/types";
 
 const emit = defineEmits(["edit", "delete", "up", "down"]);
-const props = defineProps<{
-  block: Block<any>;
+const { block, ...props } = defineProps<{
+  block: Block<OpenQuestionBlockMeta>;
   editMode: boolean;
   isLast: boolean;
   isFirst: boolean;
@@ -17,13 +17,11 @@ const {
   answerData,
   reset,
 } = useBlockCard<{ text: string }, Object>({
-  block: props.block,
+  block: block,
   initialAnswerData: () => ({ text: "" }),
 });
 const hasText = computed((): boolean => {
-  return (
-    props.block.meta.text.length > 0 && props.block.meta.text !== "<p></p>"
-  );
+  return block.meta.text.length > 0 && block.meta.text !== "<p></p>";
 });
 </script>
 
@@ -60,9 +58,7 @@ const hasText = computed((): boolean => {
         :disabled="editMode"
         v-model.trim="answerData.text"
         :value="
-          editMode
-            ? props.block.meta.answer.text || 'Add answer...'
-            : answerData.text
+          editMode ? block.meta.answer.text || 'Add answer...' : answerData.text
         "
       />
       <v-card

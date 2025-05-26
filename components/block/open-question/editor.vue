@@ -1,17 +1,12 @@
-<script>
-export default {
-  emits: ["update", "cancel"],
-  props: {
-    block: { type: Object, required: true },
-  },
-  data() {
-    return { data: { ...this.block } };
-  },
-  methods: {
-    submit() {
-      this.$emit("update", this.data);
-    },
-  },
+<script setup lang="ts">
+import type { Block, OpenQuestionBlockMeta } from "~/types";
+
+const emits = defineEmits(["update", "cancel"]);
+const { block } = defineProps<{ block: Block<OpenQuestionBlockMeta> }>();
+const data = reactive<Block<OpenQuestionBlockMeta>>(deepCopy(block));
+
+const submit = () => {
+  emits("update", data.meta);
 };
 </script>
 
@@ -19,7 +14,7 @@ export default {
   <v-card variant="outlined">
     <v-card-text>
       <VuetifyTiptap
-        v-model.trim="data.text"
+        v-model.trim="data.meta.text"
         class="editor bg-background"
         markdown-theme="github"
       />
@@ -29,21 +24,28 @@ export default {
       <v-sheet class="rounded pa-2">
         <v-row no-gutters>
           <v-col>
-            <v-checkbox label="Case Sensitive" v-model="data.caseSensitive" />
+            <v-checkbox
+              label="Case Sensitive"
+              v-model="data.meta.caseSensitive"
+            />
           </v-col>
         </v-row>
         <v-row no-gutters>
           <v-col>
-            <v-checkbox label="Numeric" v-model="data.isNumeric" disabled />
+            <v-checkbox
+              label="Numeric"
+              v-model="data.meta.isNumeric"
+              disabled
+            />
           </v-col>
         </v-row>
 
         <v-row no-gutters align="center" class="mt-3">
           <v-col>
             <v-text-field
-              hide-details="true"
+              :hide-details="true"
               density="comfortable"
-              v-model.trim="data.answer.text"
+              v-model.trim="data.meta.answer.text"
             />
           </v-col>
         </v-row>

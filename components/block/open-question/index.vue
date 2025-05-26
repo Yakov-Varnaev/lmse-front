@@ -1,31 +1,31 @@
-<script setup>
-const props = defineProps({
-  editMode: { type: Boolean, required: true },
-  isLast: { type: Boolean, required: true },
-  isFirst: { type: Boolean, required: true },
-  block: {
-    type: Object,
-    required: true,
-  },
-});
+<script setup lang="ts">
+import type { Block, OpenQuestionBlockMeta } from "~/types";
+
+const props = defineProps<{
+  editMode: boolean;
+  isLast: boolean;
+  isFirst: boolean;
+  block: Block<OpenQuestionBlockMeta>;
+}>();
 const emit = defineEmits(["update", "delete", "up", "down"]);
 
-const { blockEditMode, blockData, toggleEditMode, update, deleteBlock } =
-  useBlock(emit, props);
-const { editMode } = props;
+const { blockEditMode, toggleEditMode, update, deleteBlock } = useBlock(
+  emit,
+  props,
+);
 </script>
 
 <template>
   <div>
     <BlockOpenQuestionEditor
       v-if="blockEditMode"
-      :block="blockData"
+      :block="block"
       @cancel="toggleEditMode"
       @update="update"
     />
     <BlockOpenQuestionCard
       v-else
-      :block="block"
+      :block="deepCopy(block)"
       :editMode="editMode"
       :isFirst="isFirst"
       :isLast="isLast"
