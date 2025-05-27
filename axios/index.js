@@ -1,7 +1,7 @@
 import axios from "axios";
-import onRequestFullfilled from "./onRequestFullfilled";
-import onResponseError from "./onResponseError";
-import onResponseFulfilled from "./onResponseFullfilled";
+import onRequestFullfilled from "./on-request-fullfilled";
+import onResponseError from "./on-response-error";
+import onResponseFulfilled from "./on-response-fullfilled";
 
 export const createAxios = (config) => {
   const instance = axios.create(config);
