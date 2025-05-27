@@ -1,13 +1,12 @@
-<script setup>
-const props = defineProps({
-  editMode: { type: Boolean, required: true },
-  isLast: { type: Boolean, required: true },
-  isFirst: { type: Boolean, required: true },
-  block: {
-    type: Object,
-    required: true,
-  },
-});
+<script setup lang="ts">
+import type { Block, VideoBlockMeta } from "~/types";
+
+const props = defineProps<{
+  editMode: boolean;
+  isLast: boolean;
+  isFirst: boolean;
+  block: Block<VideoBlockMeta>;
+}>();
 const emit = defineEmits(["update", "up", "down", "delete"]);
 
 const { blockEditMode, toggleEditMode, update, deleteBlock } = useBlock(

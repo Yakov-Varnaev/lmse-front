@@ -2,7 +2,10 @@
 import type { Block, TrueFalseBlockMeta } from "~/types";
 
 const alert = useAlert();
-const emit = defineEmits(["update", "cancel"]);
+const emit = defineEmits<{
+  (e: "update", data: TrueFalseBlockMeta): void;
+  (e: "cancel"): void;
+}>();
 const props = defineProps<{ block: Block<TrueFalseBlockMeta> }>();
 const data = reactive({ ...props.block });
 

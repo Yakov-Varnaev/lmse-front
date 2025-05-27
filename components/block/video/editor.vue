@@ -2,7 +2,11 @@
 import { uploadBlockMedia } from "~/api/courses";
 import type { Block, VideoBlockMeta } from "~/types";
 
-const emit = defineEmits(["update", "cancel"]);
+const emit = defineEmits<{
+  (e: "update", data: VideoBlockMeta): void;
+  (e: "cancel"): void;
+}>();
+
 const { block } = defineProps<{
   block: Block<VideoBlockMeta>;
 }>();
