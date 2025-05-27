@@ -136,6 +136,12 @@ export type VideoBlockMeta = {
 	video?: VideoData;
 };
 
+// -- Text Block
+
+export type TextBlockMeta = {
+	content: string;
+}
+
 // -- Question Block
 
 export type QuestionBlockVariant = TextImageVariant & {
