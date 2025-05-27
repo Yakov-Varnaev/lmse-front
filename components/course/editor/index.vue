@@ -4,7 +4,6 @@ import {
   getChapters,
   retrieveCourse,
   updateChapter,
-  updateCourse,
 } from "~/api/courses";
 import type { Chapter, Course } from "~/types";
 
@@ -68,15 +67,14 @@ const updateChapterOrder = async (orderData: {
   chapters.value = data;
 };
 
-const isLoading = computed(() => {
-  return loader.loaderMap["editor"];
-});
+const showActionButton = ref(false);
 
 onBeforeMount(() => {
   loader.startKeyLoading("editor");
 });
 
 onMounted(async () => {
+  showActionButton.value = await courseContext.isOwner();
   const { data: courseData } = await retrieveCourse(courseId);
   course.value = courseData;
   courseContext.setCourse(course.value);
@@ -104,7 +102,7 @@ onMounted(async () => {
       :edit-mode="mode.edit"
       @updated="updateChapterOrder"
       :onDelete="deleteChapterFromList"
-      :showActionButton="courseContext.isOwner"
+      :showActionButton="showActionButton"
       @openCreate="toggleCreateDialog"
     />
     <CourseEditorForm
