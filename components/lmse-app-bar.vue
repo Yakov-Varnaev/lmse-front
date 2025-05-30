@@ -69,9 +69,7 @@ const toggleTheme = () => themeStore.toggle();
     </v-btn>
 
     <!-- Title -->
-    <v-toolbar-title class="ml-2 text-truncate">
-      LMSE <small>[{{ display.name.value }}]</small>
-    </v-toolbar-title>
+    <v-toolbar-title class="ml-2 text-truncate"> LMSE </v-toolbar-title>
 
     <v-spacer />
 

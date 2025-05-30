@@ -55,7 +55,12 @@ onMounted(loadData);
     v-if="isSmartPath"
   >
     <template #activator="{ props }">
-      <v-chip v-bind="props" color="primary" prepend-icon="mdi-menu">
+      <v-chip
+        v-bind="props"
+        color="primary"
+        prepend-icon="mdi-menu"
+        class="px-5"
+      >
         Menu
       </v-chip>
     </template>
