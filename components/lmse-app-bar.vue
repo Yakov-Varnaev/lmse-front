@@ -3,7 +3,7 @@ import { useDisplay } from "vuetify";
 
 const authStore = useAuth();
 const themeStore = useThemeStore();
-const { mdAndUp, ...display } = useDisplay();
+const { mdAndUp, smAndDown, ...display } = useDisplay();
 
 const mobileMenu = ref(false);
 
@@ -39,10 +39,7 @@ const toggleTheme = () => themeStore.toggle();
 <template>
   <v-app-bar flat class="bg-background px-2">
     <!-- Mobile: hamburger menu -->
-    <v-app-bar-nav-icon
-      @click="mobileMenu = !mobileMenu"
-      v-if="display.smAndDown"
-    />
+    <v-app-bar-nav-icon @click="mobileMenu = !mobileMenu" v-if="smAndDown" />
     <v-menu v-model="mobileMenu" location="bottom start">
       <v-list>
         <v-list-item @click="pushToHome">
@@ -62,7 +59,12 @@ const toggleTheme = () => themeStore.toggle();
     </v-menu>
 
     <!-- Desktop: home button -->
-    <v-btn icon @click="pushToHome" class="ml-2" v-if="mdAndUp">
+    <v-btn
+      icon
+      @click="pushToHome"
+      class="ml-2"
+      v-if="mdAndUp && $route.name !== 'index'"
+    >
       <v-icon>mdi-home</v-icon>
     </v-btn>
 
@@ -77,7 +79,7 @@ const toggleTheme = () => themeStore.toggle();
     <div
       class="d-flex align-center link-pointer"
       @click="pushToProfile"
-      v-if="isAuth && authStore.user && mdAndUp"
+      v-if="isAuth && authStore.user"
     >
       <v-avatar size="32" color="primary" class="mr-2">
         <v-img v-if="authStore.user.avatar" :src="authStore.user.avatar" />
@@ -90,6 +92,7 @@ const toggleTheme = () => themeStore.toggle();
         <small class="text-primary">{{ authStore.user.email }}</small>
       </div>
     </div>
+    <v-spacer v-if="mdAndUp" />
 
     <!-- Breadcrumbs only on desktop -->
     <Bread v-if="mdAndUp" />
