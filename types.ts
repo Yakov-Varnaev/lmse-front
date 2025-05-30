@@ -71,6 +71,8 @@ export type Course = {
 	category?: Category;
 	level: 'beginner' | 'medium' | 'advanced';
 	tags: string[];
+	chaptersCount: number,
+	lessonsCount: number,
 	owner: {
 		id: string;
 		email: string;

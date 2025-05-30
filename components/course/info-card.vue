@@ -6,6 +6,12 @@ const context = useCourseContext();
 const course = (inject("course") as Ref<Course>).value;
 const chapters = (inject("chapters") as Ref<Chapter[]>).value;
 
+const isOwner = ref(false);
+
+onMounted(async () => {
+  isOwner.value = await context.isOwner();
+});
+
 const levelChip = computed(() => {
   const level = course.level;
   switch (level) {
@@ -63,24 +69,24 @@ const goToFirstChapter = () => {
     <div class="font-weight-light text-grey text-caption">
       <div class="d-flex justify-space-between px-1 align-center">
         <span><v-icon icon="mdi-book-outline" /> Chapters </span>
-        <span>{{ chapters.length }}</span>
+        <span>{{ course.chaptersCount }}</span>
       </div>
       <div class="d-flex justify-space-between mt-1 px-1 align-center">
-        <span><v-icon icon="mdi-chair-school" /> Chapters </span>
-        <span>{{ chapters.length }}</span>
+        <span><v-icon icon="mdi-chair-school" /> Lessons </span>
+        <span>{{ course.lessonsCount }}</span>
       </div>
       <div class="d-flex justify-space-between mt-1 px-1 align-center">
-        <span><v-icon icon="mdi-book-outline" /> Chapters </span>
-        <span>{{ chapters.length }}</span>
+        <span><v-icon icon="mdi-book-outline" /> Tasks </span>
+        <span>???</span>
       </div>
       <div class="d-flex justify-space-between mt-1 px-1 align-center">
         <span><v-icon icon="mdi-video-outline" /> Media </span>
-        <span>{{ 15 }}h</span>
+        <span>???h</span>
       </div>
     </div>
     <v-divider class="my-2"></v-divider>
     <div class="mt-3">
-      <div v-if="context.isOwner">
+      <div v-if="isOwner">
         <v-btn
           block
           color="primary"
